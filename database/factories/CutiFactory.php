@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Karyawan;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CutiFactory extends Factory
@@ -10,11 +9,10 @@ class CutiFactory extends Factory
     public function definition(): array
     {
         return [
-            'karyawan_id' => Karyawan::factory(),
-            'tanggal_mulai' => now()->addDays(1),
-            'tanggal_selesai' => now()->addDays(3),
-            'alasan' => 'Cuti tahunan',
-            'status' => 'disetujui',
+            'tanggal_mulai' => now()->addDays(rand(1, 5)),
+            'tanggal_selesai' => now()->addDays(rand(6, 10)),
+            'alasan' => fake()->sentence(),
+            'status' => fake()->randomElement(['pending', 'disetujui', 'ditolak']),
         ];
     }
 }

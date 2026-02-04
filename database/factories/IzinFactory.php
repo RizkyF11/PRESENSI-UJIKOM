@@ -11,10 +11,11 @@ class IzinFactory extends Factory
     {
         return [
             'karyawan_id' => Karyawan::factory(),
-            'absensi_id' => Absensi::factory(),
+            'absensi_id' => null, // diisi di seeder
             'tanggal' => today(),
             'alasan' => 'Sakit',
             'status' => 'pending',
         ];
     }
 }
+
