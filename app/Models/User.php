@@ -50,6 +50,6 @@ class User extends Authenticatable
     // 1 user <-> 1 karyawan
     public function karyawan()
     {
-        return $this->hasOne(karyawan::class);
+        return $this->hasOne(Karyawan::class);
     }
 }

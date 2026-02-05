@@ -9,14 +9,19 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/main.css') }}">
     <link rel="icon" href="{{ asset('assets/admin/favicon.ico') }}" type="image/x-icon">
+
+    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/font-awesome/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/toastr/toastr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/charts-c3/plugin.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/sweetalert/sweetalert.css') }}" />
 
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/main.css') }}">
 </head>
 
 <body data-theme="light" class="font-nunito">
@@ -42,11 +47,21 @@
     <script src="{{ asset('assets/admin/bundles/libscripts.bundle.js') }}"></script>
     <script src="{{ asset('assets/admin/bundles/vendorscripts.bundle.js') }}"></script>
 
+    <script src="{{ asset('assets/admin/bundles/datatablescripts.bundle.js') }}"></script>
+    <script src="{{ asset('assets/admin/vendor/jquery-datatable/buttons/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/vendor/jquery-datatable/buttons/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/vendor/jquery-datatable/buttons/buttons.colVis.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/vendor/jquery-datatable/buttons/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/vendor/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
+
+    <script src="{{ asset('assets/admin/vendor/sweetalert/sweetalert.min.js') }}"></script> <!-- SweetAlert Plugin Js -->
+
     <script src="{{ asset('assets/admin/vendor/toastr/toastr.js') }}"></script>
     <script src="{{ asset('assets/admin/bundles/c3.bundle.js') }}"></script>
 
     <script src="{{ asset('assets/admin/bundles/mainscripts.bundle.js') }}"></script>
     <script src="{{ asset('assets/admin/js/index.js') }}"></script>
+    <script src="{{ asset('assets/admin/js/pages/tables/jquery-datatable.js') }}"></script>
 
 </body>
 
