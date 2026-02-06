@@ -1,5 +1,7 @@
 @extends('admin.layouts.app')
 @section('content')
+
+
 <div class="container-fluid">
     <div class="block-header">
         <div class="row">
@@ -83,7 +85,7 @@
                                         <span><i></i>Aktif</span>
                                     </label>
                                     <label class="fancy-radio">
-                                        <input type="radio" name="status" value="nonaktif" {{ old('status', $karyawan->karyawan->status ?? '') == 'nonaktif' ? 'checked' : '' }}>
+                                        <input type="radio" name="status" value="non-aktif" {{ old('status', $karyawan->karyawan->status ?? '') == 'non-aktif' ? 'checked' : '' }}>
                                         <span><i></i>Non-Aktif</span>
                                     </label>
                                 </div>

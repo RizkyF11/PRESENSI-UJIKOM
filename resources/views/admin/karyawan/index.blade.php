@@ -15,8 +15,9 @@
         </div>
     </div>
 
-    <div class="col-lg-12 mt-4">
-        <div class="card">
+    <div class="row clearfix">
+        
+        <div class="card ">
             <div class="header">
                 <h2>Daftar Karyawan</h2>
             </div>

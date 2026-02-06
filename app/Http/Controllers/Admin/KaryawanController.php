@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class KaryawanController extends Controller
 {
@@ -106,18 +107,23 @@ class KaryawanController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = User::findOrFail($id);
+        // Ambil user beserta relasi karyawannya secara eksplisit
+        $user = User::with('karyawan')->findOrFail($id);
+
+        // Ambil ID detail karyawan untuk proses "ignore" di validasi unique
+        // Jika relasi tidak ada (null), kita kasih null agar tidak error
+        $karyawanId = $user->karyawan ? $user->karyawan->id : null;
 
         $request->validate([
             'nama'     => 'required|string|max:255',
             // Gunakan ignore agar tidak error saat email tidak diganti
             'email'    => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:6', // Password opsional saat update
-            'nip'      => ['required', 'numeric', Rule::unique('karyawan')->ignore($user->karyawan->id)],
+            'nip'      => ['required', 'numeric', Rule::unique('karyawan', 'nip')->ignore($karyawanId)],
             'jabatan'  => 'required|string|max:100',
             'no_hp'    => 'required|numeric|digits_between:10,15',
             'alamat'   => 'required|string|min:10',
-            'status'   => 'required|in:aktif,nonaktif',
+            'status'   => 'required|in:aktif,non-aktif',
         ]);
 
         DB::beginTransaction();
@@ -136,23 +142,27 @@ class KaryawanController extends Controller
             $user->update($userData);
 
             // 4. Update Data Detail Karyawan
-        // Menggunakan updateOrCreate untuk berjaga-jaga jika data di tabel karyawan belum ada
-        $user->karyawan()->updateOrCreate(
-            ['user_id' => $user->id], // Cari berdasarkan user_id
-            [
-                'nip'     => $request->nip,
-                'jabatan' => $request->jabatan,
-                'no_hp'   => $request->no_hp,
-                'alamat'  => $request->alamat,
-                'status'  => $request->status,
-            ]
-        );
+            // Menggunakan updateOrCreate untuk berjaga-jaga jika data di tabel karyawan belum ada
+            $user->karyawan()->updateOrCreate(
+                ['user_id' => $user->id], // Cari berdasarkan user_id
+                [
+                    'nip'     => $request->nip,
+                    'jabatan' => $request->jabatan,
+                    'no_hp'   => $request->no_hp,
+                    'alamat'  => $request->alamat,
+                    'status'  => $request->status,
+                ]
+            );
 
             DB::commit();
             return redirect()->route('karyawan.index')->with('success', 'Data karyawan diperbarui!');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
+            // Gunakan logger helper agar tidak perlu import class Log
+            logger()->error("Update Error: " . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }
     }
 

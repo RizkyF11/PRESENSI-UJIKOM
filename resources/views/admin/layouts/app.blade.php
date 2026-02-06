@@ -9,19 +9,20 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/main.css') }}">
+    
     <link rel="icon" href="{{ asset('assets/admin/favicon.ico') }}" type="image/x-icon">
-
+    
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css') }}">
-
+    
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/font-awesome/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/toastr/toastr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/charts-c3/plugin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/vendor/sweetalert/sweetalert.css') }}" />
-
+    
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/main.css') }}">
 </head>
 
 <body data-theme="light" class="font-nunito">
@@ -63,6 +64,7 @@
     <script src="{{ asset('assets/admin/js/index.js') }}"></script>
     <script src="{{ asset('assets/admin/js/pages/tables/jquery-datatable.js') }}"></script>
 
+    @include('components.sweetalert')
 </body>
 
 </html>

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('jabatan');
             $table->string('no_hp');
             $table->text('alamat');
-            $table->enum('status', ['aktif', 'non-aktif']);
+            $table->enum('status', ['aktif', 'non-aktif'])->default('aktif');
             $table->timestamps();
         });
     }
