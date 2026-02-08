@@ -73,7 +73,7 @@ class KaryawanController extends Controller
             // Selesai & Simpan permanen
             DB::commit();
 
-            return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil didaftarkan!');
+            return redirect()->route('admin.karyawan.index')->with('success', 'Karyawan berhasil didaftarkan!');
         } catch (\Exception $e) {
             // Batalkan jika ada eror
             DB::rollback();
@@ -155,7 +155,7 @@ class KaryawanController extends Controller
             );
 
             DB::commit();
-            return redirect()->route('karyawan.index')->with('success', 'Data karyawan diperbarui!');
+            return redirect()->route('admin.karyawan.index')->with('success', 'Data karyawan diperbarui!');
         } catch (\Exception $e) {
             DB::rollback();
             // Gunakan logger helper agar tidak perlu import class Log
@@ -180,7 +180,7 @@ class KaryawanController extends Controller
             $user->delete();
 
             DB::commit();
-            return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil dihapus!');
+            return redirect()->route('admin.karyawan.index')->with('success', 'Karyawan berhasil dihapus!');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Gagal hapus karyawan.');

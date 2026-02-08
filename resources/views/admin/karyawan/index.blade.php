@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('layouts.admin')
 
 @section('content')
 <div class="container-fluid ">
@@ -7,7 +7,7 @@
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <h2>Data Karyawan</h2>
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('karyawan.index') }}"><i class="fa fa-dashboard"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.karyawan.index') }}"><i class="fa fa-dashboard"></i></a></li>
                     <li class="breadcrumb-item">Master</li>
                     <li class="breadcrumb-item active">Karyawan</li>
                 </ul>
@@ -22,7 +22,7 @@
                 <h2>Daftar Karyawan</h2>
             </div>
             <div class="body">
-                <a href="{{ route('karyawan.create') }}" class="btn btn-primary m-b-15">
+                <a href="{{ route('admin.karyawan.create') }}" class="btn btn-primary m-b-15">
                     <i class="fa fa-plus" aria-hidden="true"></i> Tambah Karyawan
                 </a>
                 <div class="table-responsive">
@@ -59,8 +59,8 @@
                                 <td>{{ $item->karyawan->no_hp }}</td>
                                 <td>{{ $item->karyawan->alamat }}</td>
                                 <td>
-                                    <a href="{{ route('karyawan.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                    <form action="{{ route('karyawan.destroy', $item->id) }}" method="POST" style="display:inline;">
+                                    <a href="{{ route('admin.karyawan.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    <form action="{{ route('admin.karyawan.destroy', $item->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>

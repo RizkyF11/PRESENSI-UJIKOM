@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('layouts.admin')
 @section('content')
 
 
@@ -8,7 +8,7 @@
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <h2>{{isset($karyawan->id) ? 'Edit' : 'Tambah'}}</h2>
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('karyawan.index') }}"><i class="fa fa-dashboard"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.karyawan.index') }}"><i class="fa fa-dashboard"></i></a></li>
                     <li class="breadcrumb-item">Karyawan</li>
                     <li class="breadcrumb-item active">{{isset($karyawan->id) ? 'Edit' : 'Tambah'}} Karyawan</li>
                 </ul>
@@ -24,7 +24,7 @@
                     <h2>Informasi Akun & Data Diri</h2>
                 </div>
                 <div class="body">
-                    <form id="basic-form" action="{{isset($karyawan->id) ? route('karyawan.update', $karyawan->id) : route('karyawan.store')}}" method="post" novalidate>
+                    <form id="basic-form" action="{{isset($karyawan->id) ? route('admin.karyawan.update', $karyawan->id) : route('admin.karyawan.store')}}" method="post" novalidate>
                         @csrf
                         @if(isset($karyawan->id))
                         @method('PUT')
@@ -97,7 +97,7 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-save"></i> {{ isset($karyawan->id) ? 'Simpan Perubahan' : 'Daftarkan Karyawan' }}
                         </button>
-                        <a href="{{ route('karyawan.index') }}" class="btn btn-secondary">Batal</a>
+                        <a href="{{ route('admin.karyawan.index') }}" class="btn btn-secondary">Batal</a>
                     </form>
                 </div>
             </div>
