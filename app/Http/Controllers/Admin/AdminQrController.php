@@ -8,17 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 class AdminQrController extends Controller
 {
     //menampilkan halaman utama 
     public function index()
     {
-        return view('admin.qrcode.index');
+        return view('admin.qrcode.generate');
     }
 
     //logic untuk generate kode unik baru (dpanggil via ajax)
 
-    public function generate() 
+    public function generate()
     {
         try {
             // 1. nonaktifkan semua qr masih aktif sebelumnya
@@ -34,20 +35,25 @@ class AdminQrController extends Controller
                 'expired_at' => now()->addSecond(25), //dilebihkan sedikit untuk buffering
             ]);
 
+            // bungkus payload qr
+            $payload = json_encode([
+                'type' => 'absensi',
+                'kode' => $qr->kode,
+            ]);
+
             // 4. generate gambar qr code dalam bentuk string SVG
             // Kita bungkus kode unik ini agar nanti saat di-scan isinya jelas
             $qrImage = QrCode::size(300)
                 ->color(0, 0, 0)
                 ->margin(1)
-                ->generate($qr->kode);
+                ->generate($payload);
 
             return response()->json([
                 'status' => 'success',
-                'html' => $qrImage->toHtml(),
+                'html' => (string)$qrImage,
                 'kode' => $qr->kode,
                 'expired_at' => $qr->expired_at->format('H:i:s'),
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',

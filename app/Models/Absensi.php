@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Absensi extends Model
 {
     use HasFactory;
-    protected $table = 'absensi ';
+    protected $table = 'absensi';
     protected $fillable = [
+        'lokasi_kantor_id',
         'karyawan_id',
         'shift_id',
         'qr_code_id',
@@ -43,5 +44,10 @@ class Absensi extends Model
     public function izin()
     {
         return $this->hasOne(Izin::class);
+    }
+
+    public function lokasiKantor()
+    {
+        return $this->belongsTo(LokasiKantor::class, 'lokasi_kantor_id');
     }
 }

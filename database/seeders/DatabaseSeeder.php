@@ -19,12 +19,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            KaryawanSeeder::class,
-            ShiftSeeder::class,
+            // KaryawanSeeder::class,
+            // ShiftSeeder::class,
             // QrCodeSeeder::class,
-            AbsensiSeeder::class,
-            IzinSeeder::class,
-            CutiSeeder::class,
+            // AbsensiSeeder::class,
+            // IzinSeeder::class,
+            // CutiSeeder::class,
         ]);
     }
 }
