@@ -16,7 +16,7 @@
     </div>
 
     <div class="row clearfix">
-        
+
         <div class="card ">
             <div class="header">
                 <h2>Daftar Karyawan</h2>
@@ -35,6 +35,7 @@
                                 <th>Jabatan</th>
                                 <th>No.Handphone</th>
                                 <th>Alamat</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -46,6 +47,7 @@
                                 <th>Jabatan</th>
                                 <th>No.Handphone</th>
                                 <th>Alamat</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
@@ -58,6 +60,15 @@
                                 <td>{{ $item->karyawan->jabatan }}</td>
                                 <td>{{ $item->karyawan->no_hp }}</td>
                                 <td>{{ $item->karyawan->alamat }}</td>
+                                <td>
+                                    @if ($item->karyawan && $item->karyawan->status === 'aktif')
+                                    <span class="badge badge-success">Aktif</span>
+                                    @elseif ($item->karyawan && $item->karyawan->status === 'non-aktif')
+                                    <span class="badge badge-danger">Non Aktif</span>
+                                    @else
+                                    <span class="badge badge-warning">Unknown</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <a href="{{ route('admin.karyawan.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                     <form action="{{ route('admin.karyawan.destroy', $item->id) }}" method="POST" style="display:inline;">
