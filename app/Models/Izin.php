@@ -13,7 +13,6 @@ class Izin extends Model
 
     protected $fillable = [
         'karyawan_id',
-        'absensi_id',
         'tanggal',
         'alasan',
         'status',
@@ -26,8 +25,5 @@ class Izin extends Model
     }
 
     // Izin terhubung ke 1 absensi
-    public function absensi()
-    {
-        return $this->belongsTo(Absensi::class);
-    }
+   
 }

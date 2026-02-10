@@ -19,9 +19,12 @@ return new class extends Migration
             $table->date('tanggal');
             $table->time('jam_masuk')->nullable();
             $table->time('jam_keluar')->nullable();
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
-            $table->enum('status', ['hadir', 'terlambat', 'izin', 'cuti', 'alpha']);
+            $table->decimal('latitude_masuk', 10, 7)->nullable();
+            $table->decimal('longitude_masuk', 10, 7)->nullable();
+            $table->decimal('latitude_keluar', 10, 7)->nullable();
+            $table->decimal('longitude_keluar', 10, 7)->nullable();
+            $table->enum('status_masuk', ['hadir', 'terlambat',])->nullable();
+            $table->enum('status_keluar', ['pulang', 'pulang_cepat',])->nullable();
             $table->timestamps();
 
             $table->unique(['karyawan_id', 'tanggal']);

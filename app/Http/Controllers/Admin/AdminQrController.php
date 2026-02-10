@@ -19,25 +19,38 @@ class AdminQrController extends Controller
 
     //logic untuk generate kode unik baru (dpanggil via ajax)
 
-    public function generate()
+    public function generate(Request $request)
     {
+        // Validasi tipe yang dikirim via query parameter
+        $tipe = $request->query('tipe');
+        if (!in_array($tipe, ['masuk', 'keluar'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tipe QR code tidak valid. Harus masuk atau keluar.'
+            ], 400);
+        }
+
         try {
-            // 1. nonaktifkan semua qr masih aktif sebelumnya
-            QrModel::where('is_active', true)->update(['is_active' => false]);
+            // 1. nonaktifkan semua qr yg masih aktif sebelumnya dengan tipe yang sama
+            QrModel::where('tipe', $tipe)
+                ->where('is_active', true)
+                ->update(['is_active' => false]);
 
             // 2. buat string unik baru
             $kodeUnik = Str::random(32) . '-' . time();
 
-            // 3. simpan ke database dengan waktu expired
+            // 3. simpan ke database dengan waktu expired dan tipe
             $qr = QrModel::create([
                 'kode' => $kodeUnik,
+                'tipe' => $tipe,
                 'is_active' => true,
-                'expired_at' => now()->addSecond(25), //dilebihkan sedikit untuk buffering
+                'expired_at' => now()->addSecond(25), // dilebihkan sedikit untuk buffering
             ]);
 
-            // bungkus payload qr
+            // bungkus payload qr, tambahkan tipe
             $payload = json_encode([
                 'type' => 'absensi',
+                'qr_type' => $tipe, // info tambahan (opsional)
                 'kode' => $qr->kode,
             ]);
 
@@ -52,6 +65,7 @@ class AdminQrController extends Controller
                 'status' => 'success',
                 'html' => (string)$qrImage,
                 'kode' => $qr->kode,
+                'tipe' => $qr->tipe,
                 'expired_at' => $qr->expired_at->format('H:i:s'),
             ]);
         } catch (\Exception $e) {

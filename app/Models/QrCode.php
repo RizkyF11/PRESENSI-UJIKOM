@@ -13,6 +13,7 @@ class QrCode extends Model
 
     protected $fillable = [
         'kode',
+        'tipe',
         'is_active',
         'expired_at',
     ];

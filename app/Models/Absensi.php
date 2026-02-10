@@ -19,7 +19,8 @@ class Absensi extends Model
         'jam_keluar',
         'latitude',
         'longitude',
-        'status',
+        'status_masuk',
+        'status_keluar',
     ];
 
     // Absensi milik 1 karyawan
@@ -41,10 +42,7 @@ class Absensi extends Model
     }
 
     // Absensi bisa punya 1 izin
-    public function izin()
-    {
-        return $this->hasOne(Izin::class);
-    }
+    
 
     public function lokasiKantor()
     {
