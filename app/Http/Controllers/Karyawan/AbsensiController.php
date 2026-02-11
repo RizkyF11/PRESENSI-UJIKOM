@@ -13,11 +13,85 @@ use Illuminate\Support\Facades\DB;
 
 class AbsensiController extends Controller
 {
+    public function index()
+    {
+        $karyawanId = Auth::user()->karyawan->id;
+        $now = Carbon::now();
+        $bulanIni = $now->month;
+        $tahunIni = $now->year;
+
+        // 1. Ambil Shift Hari Ini
+        $shiftHariIni = $this->getShiftAktif($karyawanId);
+
+        // 2. Cek Absensi Hari Ini
+        $tanggalAbsensi = $shiftHariIni
+            ? $this->tentukanTanggalAbsensi($shiftHariIni, $now)
+            : $now->toDateString();
+
+        $absensiHariIni = Absensi::where('karyawan_id', $karyawanId)
+            ->where('tanggal', $tanggalAbsensi)
+            ->first();
+
+        // 3. Statistik Bulan Ini
+        $stats = [
+            'hadir' => Absensi::where('karyawan_id', $karyawanId)
+                ->whereMonth('tanggal', $bulanIni)
+                ->whereYear('tanggal', $tahunIni)
+                ->where('status_masuk', 'hadir')
+                ->count(),
+
+            'terlambat' => Absensi::where('karyawan_id', $karyawanId)
+                ->whereMonth('tanggal', $bulanIni)
+                ->whereYear('tanggal', $tahunIni)
+                ->where('status_masuk', 'terlambat')
+                ->count(),
+
+            // Asumsi Izin/Sakit ada tabel sendiri atau flag di absensi, 
+            // sementara kita query dari tabel Izin / Cuti (jika ada) atau placeholder 0
+            'izin_sakit' => 0, // Implementasi nanti: Izin::where(...)->count()
+
+            'alpha' => 0 // Implementasi nanti logic alpha
+        ];
+
+        // 4. Riwayat Absensi (5 Terakhir)
+        $riwayatAbsensi = Absensi::with('shift')
+            ->where('karyawan_id', $karyawanId)
+            ->orderBy('tanggal', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('karyawan_fe.dashboard', [
+            'shiftHariIni' => $shiftHariIni,
+            'absensiHariIni' => $absensiHariIni,
+            'stats' => $stats,
+            'riwayatAbsensi' => $riwayatAbsensi,
+            'tanggal' => Carbon::parse($tanggalAbsensi)->translatedFormat('l, d F Y')
+        ]);
+    }
+    /* =======================
+     |  STORE SCAN (Unified)
+     =======================*/
+    public function storeScan(Request $request)
+    {
+        $request->validate([
+            'tipe_scan' => 'required|in:masuk,keluar',
+        ]);
+
+        if ($request->tipe_scan === 'masuk') {
+            return $this->scanMasuk($request);
+        } else {
+            return $this->scanKeluar($request);
+        }
+    }
+
     /* =======================
      |  SCAN MASUK
      =======================*/
     public function scanMasuk(Request $request)
     {
+        // ... (existing scanMasuk logic, logic re-used)
+        // copy ulang validasi awal jika perlu, atau skip karena sudah dipanggil storeScan
+
         $request->validate([
             'kode'      => 'required|string',
             'latitude'  => 'required|numeric',
@@ -37,15 +111,16 @@ class AbsensiController extends Controller
 
             $tanggalAbsensi = $this->tentukanTanggalAbsensi($shift, $now);
 
+            // Cek apakah sudah absen masuk
             if ($this->sudahAbsenMasuk($karyawanId, $tanggalAbsensi)) {
-                return $this->error('Anda sudah absen masuk');
+                return $this->error('Anda sudah absen masuk hari ini');
             }
 
             $qr     = $this->validasiQr($request->kode, 'masuk');
             $lokasi = $this->validasiLokasi($request);
 
             // status hadir / terlambat
-            $batasTerlambat = Carbon::parse($tanggalAbsensi.' '.$shift->jam_masuk)
+            $batasTerlambat = Carbon::parse($tanggalAbsensi . ' ' . $shift->jam_masuk)
                 ->addMinutes($shift->toleransi_menit);
 
             $statusMasuk = $now->greaterThan($batasTerlambat) ? 'terlambat' : 'hadir';
@@ -53,7 +128,7 @@ class AbsensiController extends Controller
             Absensi::create([
                 'karyawan_id'     => $karyawanId,
                 'shift_id'        => $shift->id,
-                'lokasi_kantor_id'=> $lokasi->id,
+                'lokasi_kantor_id' => $lokasi->id,
                 'qr_code_id'      => $qr->id,
                 'tanggal'         => $tanggalAbsensi,
                 'jam_masuk'       => $now->format('H:i:s'),
@@ -74,7 +149,6 @@ class AbsensiController extends Controller
                     'status_masuk'     => $statusMasuk,
                 ]
             ]);
-
         } catch (\Throwable $e) {
             DB::rollback();
             return $this->exception($e);
@@ -107,22 +181,31 @@ class AbsensiController extends Controller
 
             $absensi = Absensi::where('karyawan_id', $karyawanId)
                 ->where('tanggal', $tanggalAbsensi)
+                ->whereNotNull('jam_masuk')
                 ->whereNull('jam_keluar')
                 ->first();
 
             if (! $absensi) {
-                return $this->error('Belum absen masuk atau sudah absen keluar');
+                // Cek kenapa gagal
+                // 1. Belum absen masuk
+                // 2. Sudah absen keluar
+                $cekSudahKeluar = Absensi::where('karyawan_id', $karyawanId)
+                    ->where('tanggal', $tanggalAbsensi)
+                    ->whereNotNull('jam_keluar')
+                    ->exists();
+
+                if ($cekSudahKeluar) {
+                    return $this->error('Anda sudah absen keluar hari ini');
+                }
+
+                return $this->error('Anda belum melakukan absen masuk');
             }
 
             $qr     = $this->validasiQr($request->kode, 'keluar');
             $lokasi = $this->validasiLokasi($request);
 
-            // === HITUNG DURASI KERJA ===
-            $jamMasuk = Carbon::parse($tanggalAbsensi.' '.$absensi->jam_masuk);
-
-
             // === STATUS PULANG ===
-            $jamKeluarShift = Carbon::parse($tanggalAbsensi.' '.$shift->jam_keluar);
+            $jamKeluarShift = Carbon::parse($tanggalAbsensi . ' ' . $shift->jam_keluar);
             if ($this->isShiftLintasHari($shift)) {
                 $jamKeluarShift->addDay();
             }
@@ -150,7 +233,6 @@ class AbsensiController extends Controller
                     'status_keluar'     => $statusKeluar,
                 ]
             ]);
-
         } catch (\Throwable $e) {
             DB::rollback();
             return $this->exception($e);
@@ -169,7 +251,7 @@ class AbsensiController extends Controller
             ->whereDate('karyawan_shift.tanggal_mulai', '<=', now()->toDateString())
             ->where(function ($q) {
                 $q->whereNull('tanggal_selesai')
-                  ->orWhereDate('tanggal_selesai', '>=', now()->toDateString());
+                    ->orWhereDate('tanggal_selesai', '>=', now()->toDateString());
             })
             ->select('shift.*')
             ->first();
@@ -247,8 +329,8 @@ class AbsensiController extends Controller
         $dLon = deg2rad($lon2 - $lon1);
 
         $a = sin($dLat / 2) ** 2 +
-             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-             sin($dLon / 2) ** 2;
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLon / 2) ** 2;
 
         return $earthRadius * (2 * atan2(sqrt($a), sqrt(1 - $a)));
     }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\AdminQrController;
+use App\Http\Controllers\Admin\KaryawanShiftController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -41,15 +42,30 @@ Route::middleware('auth')->group(function () {
             Route::resource('karyawan', KaryawanController::class);
             Route::get('/qrcode', [AdminQrController::class, 'index'])->name('qrcode.index');
             Route::get('/qrcode/generate', [AdminQrController::class, 'generate'])->name('qrcode.generate');
+
+            Route::get('karyawan-shift', [KaryawanShiftController::class, 'index'])
+                ->name('karyawan_shift.index');
+
+            Route::post('karyawan-shift', [KaryawanShiftController::class, 'store'])
+                ->name('karyawan_shift.store');
+
+            Route::delete('karyawan-shift/{id}', [KaryawanShiftController::class, 'destroy'])
+                ->name('karyawan_shift.destroy');
         });
 
     // 2. ROUTE KHUSUS KARYAWAN (Pakai Gate 'karyawan')
     Route::middleware('can:karyawan')->group(function () {
-        Route::get('/karyawan/dashboard', function () {
-            return view('karyawan_fe.dashboard'); // Buat view khusus karyawan
-        })->name('karyawan.dashboard');
+        Route::get('/karyawan/dashboard', [App\Http\Controllers\Karyawan\AbsensiController::class, 'index'])
+            ->name('karyawan.dashboard');
 
-        // Nanti taruh route scan absen di sini
+        // Route Scan Absen
+        Route::get('/karyawan/scan', function () {
+            return view('karyawan_fe.scan');
+        })->name('karyawan.scan');
+
+        // Route Proses Scan (Store)
+        Route::post('/karyawan/scan', [App\Http\Controllers\Karyawan\AbsensiController::class, 'storeScan'])
+            ->name('karyawan.scan.store');
     });
 
     // Route Profile (Bawaan Breeze)

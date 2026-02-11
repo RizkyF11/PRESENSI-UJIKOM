@@ -43,16 +43,16 @@
                 </li>
 
                 <li class="header">Master Data</li>
-                <li class="{{ request()->routeIs('admin.karyawan*') ? 'active' : '' }}">
+                <li class="{{ request()->is('admin/karyawan') || request()->is('admin/karyawan/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.karyawan.index') }}"><i class="fa fa-users"></i><span>Data Karyawan</span></a>
                 </li>
 
                 <li class="header">Absensi</li>
-                <li class="{{ request()->routeIs('admin.qrcode') ? 'active' : '' }}">
+                <li class="{{ request()->routeIs('admin.qrcode*') ? 'active' : '' }}">
                     <a href="{{ route('admin.qrcode.index') }}"><i class="fa fa-qrcode"></i><span>Generate QR Code</span></a>
                 </li>
-                <li class="{{ request()->routeIs('admin.rekap*') ? 'active' : '' }}">
-                    <a href="#"><i class="fa fa-list-alt"></i><span>Rekap Kehadiran</span></a>
+                <li class="{{ request()->routeIs('admin.karyawan_shift*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.karyawan_shift.index') }}"><i class="fa fa-list-alt"></i><span>Assign Shift</span></a>
                 </li>
             </ul>
         </nav>

@@ -45,7 +45,7 @@ class Karyawan extends Model
     }
 
     // Many-to-Many ke Shift
-    public function shift()
+    public function shifts()
     {
         return $this->belongsToMany(
             Shift::class,

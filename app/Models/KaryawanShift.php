@@ -14,4 +14,16 @@ class KaryawanShift extends Model
         'tanggal_mulai',
         'tanggal_selesai',
     ];
+
+    // 🔥 RELASI KE KARYAWAN
+    public function karyawan()
+    {
+        return $this->belongsTo(Karyawan::class, 'karyawan_id');
+    }
+
+    // 🔥 RELASI KE SHIFT
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class, 'shift_id');
+    }
 }
