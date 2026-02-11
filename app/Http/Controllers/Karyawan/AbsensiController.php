@@ -288,7 +288,7 @@ class AbsensiController extends Controller
             ->first();
 
         if (! $qr) {
-            abort(response()->json([
+            return(response()->json([
                 'status' => 'error',
                 'message' => 'QR Code tidak valid atau expired'
             ], 422));
