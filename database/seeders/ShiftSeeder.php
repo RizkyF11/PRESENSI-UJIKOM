@@ -24,9 +24,9 @@ class ShiftSeeder extends Seeder
             ],
             [
                 'nama_shift' => 'Malam',
-                'jam_masuk' => '20:00:00',
+                'jam_masuk' => '00:00:00',
                 'jam_keluar' => '04:00:00',
-                'toleransi_menit' => 15,
+                'toleransi_menit' => 30,
             ],
         ];
 

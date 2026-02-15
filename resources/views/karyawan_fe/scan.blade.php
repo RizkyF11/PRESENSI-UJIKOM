@@ -18,7 +18,7 @@
                     <style>
                         #reader {
                             width: 100% !important;
-                            border-radius: 25px;
+                            border-radius: 20px;
                             overflow: hidden;
                             background: #000;
                             position: relative;
@@ -147,11 +147,19 @@
                         tipe_scan: tipeAbsen
                     })
                 })
-                .then(response => response.json())
+                .then(async response => {
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || "Terjadi kesalahan");
+                    }
+
+                    return data;
+                })
                 .then(data => {
                     if (data.status === 'success') {
                         resultMessage.className = 'alert alert-success mt-2 text-center font-weight-bold';
-                        resultMessage.innerHTML = `<strong>Berhasil!</strong> ${data.message} <br> ${data.data.jam_masuk || data.data.jam_keluar || ''}`;
+                        resultMessage.innerHTML = `<strong>Berhasil!</strong> ${data.message} `;
 
                         setTimeout(() => {
                             window.location.href = "{{ route('karyawan.dashboard') }}";
@@ -162,7 +170,7 @@
                     }
                 })
                 .catch(error => {
-                    handleError('Terjadi kesalahan server.');
+                    handleError(error.message);
                     console.error(error);
                     isProcessing = false;
                 });
@@ -180,18 +188,18 @@
                 fps: 15,
                 qrbox: function(viewfinderWidth, viewfinderHeight) {
                     // Responsif QR Box: 70% dari lebar layar HP
-                let minEdgePercentage = 0.7; 
-                let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
-                let qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
-                return {
-                    width: qrboxSize,
-                    height: qrboxSize
-                };
-              },
+                    let minEdgePercentage = 0.7;
+                    let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+                    let qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
+                    return {
+                        width: qrboxSize,
+                        height: qrboxSize
+                    };
+                },
                 aspectRatio: 1.0,
-                videoConstraints: {
-                    facingMode: { exact: "environment" }
-                }
+                // videoConstraints: {
+                //     facingMode: { exact: "environment" }
+                // }
             },
             false
         );

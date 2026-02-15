@@ -33,22 +33,37 @@ class KaryawanShiftController extends Controller
             'tanggal_selesai'  => 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
-        // 🔴 Tutup shift lama jika masih aktif
-        KaryawanShift::where('karyawan_id', $request->karyawan_id)
-            ->where('tanggal_selesai', '>=', $request->tanggal_mulai)
+        DB::transaction((function () use ($request) {
+
+            $tanggalMulai = Carbon::parse($request->tanggal_mulai);
+
+            // tutup semua shift lama yang masih aktif
+            KaryawanShift::where('karyawan_id', $request->karyawan_id)
+            ->where(function ($q) use ($tanggalMulai) {
+                $q->whereNull('tanggal_selesai')
+                    ->orWhere('tanggal_selesai', '>=', $tanggalMulai);
+            })
             ->update([
-                'tanggal_selesai' => Carbon::parse($request->tanggal_mulai)->subDay()
+                'tanggal_selesai' => $tanggalMulai->copy()->subDay()
             ]);
 
-        // 🟢 Simpan shift baru
-        KaryawanShift::create([
-            'karyawan_id'     => $request->karyawan_id,
-            'shift_id'        => $request->shift_id,
-            'tanggal_mulai'   => $request->tanggal_mulai,
-            'tanggal_selesai' => $request->tanggal_selesai,
-        ]);
+            //simpan shift baru
+            KaryawanShift::create([
+                'karyawan_id'   => $request->karyawan_id,
+                'shift_id'      => $request->shift_id,
+                'tanggal_mulai' => $tanggalMulai,
+                'tanggal_selesai' => $request->tanggal_selesai
+            ]);
 
-        return redirect()->back()->with('success', 'Shift berhasil di-assign');
+            // reset absensi hari ini jika shift diganti hari ini
+            if ($tanggalMulai->isToday()) {
+                \App\Models\Absensi::where('karyawan_id', $request->karyawan_id)
+                    ->whereDate('tanggal', now())
+                    ->delete();
+            }
+        }));
+
+        return redirect()->back()->with('success', 'Assign shift berhasil disimpan');
     }
 
     public function destroy($id)
