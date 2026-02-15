@@ -200,6 +200,7 @@ class AbsensiController extends Controller
             $qr     = $this->validasiQr($request->kode, 'keluar');
             $lokasi = $this->validasiLokasi($request);
 
+
             // ===== STATUS PULANG =====
             $jamKeluarShift = Carbon::parse($tanggalAbsensi . ' ' . $shift->jam_keluar);
 
@@ -207,9 +208,20 @@ class AbsensiController extends Controller
                 $jamKeluarShift->addDay();
             }
 
-            $statusKeluar = $now->lessThan($jamKeluarShift)
-                ? 'pulang_cepat'
-                : 'pulang';
+            // Batas boleh pulang cepat (30 menit sebelum jam pulang)
+            $batasPulangCepat = $jamKeluarShift->copy()->subMinutes(30);
+
+            //  Kalau terlalu cepat (belum masuk batas pulang cepat)
+            if ($now->lessThan($batasPulangCepat)) {
+                return $this->error('Belum bisa absen keluar. Minimal 30 menit sebelum jam pulang.');
+            }
+
+            // ✅ Jika sebelum jam pulang tapi sudah masuk 30 menit terakhir
+            if ($now->between($batasPulangCepat, $jamKeluarShift)) {
+                $statusKeluar = 'pulang_cepat';
+            } else {
+                $statusKeluar = 'pulang';
+            }
 
             $absensi->update([
                 'jam_keluar'       => $now->format('H:i:s'),
