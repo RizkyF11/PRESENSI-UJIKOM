@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\AdminQrController;
 use App\Http\Controllers\Admin\KaryawanShiftController;
+use App\Http\Controllers\Admin\LokasiKantorController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -51,7 +52,11 @@ Route::middleware('auth')->group(function () {
 
             Route::delete('karyawan-shift/{id}', [KaryawanShiftController::class, 'destroy'])
                 ->name('karyawan_shift.destroy');
+
+            Route::resource('lokasi-kantor', LokasiKantorController::class)->except(['show']);
         });
+
+
 
     // 2. ROUTE KHUSUS KARYAWAN (Pakai Gate 'karyawan')
     Route::middleware('can:karyawan')->group(function () {
