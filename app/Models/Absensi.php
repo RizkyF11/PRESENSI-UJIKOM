@@ -17,8 +17,10 @@ class Absensi extends Model
         'tanggal',
         'jam_masuk',
         'jam_keluar',
-        'latitude',
-        'longitude',
+        'latitude_masuk',
+        'longitude_masuk',
+        'latitude_keluar',
+        'longitude_keluar',
         'status_masuk',
         'status_keluar',
     ];

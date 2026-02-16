@@ -46,6 +46,7 @@
                 <li class="{{ request()->is('admin/karyawan') || request()->is('admin/karyawan/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.karyawan.index') }}"><i class="fa fa-users"></i><span>Data Karyawan</span></a>
                 </li>
+                
 
                 <li class="header">Absensi</li>
                 <li class="{{ request()->routeIs('admin.qrcode*') ? 'active' : '' }}">

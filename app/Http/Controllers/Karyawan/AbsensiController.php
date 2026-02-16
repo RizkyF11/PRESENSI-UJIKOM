@@ -70,7 +70,9 @@ class AbsensiController extends Controller
             'absensiHariIni' => $absensiHariIni,
             'stats' => $stats,
             'riwayatAbsensi' => $riwayatAbsensi,
-            'tanggal' => Carbon::parse($tanggalAbsensi)->translatedFormat('l, d F Y')
+            'tanggal' => $tanggalAbsensi 
+                ? Carbon::parse($tanggalAbsensi)->translatedFormat('l, d F Y')
+                : Carbon::now()->translatedFormat('l, d F Y'),
         ]);
     }
     /* =======================
@@ -209,14 +211,14 @@ class AbsensiController extends Controller
             }
 
             // Batas boleh pulang cepat (30 menit sebelum jam pulang)
-            $batasPulangCepat = $jamKeluarShift->copy()->subMinutes(30);
+            $batasPulangCepat = $jamKeluarShift->copy()->subMinutes(15);
 
             //  Kalau terlalu cepat (belum masuk batas pulang cepat)
             if ($now->lessThan($batasPulangCepat)) {
-                return $this->error('Belum bisa absen keluar. Minimal 30 menit sebelum jam pulang.');
+                return $this->error('Belum bisa absen keluar. Minimal 15 menit sebelum jam pulang.');
             }
 
-            // ✅ Jika sebelum jam pulang tapi sudah masuk 30 menit terakhir
+            // Jika sebelum jam pulang tapi sudah masuk 30 menit terakhir
             if ($now->between($batasPulangCepat, $jamKeluarShift)) {
                 $statusKeluar = 'pulang_cepat';
             } else {
