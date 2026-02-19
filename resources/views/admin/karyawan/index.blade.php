@@ -29,6 +29,7 @@
                     <table class="table table-bordered table-hover table-striped" cellspacing="0" id="addrowExample">
                         <thead>
                             <tr>
+                                <th>No</th>
                                 <th>Nama</th>
                                 <th>Email</th>
                                 <th>Nip</th>
@@ -41,6 +42,7 @@
                         </thead>
                         <tfoot>
                             <tr>
+                                <th>No</th>
                                 <th>Nama</th>
                                 <th>Email</th>
                                 <th>Nip</th>
@@ -54,6 +56,7 @@
                         <tbody>
                             @foreach ($data as $item)
                             <tr>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->nama }}</td>
                                 <td>{{ $item->email }}</td>
                                 <td>{{ $item->karyawan->nip }}</td>

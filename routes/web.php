@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\AdminQrController;
 use App\Http\Controllers\Admin\KaryawanShiftController;
 use App\Http\Controllers\Admin\LokasiKantorController;
+use App\Http\Controllers\Admin\ShiftController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +55,8 @@ Route::middleware('auth')->group(function () {
                 ->name('karyawan_shift.destroy');
 
             Route::resource('lokasi-kantor', LokasiKantorController::class)->except(['show']);
+
+            Route::resource('shift', ShiftController::class,);
         });
 
 

@@ -99,6 +99,7 @@
                         <table class="table table-bordered table-hover table-striped">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>Karyawan</th>
                                     <th>Shift</th>
                                     <th>Tanggal Mulai</th>
@@ -109,6 +110,7 @@
                             <tbody>
                                 @forelse ($data as $item)
                                     <tr>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->karyawan->user->nama }}</td>
                                         <td>
                                             {{ $item->shift->nama_shift }}

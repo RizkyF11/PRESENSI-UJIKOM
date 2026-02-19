@@ -42,14 +42,20 @@
                     <a href="{{ route('admin.dashboard') }}"><i class="fa fa-tachometer"></i><span>Dashboard</span></a>
                 </li>
 
+                <!-- GROUP MASTER DATA -->
                 <li class="header">Master Data</li>
                 <li class="{{ request()->is('admin/karyawan') || request()->is('admin/karyawan/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.karyawan.index') }}"><i class="fa fa-users"></i><span>Data Karyawan</span></a>
+                </li>
+                <li></li>
+                <li class="{{ request()->is('admin/shift') || request()->is('admin/shift/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.shift.index') }}"><i class="fa fa-clock-o"></i><span>Shift</span></a>
                 </li>
                 <li class="{{ request()->is('admin/lokasi-kantor') || request()->is('admin/lokasi-kantor/*') ? 'active' : '' }}">
                     <a href="{{ route('admin.lokasi-kantor.index') }}"><i class="fa fa-map-marker"></i><span>Lokasi Kantor</span></a>
                 </li>
 
+                <!-- GROUP ABSENSI -->
                 <li class="header">Absensi</li>
                 <li class="{{ request()->routeIs('admin.qrcode*') ? 'active' : '' }}">
                     <a href="{{ route('admin.qrcode.index') }}"><i class="fa fa-qrcode"></i><span>Generate QR Code</span></a>
