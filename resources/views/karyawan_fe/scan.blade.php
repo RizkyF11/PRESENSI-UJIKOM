@@ -1,73 +1,83 @@
 @extends('layouts.karyawan')
 
+@section('header-left')
+<div class="flex items-center w-full">
+    <!-- Tombol kembali yang langsung kembali ke dashboard karyawan -->
+    <a href="{{ route('karyawan.dashboard') }}" class="flex items-center gap-2 text-teal-600 hover:text-teal-700 font-bold" style="text-decoration: none;">
+        <div class="bg-teal-50 w-8 h-8 rounded-full flex items-center justify-center">
+            <span class="iconify" data-icon="heroicons:arrow-left" data-width="20"></span>
+        </div>
+    </a>
+    <h1 class="text-[16px] font-bold text-gray-800 ml-auto mr-auto pl-4 mb-0">Scan Absensi</h1>
+    <div class="w-20"></div> <!-- Placeholder space -->
+</div>
+@endsection
+
 @section('content')
-<div class="container-fluid">
-    <div class="row clearfix justify-content-center">
-        <div class="col-lg-6 col-md-8 col-sm-12">
-            <div class="card">
-                <div class="header text-center">
-                    <h2><strong>Scan QR Code</strong> Absensi</h2>
-                    <ul class="header-dropdown">
-                        <li class="dropdown">
-                            <a href="{{ route('karyawan.dashboard') }}" class="btn btn-secondary text-white"><i class="fa fa-arrow-left"></i></a>
-                        </li>
-                    </ul>
+<div class="container-fluid mb-4 px-2">
+    <div class="row justify-content-center">
+        <div class="col-12 mt-3">
+            <div class="card p-4 shadow-sm" style="border-radius: 20px;">
+                <div class="text-center mb-4">
+                    <h5 class="font-weight-bold text-gray-800 mb-1">Arahkan QR Code</h5>
+                    <p class="text-muted small">Pastikan QR Code berada pas di dalam kotak scan.</p>
                 </div>
-                <div class="body">
-                    <!-- CAMERA CONTAINER -->
-                    <style>
-                        #reader {
-                            width: 100% !important;
-                            border-radius: 20px;
-                            overflow: hidden;
-                            background: #000;
-                            position: relative;
-                            border: 4px solid #f4f7f6;
-                            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-                        }
 
-                        /* Memastikan video memenuhi kotak di HP */
-                        #reader video {
-                            object-fit: cover !important;
-                            width: 100% !important;
-                            height: auto !important;
-                            min-height: 300px;
-                        }
+                <!-- CAMERA CONTAINER -->
+                <style>
+                    #reader {
+                        width: 100% !important;
+                        border-radius: 16px;
+                        overflow: hidden;
+                        background: #000;
+                        position: relative;
+                        border: 3px solid #E5E7EB;
+                    }
 
-                        /* Sembunyikan tombol stop/start bawaan library yang mengganggu UI */
-                        #reader button {
-                            padding: 10px 20px;
-                            border-radius: 5px;
-                            border: none;
-                            background-color: #007bff;
-                            color: white;
-                            margin-top: 10px;
-                            cursor: pointer;
-                        }
+                    #reader video {
+                        object-fit: cover !important;
+                        width: 100% !important;
+                        min-height: 350px !important;
+                    }
 
-                        @media (max-width: 576px) {
-                            #reader {
-                                border-radius: 0;
-                                /* Full screen feel di HP */
-                            }
+                    #reader img {
+                        display: none !important;
+                    }
 
-                            .container-fluid {
-                                padding-left: 5px;
-                                padding-right: 5px;
-                            }
-                        }
-                    </style>
-                    <div class="text-center mb-3">
-                        <div id="reader"></div>
-                    </div>
+                    /* Memperbaiki tombol Start Scan bawaan library agar lebih bagus */
+                    #reader__dashboard_section_csr button {
+                        background-color: #4DB6AC;
+                        color: white !important;
+                        border: none;
+                        border-radius: 8px;
+                        padding: 10px 16px;
+                        font-weight: 600;
+                        margin-bottom: 10px;
+                        cursor: pointer;
+                        box-shadow: 0 2px 4px rgba(77, 182, 172, 0.4);
+                    }
 
-                    <div class="alert alert-warning text-center" role="alert">
-                        <i class="fa fa-info-circle"></i> Pastikan izin kamera dan lokasi diaktifkan.
-                    </div>
+                    #reader__dashboard_section_csr span {
+                        color: #fff !important;
+                    }
 
-                    <!-- Debug result -->
-                    <div id="result-message" class="alert d-none mt-2 text-center font-weight-bold"></div>
+                    #reader__dashboard_section_swaplink {
+                        color: #4DB6AC;
+                        text-decoration: none;
+                        font-weight: bold;
+                        margin-top: 10px;
+                        display: inline-block;
+                    }
+                </style>
+                <div id="reader"></div>
+
+                <div class="alert alert-info d-flex align-items-center mt-4 mb-0 border-0 shadow-sm" style="border-radius: 12px; font-size: 13px; background-color: #E0F2F1; color: #00796B;">
+                    <span class="iconify mr-2 h4 mb-0" style="color: #00796B;" data-icon="heroicons:information-circle-solid"></span>
+                    <span class="text-left font-weight-bold">Pastikan Akses Kamera & GPS/Lokasi perangkat telah DIIZINKAN (ALLOW).</span>
                 </div>
+
+                <!-- Debug result -->
+                <div id="result-message" class="alert d-none mt-3 text-center font-weight-bold shadow-sm" style="border-radius: 12px; font-size: 14px;"></div>
             </div>
         </div>
     </div>
@@ -87,9 +97,9 @@
             isProcessing = true;
 
             // Show processing
-            resultMessage.className = 'alert alert-info mt-2 text-center font-weight-bold';
+            resultMessage.className = 'alert alert-warning mt-3 text-center font-weight-bold shadow-sm';
             resultMessage.classList.remove('d-none');
-            resultMessage.innerText = 'Memproses data absensi...';
+            resultMessage.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> Memproses data absensi...';
 
             // Get Location
             if (navigator.geolocation) {
@@ -101,18 +111,22 @@
                         sendAbsensiData(decodedText, latitude, longitude);
                     },
                     (error) => {
-                        handleError('Gagal mendapatkan lokasi: ' + error.message);
+                        handleError('Gagal mendapatkan lokasi. Aktifkan GPS dan izinkan Akses!');
                         isProcessing = false;
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
                     }
                 );
             } else {
-                handleError('Browser tidak support Geolocation.');
+                handleError('Browser Anda tidak support Geolocation.');
                 isProcessing = false;
             }
         }
 
         function onScanFailure(error) {
-            // handle scan failure, usually better to ignore and keep scanning.
+            // Ignored, Keep scanning
         }
 
         function sendAbsensiData(qrData, lat, long) {
@@ -129,7 +143,6 @@
 
             let url = "{{ route('karyawan.scan.store') }}";
 
-            // Add CSRF Token
             const csrfToken = document.querySelector('meta[name="csrf-token"]') ?
                 document.querySelector('meta[name="csrf-token"]').getAttribute('content') :
                 "{{ csrf_token() }}";
@@ -149,17 +162,15 @@
                 })
                 .then(async response => {
                     const data = await response.json();
-
                     if (!response.ok) {
                         throw new Error(data.message || "Terjadi kesalahan");
                     }
-
                     return data;
                 })
                 .then(data => {
                     if (data.status === 'success') {
-                        resultMessage.className = 'alert alert-success mt-2 text-center font-weight-bold';
-                        resultMessage.innerHTML = `<strong>Berhasil!</strong> ${data.message} `;
+                        resultMessage.className = 'alert alert-success mt-3 text-center font-weight-bold shadow-sm';
+                        resultMessage.innerHTML = `<span class="iconify mr-1" data-icon="heroicons:check-circle" data-width="20"></span> Berhasil! ${data.message}`;
 
                         setTimeout(() => {
                             window.location.href = "{{ route('karyawan.dashboard') }}";
@@ -172,12 +183,14 @@
                 .catch(error => {
                     handleError(error.message);
                     console.error(error);
-                    isProcessing = false;
+                    setTimeout(() => {
+                        isProcessing = false;
+                    }, 2000);
                 });
         }
 
         function handleError(msg) {
-            resultMessage.className = 'alert alert-danger mt-2 text-center font-weight-bold';
+            resultMessage.className = 'alert alert-danger mt-3 text-center font-weight-bold shadow-sm';
             resultMessage.classList.remove('d-none');
             resultMessage.innerText = msg;
         }
@@ -187,7 +200,6 @@
             "reader", {
                 fps: 15,
                 qrbox: function(viewfinderWidth, viewfinderHeight) {
-                    // Responsif QR Box: 70% dari lebar layar HP
                     let minEdgePercentage = 0.7;
                     let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
                     let qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
@@ -197,9 +209,6 @@
                     };
                 },
                 aspectRatio: 1.0,
-                // videoConstraints: {
-                //     facingMode: { exact: "environment" }
-                // }
             },
             false
         );
@@ -207,5 +216,4 @@
     });
 </script>
 @endpush
-
 @endsection

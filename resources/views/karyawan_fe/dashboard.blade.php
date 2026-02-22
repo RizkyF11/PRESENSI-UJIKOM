@@ -1,169 +1,177 @@
 @extends('layouts.karyawan')
 
 @section('content')
-<div class="block-header">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card bg-gradient-primary text-white shadow-sm mb-3">
-                <div class="body d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                        <div class="profile-image mr-3">
-                            <img src="{{ asset('assets/images/user.png') }}" draggable="false" class="rounded-circle border border-white" alt="User" width="65">
-                        </div>
-                        <div>
-                            <h4 class="mb-0 font-weight-bold">{{ Auth::user()->nama }}</h4>
-                            <span class="text-light small">{{ Auth::user()->role ?? 'Karyawan' }}</span>
-                            <br>
-                            <span class="badge badge-light mt-1">{{ $tanggal }}</span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <a href="{{ route('logout') }}" class="icon-menu"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="fa fa-power-off"></i>
-                        </a>
 
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container-fluid">
-    <!-- INFO SHIFT & ACTION -->
-    <div class="row clearfix">
-        <div class="col-lg-8 col-md-12">
-            <div class="card bg-gradient-info text-white">
-                <div class="body">
-                    <div class="row align-items-center">
-                        <div class="col-md-7 col-sm-12">
-                            <h4 class="mb-0">Selamat Datang, {{ Auth::user()->name }}</h4>
-                            <p class="mb-2">Shift Anda hari ini:</p>
-                            @if($shiftHariIni)
-                            <h3 class="font-weight-bold mb-0">{{ $shiftHariIni->nama_shift }}</h3>
-                            <p class="mb-0"><i class="fa fa-clock-o"></i> {{ $shiftHariIni->jam_masuk }} - {{ $shiftHariIni->jam_keluar }} WIB</p>
-                            @else
-                            <h3 class="font-weight-bold mb-0">Libur / Tidak Ada Jadwal</h3>
-                            @endif
-                        </div>
-                        <div class="col-md-5 col-sm-12 text-md-right mt-3 mt-md-0">
-                            <a href="{{ route('karyawan.scan') }}" class="btn btn-light btn-lg btn-block text-primary font-weight-bold shadow">
-                                <i class="fa fa-qrcode mr-2"></i> SCAN ABSENSI
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="container-fluid pt-2">
+    <!-- WELCOME & SHIFT CARD -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px; background: linear-gradient(135deg, #4DB6AC 0%, #2C7A7B 100%); overflow: hidden; position: relative;">
+        <!-- Background Decoration -->
+        <div style="position: absolute; right: -20px; top: -20px; opacity: 0.1;">
+            <span class="iconify" data-icon="heroicons:calendar-days" data-width="150" style="color: white;"></span>
         </div>
 
-        <div class="col-lg-4 col-md-12">
-            <div class="card">
-                <div class="header pb-0">
-                    <h2><strong>Status</strong> Hari Ini</h2>
+        <div class="card-body p-4 position-relative z-10 text-white">
+            <h5 class="font-medium mb-1" style="font-size: 14px; color: rgba(255,255,255,0.8);">Selamat datang,</h5>
+            <h4 class="font-weight-bold mb-4">{{ Auth::user()->name ?? Auth::user()->nama }}</h4>
+
+            <div class="p-3" style="background-color: rgba(255,255,255,0.15); border-radius: 12px; backdrop-filter: blur(5px);">
+                <p class="mb-1" style="font-size: 12px; color: rgba(255,255,255,0.9);">Shift hari ini:</p>
+                @if($shiftHariIni)
+                <h5 class="font-weight-bold mb-1 text-white" style="font-size: 16px;">{{ $shiftHariIni->nama_shift ?? 'Jadwal Reguler' }}</h5>
+                <div class="d-flex align-items-center text-white">
+                    <span class="iconify mr-1" data-icon="heroicons:clock"></span>
+                    <span style="font-size: 13px;">{{ substr($shiftHariIni->jam_masuk, 0, 5) }} - {{ substr($shiftHariIni->jam_keluar, 0, 5) }} WIB</span>
                 </div>
-                <div class="body">
-                    <ul class="list-unstyled">
-                        <li class="mb-3">
-                            <small>Masuk:</small>
-                            <h5 class="mb-0 font-weight-bold text-success">
-                                {{ $absensiHariIni && $absensiHariIni->jam_masuk ? $absensiHariIni->jam_masuk : '--:--:--' }}
-                            </h5>
-                        </li>
-                        <li>
-                            <small>Keluar:</small>
-                            <h5 class="mb-0 font-weight-bold text-danger">
-                                {{ $absensiHariIni && $absensiHariIni->jam_keluar ? $absensiHariIni->jam_keluar : '--:--:--' }}
-                            </h5>
-                        </li>
-                    </ul>
-                </div>
+                @else
+                <h5 class="font-weight-bold mb-0 text-white" style="font-size: 14px;">
+                    <span class="iconify mr-1 align-middle" data-icon="heroicons:moon"></span> Libur / Tidak ada jadwal
+                </h5>
+                <p class="mb-0 mt-1" style="font-size: 11px; opacity: 0.8;">Selamat beristirahat!</p>
+                @endif
             </div>
         </div>
     </div>
 
-    <!-- NEW SECTIONS -->
-    <div class="row clearfix">
-        <!-- View Shift Schedule -->
-        <div class="col-lg-4 col-md-6">
-            <div class="card">
-                <div class="body text-center">
-                    <a href="#" class="btn btn-info btn-lg btn-block">
-                        <i class="fa fa-calendar"></i> Lihat Jadwal Shift
-                    </a>
+    <!-- STATUS ABSENSI HARI INI -->
+    <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+        <h6 class="font-weight-bold text-gray-800 mb-0" style="font-size: 14px;">Status Absensi</h6>
+        <span class="badge text-teal-600 bg-teal-50 px-2 py-1 font-weight-bold" style="border-radius: 6px; font-size: 11px;">
+            {{ \Carbon\Carbon::now()->translatedFormat('d M Y') }}
+        </span>
+    </div>
+
+    <div class="d-flex mb-4">
+        <!-- Card Masuk -->
+        <div class="card border-0 shadow-sm flex-fill mr-2" style="border-radius: 14px;">
+            <div class="card-body p-3 text-center">
+                <div class="icon-circle mb-2 mx-auto d-flex align-items-center justify-content-center bg-teal-50" style="width: 36px; height: 36px; border-radius: 50%;">
+                    <span class="iconify text-teal-500" data-icon="heroicons:arrow-right-end-on-rectangle" data-width="20"></span>
                 </div>
+                <p class="text-gray-500 mb-1 font-medium" style="font-size: 11px;">Jam Masuk</p>
+                <h5 class="font-weight-bold {{ $absensiHariIni && $absensiHariIni->jam_masuk ? 'text-teal-600' : 'text-gray-800' }} mb-0" style="font-size: 16px;">
+                    {{ $absensiHariIni && $absensiHariIni->jam_masuk ? substr($absensiHariIni->jam_masuk, 0, 5) : '--:--' }}
+                </h5>
             </div>
         </div>
 
-        <!-- View Absence History -->
-        <div class="col-lg-4 col-md-6">
-            <div class="card">
-                <div class="body text-center">
-                    <a href="#" class="btn btn-warning btn-lg btn-block">
-                        <i class="fa fa-history"></i> Riwayat Absensi
-                    </a>
+        <!-- Card Keluar -->
+        <div class="card border-0 shadow-sm flex-fill ml-2" style="border-radius: 14px;">
+            <div class="card-body p-3 text-center">
+                <div class="icon-circle mb-2 mx-auto d-flex align-items-center justify-content-center bg-red-50" style="width: 36px; height: 36px; border-radius: 50%;">
+                    <span class="iconify text-red-500" data-icon="heroicons:arrow-left-start-on-rectangle" data-width="20"></span>
                 </div>
-            </div>
-        </div>
-
-        <!-- Leave Request -->
-        <div class="col-lg-4 col-md-6">
-            <div class="card">
-                <div class="body text-center">
-                    <a href="#" class="btn btn-success btn-lg btn-block">
-                        <i class="fa fa-envelope"></i> Pengajuan Izin / Cuti
-                    </a>
-                </div>
+                <p class="text-gray-500 mb-1 font-medium" style="font-size: 11px;">Jam Keluar</p>
+                <h5 class="font-weight-bold {{ $absensiHariIni && $absensiHariIni->jam_keluar ? 'text-red-500' : 'text-gray-800' }} mb-0" style="font-size: 16px;">
+                    {{ $absensiHariIni && $absensiHariIni->jam_keluar ? substr($absensiHariIni->jam_keluar, 0, 5) : '--:--' }}
+                </h5>
             </div>
         </div>
     </div>
 
-    <!-- STATISTIK -->
-    <div class="row clearfix">
-        <div class="col-lg-3 col-md-6 col-sm-6 col-6">
-            <div class="card" style="border-radius: 15px;">
-                <div class="body text-center">
-                    <div class="icon-in-bg bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 45px; height: 45px;">
-                        <i class="fa fa-check"></i>
+    <!-- MAIN MENU SEC -->
+    <h6 class="font-weight-bold text-gray-800 mb-2 px-1" style="font-size: 14px;">Menu Cepat</h6>
+    <div class="d-flex overflow-auto no-scrollbar mb-4 px-1" style="gap: 12px; padding-bottom: 5px;">
+        <!-- Jadwal Shift -->
+        <a href="#" class="text-decoration-none flex-shrink-0" style="width: 100px;">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-body p-3 text-center d-flex flex-column align-items-center justify-content-center">
+                    <div class="text-blue-500 mb-2 flex items-center justify-center bg-blue-50 rounded-full" style="width:40px;height:40px;">
+                        <span class="iconify" data-icon="heroicons:calendar" data-width="20"></span>
                     </div>
-                    <span>Hadir</span>
-                    <h4 class="mb-0 font-weight-bold">{{ $stats['hadir'] ?? 0 }}</h4>
+                    <span class="text-gray-700 font-medium" style="font-size: 10px; line-height: 1.2;">Jadwal Shift</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- Riwayat Absensi -->
+        <a href="#" class="text-decoration-none flex-shrink-0" style="width: 100px;">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-body p-3 text-center d-flex flex-column align-items-center justify-content-center">
+                    <div class="text-yellow-500 mb-2 flex items-center justify-center bg-yellow-50 rounded-full" style="width:40px;height:40px;">
+                        <span class="iconify" data-icon="heroicons:document-text" data-width="20"></span>
+                    </div>
+                    <span class="text-gray-700 font-medium" style="font-size: 10px; line-height: 1.2;">Riwayat Absensi</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- Pengajuan Izin -->
+        <a href="#" class="text-decoration-none flex-shrink-0" style="width: 100px;">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-body p-3 text-center d-flex flex-column align-items-center justify-content-center">
+                    <div class="text-green-500 mb-2 flex items-center justify-center bg-green-50 rounded-full" style="width:40px;height:40px;">
+                        <span class="iconify" data-icon="heroicons:envelope-open" data-width="20"></span>
+                    </div>
+                    <span class="text-gray-700 font-medium" style="font-size: 10px; line-height: 1.2;">Pengajuan Izin</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- Pengajuan Cuti (Baru) -->
+        <a href="#" class="text-decoration-none flex-shrink-0" style="width: 100px;">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-body p-3 text-center d-flex flex-column align-items-center justify-content-center">
+                    <div class="text-purple-500 mb-2 flex items-center justify-center bg-purple-50 rounded-full" style="width:40px;height:40px;">
+                        <span class="iconify" data-icon="heroicons:paper-airplane" data-width="20"></span>
+                    </div>
+                    <span class="text-gray-700 font-medium" style="font-size: 10px; line-height: 1.2;">Pengajuan Cuti</span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- STATISTIK BULANAN -->
+    <h6 class="font-weight-bold text-gray-800 mb-2 px-1" style="font-size: 14px;">Statistik Bulan Ini</h6>
+    <div class="row px-1">
+        <div class="col-6 px-1 mb-2">
+            <div class="card border-0 shadow-sm bg-white" style="border-radius: 12px;">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="mr-3 bg-teal-50 flex items-center justify-center rounded-lg" style="width: 38px; height: 38px;">
+                        <span class="iconify text-teal-500" data-icon="heroicons:check-badge" data-width="22"></span>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs mb-0 font-medium" style="font-size: 10px;">Hadir</p>
+                        <h6 class="font-weight-bold text-gray-800 mb-0" style="font-size: 15px;">{{ $stats['hadir'] ?? 0 }}</h6>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 col-6">
-            <div class="card" style="border-radius: 15px;">
-                <div class="body text-center">
-                    <div class="icon-in-bg bg-warning text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 45px; height: 45px;">
-                        <i class="fa fa-clock-o"></i>
+        <div class="col-6 px-1 mb-2">
+            <div class="card border-0 shadow-sm bg-white" style="border-radius: 12px;">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="mr-3 bg-yellow-50 flex items-center justify-center rounded-lg" style="width: 38px; height: 38px;">
+                        <span class="iconify text-yellow-500" data-icon="heroicons:exclamation-triangle" data-width="22"></span>
                     </div>
-                    <span>Terlambat</span>
-                    <h4 class="mb-0 font-weight-bold">{{ $stats['terlambat'] ?? 0 }}</h4>
+                    <div>
+                        <p class="text-gray-500 text-xs mb-0 font-medium" style="font-size: 10px;">Terlambat</p>
+                        <h6 class="font-weight-bold text-gray-800 mb-0" style="font-size: 15px;">{{ $stats['terlambat'] ?? 0 }}</h6>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 col-6">
-            <div class="card" style="border-radius: 15px;">
-                <div class="body text-center">
-                    <div class="icon-in-bg bg-info text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 45px; height: 45px;">
-                        <i class="fa fa-envelope-o"></i>
+        <div class="col-6 px-1 mb-2">
+            <div class="card border-0 shadow-sm bg-white" style="border-radius: 12px;">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="mr-3 bg-blue-50 flex items-center justify-center rounded-lg" style="width: 38px; height: 38px;">
+                        <span class="iconify text-blue-500" data-icon="heroicons:information-circle" data-width="22"></span>
                     </div>
-                    <span>Izin/Sakit</span>
-                    <h4 class="mb-0 font-weight-bold">{{ $stats['izin_sakit'] ?? 0 }}</h4>
+                    <div>
+                        <p class="text-gray-500 text-xs mb-0 font-medium" style="font-size: 10px;">Izin/Sakit</p>
+                        <h6 class="font-weight-bold text-gray-800 mb-0" style="font-size: 15px;">{{ $stats['izin_sakit'] ?? 0 }}</h6>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 col-6">
-            <div class="card" style="border-radius: 15px;">
-                <div class="body text-center">
-                    <div class="icon-in-bg bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 45px; height: 45px;">
-                        <i class="fa fa-times"></i>
+        <div class="col-6 px-1 mb-2">
+            <div class="card border-0 shadow-sm bg-white" style="border-radius: 12px;">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="mr-3 bg-red-50 flex items-center justify-center rounded-lg" style="width: 38px; height: 38px;">
+                        <span class="iconify text-red-500" data-icon="heroicons:x-circle" data-width="22"></span>
                     </div>
-                    <span>Alpha</span>
-                    <h4 class="mb-0 font-weight-bold">{{ $stats['alpha'] ?? 0 }}</h4>
+                    <div>
+                        <p class="text-gray-500 text-xs mb-0 font-medium" style="font-size: 10px;">Alpha</p>
+                        <h6 class="font-weight-bold text-gray-800 mb-0" style="font-size: 15px;">{{ $stats['alpha'] ?? 0 }}</h6>
+                    </div>
                 </div>
             </div>
         </div>
