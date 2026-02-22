@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Models\Absensi;
+use App\Models\Karyawan;
+use Carbon\Carbon;
+use Illuminate\Console\Command;
+
+class GenerateAlpha extends Command
+{
+
+    protected $signature = 'absensi:generate-alpha';
+    protected $description = 'Generate alpha otomatis berdasarkan dengan shift aktif';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle()
+    {
+        $now = Carbon::now();
+
+        $karyawanList = Karyawan::with(['shift' => function ($q) use ($now) {
+            $q->wherePivot('tanggal_mulai', '<=', $now->toDateString())
+                ->where(function ($query) use ($now) {
+                    $query->wherePivot('tanggal_selesai', '>=', $now->toDateString())
+                        ->orWhereNull('tanggal_selesai');
+                });
+        }])->get();
+
+        foreach ($karyawanList as $karyawan) {
+
+            $shift = $karyawan->shift->first();
+
+            if (!$shift) {
+                continue;
+            }
+
+            $jamMasuk  = Carbon::parse($shift->jam_masuk);
+            $jamKeluar = Carbon::parse($shift->jam_keluar);
+
+            // ==========================
+            // DETEKSI SHIFT LINTAS HARI
+            // ==========================
+            $isShiftMalam = $jamKeluar->lessThan($jamMasuk);
+
+            //tentukan tanggal kerja
+            $tanggalKerja = $now->copy()->startOfDay();
+
+            if ($isShiftMalam) {
+                //jika sekarang setelah midnight tapi sebelum jam keluar
+                if ($now->format('H:i:s') <= $shift->jam_keluar) {
+                    $tanggalKerja = $now->copy()->subDay()->startOfDay();
+                }
+            }
+
+            // buat datetime batas alpha
+            $batasAlpha = Carbon::parse(
+                $tanggalKerja->format('Y-m-d') . ' ' . $shift->jam_keluar
+            );
+
+            if ($isShiftMalam) {
+                $batasAlpha->addDay();
+            }
+
+            $batasAlpha->addMinutes($shift->toleransi_menit);
+
+            // Kalau belum lewat batas → skip
+            if ($now->lessThan($batasAlpha)) {
+                continue;
+            }
+
+            // ==========================
+            // CEK SUDAH ADA ABSENSI?
+            // ==========================
+            $sudahAbsen = Absensi::where('laruawan_id', $karyawan->id)
+                ->whereDate('tanggal', $tanggalKerja->toDateString())
+                ->exists();
+
+            if ($sudahAbsen) {
+                continue;
+            }
+
+            // ==========================
+            // INSERT ALPHA
+            // ==========================
+            Absensi::create([
+                'karyawan_id' => $karyawan->id,
+                'shift_id'    => $shift->id,
+                'tanggal'     => $tanggalKerja,
+            ]);
+        }
+
+        $this->info('Generate alpha berhasil dijalankan.');
+    }
+}

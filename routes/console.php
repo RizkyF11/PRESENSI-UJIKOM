@@ -9,3 +9,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('qr:cleanup')->daily();
+
+Schedule::command('absensi:generate-alpha')
+    ->everyMinute(); // production bisa dailyAt('23:59')
