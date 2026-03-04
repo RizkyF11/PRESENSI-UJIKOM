@@ -63,6 +63,9 @@
                 <li class="{{ request()->routeIs('admin.karyawan_shift*') ? 'active' : '' }}">
                     <a href="{{ route('admin.karyawan_shift.index') }}"><i class="fa fa-list-alt"></i><span>Assign Shift</span></a>
                 </li>
+                 <li class="{{ request()->routeIs('admin.absensi*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.absensi.index') }}"><i class="fa fa-list-alt"></i><span>Riwayat Absensi</span></a>
+                </li>
             </ul>
         </nav>
     </div>

@@ -44,7 +44,7 @@ class AdminQrController extends Controller
                 'kode' => $kodeUnik,
                 'tipe' => $tipe,
                 'is_active' => true,
-                'expired_at' => now()->addSecond(25), // dilebihkan sedikit untuk buffering
+                'expired_at' => now()->addSecond(65), // dilebihkan sedikit untuk buffering
             ]);
 
             // bungkus payload qr, tambahkan tipe

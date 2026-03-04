@@ -27,53 +27,150 @@
                 <style>
                     #reader {
                         width: 100% !important;
-                        border-radius: 16px;
+                        border-radius: 20px;
                         overflow: hidden;
-                        background: #000;
+                        background: #1a1a1a;
+                        border: none !important;
                         position: relative;
-                        border: 3px solid #E5E7EB;
+                    }
+
+                    #reader * {
+                        border: none !important;
                     }
 
                     #reader video {
+                        border: none !important;
+                        border-radius: 20px !important;
                         object-fit: cover !important;
-                        width: 100% !important;
-                        min-height: 350px !important;
                     }
 
-                    #reader img {
+                    #reader__scan_region {
+                        border: none !important;
+                    }
+
+                    #reader__scan_region div {
+                        border: none !important;
+                    }
+
+                    #reader__scan_region svg {
                         display: none !important;
                     }
 
-                    /* Memperbaiki tombol Start Scan bawaan library agar lebih bagus */
-                    #reader__dashboard_section_csr button {
-                        background-color: #4DB6AC;
-                        color: white !important;
-                        border: none;
-                        border-radius: 8px;
-                        padding: 10px 16px;
-                        font-weight: 600;
-                        margin-bottom: 10px;
-                        cursor: pointer;
-                        box-shadow: 0 2px 4px rgba(77, 182, 172, 0.4);
+                    /* 2. MENGHILANGKAN SEMUA TEKS & TOMBOL BAWAAN */
+                    #reader__dashboard_section_csr,
+                    #reader__dashboard_section_swaplink,
+                    #reader__status_span,
+                    #reader__header_message {
+                        display: none !important;
                     }
 
-                    #reader__dashboard_section_csr span {
-                        color: #fff !important;
+                    /* Kotak Overlay Custom */
+                    .qr-scanner-overlay {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 10;
+                        pointer-events: none;
                     }
 
-                    #reader__dashboard_section_swaplink {
-                        color: #4DB6AC;
-                        text-decoration: none;
-                        font-weight: bold;
-                        margin-top: 10px;
-                        display: inline-block;
+                    .scanner-box {
+                        width: 220px;
+                        height: 220px;
+                        position: relative;
+                        /* Efek gelap transparan di luar kotak */
+                        box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.5);
+                        border-radius: 5px;
+                        z-index: 11;
+                    }
+
+                    /* Sudut-sudut kotak yang lebih tebal */
+                    .scanner-box::before,
+                    .scanner-box::after,
+                    .scanner-corner-bottom::before,
+                    .scanner-corner-bottom::after {
+                        content: "";
+                        position: absolute;
+                        width: 20px;
+                        height: 20px;
+                        border: 4px solid #4DB6AC;
+                    }
+
+                    .scanner-box::before {
+                        top: -2px;
+                        left: -2px;
+                        border-right: 0;
+                        border-bottom: 0;
+                        border-top-left-radius: 12px;
+                    }
+
+                    .scanner-box::after {
+                        top: -2px;
+                        right: -2px;
+                        border-left: 0;
+                        border-bottom: 0;
+                        border-top-right-radius: 12px;
+                    }
+
+                    .scanner-corner-bottom::before {
+                        bottom: -2px;
+                        left: -2px;
+                        border-right: 0;
+                        border-top: 0;
+                        border-bottom-left-radius: 12px;
+                    }
+
+                    .scanner-corner-bottom::after {
+                        bottom: -2px;
+                        right: -2px;
+                        border-left: 0;
+                        border-top: 0;
+                        border-bottom-right-radius: 12px;
+                    }
+
+                    /* Animasi Garis Laser */
+                    .scan-line {
+                        position: absolute;
+                        left: 10%;
+                        width: 80%;
+                        height: 3px;
+                        background: linear-gradient(to right, transparent, #4DB6AC, transparent);
+                        box-shadow: 0 0 15px 2px rgba(77, 182, 172, 0.6);
+                        animation: scanAnim 2.5s ease-in-out infinite;
+                    }
+
+                    @keyframes scanAnim {
+                        0% {
+                            top: 15%;
+                        }
+
+                        50% {
+                            top: 85%;
+                        }
+
+                        100% {
+                            top: 15%;
+                        }
                     }
                 </style>
-                <div id="reader"></div>
+                <div class="position-relative overflow-hidden" style="border-radius: 20px;">
+                    <div id="reader"></div>
+
+                    <div class="qr-scanner-overlay">
+                        <div class="scanner-box">
+                            <div class="scan-line"></div>
+                            <div class="scanner-corner-bottom"></div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="alert alert-info d-flex align-items-center mt-4 mb-0 border-0 shadow-sm" style="border-radius: 12px; font-size: 13px; background-color: #E0F2F1; color: #00796B;">
                     <span class="iconify mr-2 h4 mb-0" style="color: #00796B;" data-icon="heroicons:information-circle-solid"></span>
-                    <span class="text-left font-weight-bold">Pastikan Akses Kamera & GPS/Lokasi perangkat telah DIIZINKAN (ALLOW).</span>
+                    <span class="text-left font-weight-bold">Pastikan Akses Kamera & GPS/Lokasi perangkat telah DIIZINKAN</span>
                 </div>
 
                 <!-- Debug result -->
@@ -196,24 +293,35 @@
         }
 
         // Initialize Scanner
-        const html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader", {
-                fps: 15,
-                qrbox: function(viewfinderWidth, viewfinderHeight) {
-                    let minEdgePercentage = 0.7;
-                    let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
-                    let qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
-                    return {
-                        width: qrboxSize,
-                        height: qrboxSize
-                    };
-                },
-                aspectRatio: 1.0,
+        // Initialize Scanner (Manual Mode - No UI Camera Selection)
+        const html5QrCode = new Html5Qrcode("reader");
+
+        const config = {
+            fps: 25,
+            qrbox: {
+                width: 250,
+                height: 250
             },
-            false
-        );
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+            aspectRatio: 1.0
+        };
+
+        // Langsung jalankan kamera belakang (facingMode: environment)
+        html5QrCode.start({
+                facingMode: "environment"
+            },
+            config,
+            onScanSuccess,
+            onScanFailure
+        ).catch((err) => {
+            handleError("Gagal akses kamera: " + err);
+        });
+
+        // Pastikan kamera berhenti jika user meninggalkan halaman (opsional tapi disarankan)
+        window.addEventListener('beforeunload', () => {
+            html5QrCode.stop();
+        });
     });
+</script>
 </script>
 @endpush
 @endsection

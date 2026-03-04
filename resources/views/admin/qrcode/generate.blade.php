@@ -46,7 +46,7 @@
                                         <div class="mt-4">
 
                                             <p>Expired pada: <span id="expired-at-masuk" class="text-danger">-</span></p>
-                                            <p class="text-muted"><small>Refresh otomatis dalam: <b><span id="countdown-masuk">25</span></b> detik</small></p>
+                                            <p class="text-muted"><small>Refresh otomatis dalam: <b><span id="countdown-masuk">60</span></b> detik</small></p>
                                         </div>
 
                                         <div class="progress mt-3" style="height: 5px;">
@@ -75,7 +75,7 @@
                                         <div class="mt-4">
 
                                             <p>Expired pada: <span id="expired-at-keluar" class="text-danger">-</span></p>
-                                            <p class="text-muted"><small>Refresh otomatis dalam: <b><span id="countdown-keluar">25</span></b> detik</small></p>
+                                            <p class="text-muted"><small>Refresh otomatis dalam: <b><span id="countdown-keluar">60</span></b> detik</small></p>
                                         </div>
 
                                         <div class="progress mt-3" style="height: 5px;">
@@ -98,7 +98,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // --- LOGIC QR MASUK ---
         let timerIntervalMasuk;
-        let countdownMasuk = 25; // Default seconds
+        let countdownMasuk = 60; // Default seconds
 
         function fetchQrMasuk() {
             fetch("{{ route('admin.qrcode.generate', ['tipe' => 'masuk']) }}")
@@ -110,7 +110,7 @@
                         document.getElementById('expired-at-masuk').textContent = data.expired_at;
 
                         // Restart countdown
-                        startCountdownMasuk(25);
+                        startCountdownMasuk(60);
                     } else {
                         console.error('Error generating QR Masuk:', data.message);
                         // Retry after 5 seconds on logic error
@@ -154,7 +154,7 @@
 
         // --- LOGIC QR KELUAR ---
         let timerIntervalKeluar;
-        let countdownKeluar = 25;
+        let countdownKeluar = 60;
 
         function fetchQrKeluar() {
             fetch("{{ route('admin.qrcode.generate', ['tipe' => 'keluar']) }}")
@@ -165,7 +165,7 @@
 
                         document.getElementById('expired-at-keluar').textContent = data.expired_at;
 
-                        startCountdownKeluar(25);
+                        startCountdownKeluar(60);
                     } else {
                         console.error('Error generating QR Keluar:', data.message);
                         startCountdownKeluar(5);

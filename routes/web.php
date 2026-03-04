@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AbsensiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\AdminQrController;
@@ -41,10 +42,14 @@ Route::middleware('auth')->group(function () {
                 return view('admin.dashboard'); // Arahkan ke view dashboard admin kamu
             })->name('dashboard'); // Karena ada ->as('admin.'), ini otomatis jadi admin.dashboard
 
+            // Resource Controller untuk Karyawan
             Route::resource('karyawan', KaryawanController::class);
+
+            // Route QR Code
             Route::get('/qrcode', [AdminQrController::class, 'index'])->name('qrcode.index');
             Route::get('/qrcode/generate', [AdminQrController::class, 'generate'])->name('qrcode.generate');
 
+            // Route pivot karyawan Shift
             Route::get('karyawan-shift', [KaryawanShiftController::class, 'index'])
                 ->name('karyawan_shift.index');
 
@@ -54,9 +59,16 @@ Route::middleware('auth')->group(function () {
             Route::delete('karyawan-shift/{id}', [KaryawanShiftController::class, 'destroy'])
                 ->name('karyawan_shift.destroy');
 
+            // Route Lokasi Kantor
             Route::resource('lokasi-kantor', LokasiKantorController::class)->except(['show']);
 
-            Route::resource('shift', ShiftController::class,);
+            // Route Shift
+            Route::resource('shift', ShiftController::class);
+
+            // Route Absensi
+            Route::get('absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+            Route::delete('absensi/{id}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
+            Route::delete('absensi-delete-all', [AbsensiController::class, 'destroyAll'])->name('absensi.destroyAll');
         });
 
 

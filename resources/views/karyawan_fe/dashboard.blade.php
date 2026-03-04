@@ -156,8 +156,8 @@
                         <span class="iconify text-blue-500" data-icon="heroicons:information-circle" data-width="22"></span>
                     </div>
                     <div>
-                        <p class="text-gray-500 text-xs mb-0 font-medium" style="font-size: 10px;">Izin/Sakit</p>
-                        <h6 class="font-weight-bold text-gray-800 mb-0" style="font-size: 15px;">{{ $stats['izin_sakit'] ?? 0 }}</h6>
+                        <p class="text-gray-500 text-xs mb-0 font-medium" style="font-size: 10px;">Izin</p>
+                        <h6 class="font-weight-bold text-gray-800 mb-0" style="font-size: 15px;">{{ $stats['izin'] ?? 0 }}</h6>
                     </div>
                 </div>
             </div>
