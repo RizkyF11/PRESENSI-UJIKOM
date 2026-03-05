@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('izin', function (Blueprint $table) {
             $table->id();
             $table->foreignId('karyawan_id')->constrained('karyawan')->cascadeOnDelete();
-            $table->date('tanggal');    
+            $table->date('tanggal_mulai');    
+            $table->date('tanggal_selesai');    
             $table->text('alasan');
-            $table->enum('status', ['pending', 'disetujui', 'ditolak']);
+            $table->enum('status', ['pending', 'approved', 'reject']);
             $table->timestamps();
         }); 
     }

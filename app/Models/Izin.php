@@ -24,6 +24,6 @@ class Izin extends Model
         return $this->belongsTo(Karyawan::class);
     }
 
-    // Izin terhubung ke 1 absensi
+    
    
 }

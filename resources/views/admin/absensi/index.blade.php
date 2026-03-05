@@ -114,70 +114,81 @@
                             @forelse ($absensi as $item)
 
                             @php
-                            $status = 'Hadir';
+                            $status = 'Alpha';
 
-                            if(isset($izin[$item->karyawan_id][\Carbon\Carbon::parse($item->tanggal)->format('Y-m-d')])) {
-                            $status = 'Izin';
-                            }
-                            elseif($cuti->where('karyawan_id', $item->karyawan_id)
-                            ->where('tanggal_mulai', '<=', $item->tanggal)
+                            if($izin->where('karyawan_id', $item->karyawan_id)
+                                ->where('tanggal_mulai', '<=', $item->tanggal)
                                 ->where('tanggal_selesai', '>=', $item->tanggal)
                                 ->count()) {
-                                $status = 'Cuti';
-                                }
-                                elseif(is_null($item->jam_masuk) && is_null($item->jam_keluar)) {
-                                $status = 'Alpha';
-                                }
-                                elseif($item->status_masuk === 'terlambat') {
-                                $status = 'Terlambat';
-                                }
-                                @endphp
 
-                                <tr>
-                                    <td>
-                                        {{ $loop->iteration + ($absensi->currentPage() - 1) * $absensi->perPage() }}
-                                    </td>
-                                    <td>{{ $item->karyawan->user->nama ?? '-' }}</td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
-                                    </td>
-                                    <td>{{ $item->jam_masuk ?? '-' }}</td>
-                                    <td>{{ $item->jam_keluar ?? '-' }}</td>
-                                    <td>
-                                        @if($status == 'Hadir')
-                                        <span class="badge badge-success">Hadir</span>
-                                        @elseif($status == 'Terlambat')
-                                        <span class="badge badge-warning">Terlambat</span>
-                                        @elseif($status == 'Alpha')
-                                        <span class="badge badge-danger">Alpha</span>
-                                        @elseif($status == 'Izin')
-                                        <span class="badge badge-info">Izin</span>
-                                        @elseif($status == 'Cuti')
-                                        <span class="badge badge-secondary">Cuti</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $item->shift->nama_shift ?? '-' }}</td>
-                                    <td>
-                                        <form action="{{ route('admin.absensi.destroy', $item->id) }}"
-                                            method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Yakin ingin menghapus data ini?')">
-                                                Hapus
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                $status = 'Izin';
 
-                                @empty
-                                <tr>
-                                    <td colspan="8" class="text-center">
-                                        Data tidak ditemukan
-                                    </td>
-                                </tr>
-                                @endforelse
+                                }
+                                elseif($cuti->where('karyawan_id', $item->karyawan_id)
+                                    ->where('tanggal_mulai', '<=', $item->tanggal)
+                                    ->where('tanggal_selesai', '>=', $item->tanggal)
+                                    ->count()) {
+
+                                    $status = 'Cuti';
+
+                                    }
+                                    elseif($item->status_masuk === 'terlambat') {
+
+                                    $status = 'Terlambat';
+
+                                    }
+                                    elseif(!is_null($item->jam_masuk)) {
+
+                                    $status = 'Hadir';
+
+                                    }
+                                    @endphp
+
+                                    <tr>
+                                        <td>
+                                            {{ $loop->iteration + ($absensi->currentPage() - 1) * $absensi->perPage() }}
+                                        </td>
+                                        <td>{{ $item->karyawan->user->nama ?? '-' }}</td>
+                                        <td>
+                                            {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
+                                        </td>
+                                        <td>{{ $item->jam_masuk ?? '-' }}</td>
+                                        <td>{{ $item->jam_keluar ?? '-' }}</td>
+                                        <td>
+                                            @if($status == 'Hadir')
+                                            <span class="badge badge-success">Hadir</span>
+                                            @elseif($status == 'Terlambat')
+                                            <span class="badge badge-warning">Terlambat</span>
+                                            @elseif($status == 'Alpha')
+                                            <span class="badge badge-danger">Alpha</span>
+                                            @elseif($status == 'Izin')
+                                            <span class="badge badge-info">Izin</span>
+                                            @elseif($status == 'Cuti')
+                                            <span class="badge badge-secondary">Cuti</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $item->shift->nama_shift ?? '-' }}</td>
+                                        <td>
+                                            <form action="{{ route('admin.absensi.destroy', $item->id) }}"
+                                                method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+
+                                    @empty
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            Data tidak ditemukan
+                                        </td>
+                                    </tr>
+                                    @endforelse
                         </tbody>
                     </table>
                 </div>

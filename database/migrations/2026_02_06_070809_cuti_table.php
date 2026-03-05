@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->text('alasan');
-            $table->enum('status', ['pending', 'disetujui', 'ditolak']);
+            $table->enum('status', ['pending', 'approved', 'reject']);
             $table->timestamps();
         });
     }

@@ -45,16 +45,15 @@ class AbsensiController extends Controller
 
         // Izin
         $izin = Izin::where('status', 'approved')
-            ->whereBetween('tanggal', [$tanggalMulai, $tanggalSelesai])
-            ->get()
-            ->groupBy(function ($item) {
-                return $item->karyawan_id;
+            ->where(function ($q) use ($tanggalMulai, $tanggalSelesai) {
+                $q->whereBetween('tanggal_mulai', [$tanggalMulai, $tanggalSelesai])
+                    ->orWhereBetween('tanggal_selesai', [$tanggalMulai, $tanggalSelesai])
+                    ->orWhere(function ($q2) use ($tanggalMulai, $tanggalSelesai) {
+                        $q2->where('tanggal_mulai', '<=', $tanggalMulai)
+                            ->where('tanggal_selesai', '>=', $tanggalSelesai);
+                    });
             })
-            ->map(function ($group) {
-                return $group->keyBy(function ($item) {
-                    return \Carbon\Carbon::parse($item->tanggal)->format('Y-m-d');
-                });
-            });
+            ->get();
 
         $cuti = Cuti::where('status', 'approved')
             ->where(function ($q) use ($tanggalMulai, $tanggalSelesai) {

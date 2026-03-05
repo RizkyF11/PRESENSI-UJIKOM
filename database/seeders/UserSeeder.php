@@ -27,8 +27,8 @@ class UserSeeder extends Seeder
          * KARYAWAN (DUMMY)
          * =========================
          */
-        User::factory(10)->create([
-            'role' => 'karyawan',
-        ]);
+        // User::factory(10)->create([
+        //     'role' => 'karyawan',
+        // ]);
     }
 }
