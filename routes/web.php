@@ -69,6 +69,10 @@ Route::middleware('auth')->group(function () {
             Route::get('absensi', [AbsensiController::class, 'index'])->name('absensi.index');
             Route::delete('absensi/{id}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
             Route::delete('absensi-delete-all', [AbsensiController::class, 'destroyAll'])->name('absensi.destroyAll');
+
+            //export excel
+            Route::get('absensi/export', [AbsensiController::class, 'export'])
+                ->name('absensi.export');
         });
 
 

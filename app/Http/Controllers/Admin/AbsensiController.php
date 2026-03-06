@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\RekapAbsensiExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Absensi;
@@ -118,5 +120,29 @@ class AbsensiController extends Controller
 
         return redirect()->route('admin.absensi.index')
             ->with('success', $jumlah . " data absensi berhasil dihapus.");
+    }
+
+    public function export(Request $request)
+    {
+        // VALIDASI
+        if (!$request->filled('tanggal_mulai') || !$request->filled('tanggal_selesai')) {
+            return redirect()->back()->with('error', 'Tanggal harus dipilih terlebih dahulu');
+        }
+        
+        $tanggalMulai = $request->tanggal_mulai;
+        $tanggalSelesai = $request->tanggal_selesai;
+        $karyawanId = $request->karyawan_id;
+
+
+        $namaFile = 'rekap-absensi-' .
+            Carbon::parse($tanggalMulai)->format('d-m-Y') .
+            '_sampai_' .
+            Carbon::parse($tanggalSelesai)->format('d-m-Y') .
+            '.xlsx';
+
+        return Excel::download(
+            new RekapAbsensiExport($tanggalMulai, $tanggalSelesai, $karyawanId),
+            $namaFile
+        );
     }
 }

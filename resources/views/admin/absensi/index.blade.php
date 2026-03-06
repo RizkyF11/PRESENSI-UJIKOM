@@ -28,7 +28,7 @@
             <div class="body">
 
                 {{-- FILTER --}}
-                <form method="GET" class="mb-4">
+                <form method="GET" action="{{ route('admin.absensi.index') }}" class="mb-4">
                     <div class="row">
 
                         <div class="col-md-3">
@@ -68,6 +68,21 @@
                         </div>
                     </div>
                 </form>
+
+
+                @if(request()->filled('tanggal_mulai') && request()->filled('tanggal_selesai'))
+                <form action="{{ route('admin.absensi.export') }}" method="GET" class="mb-4">
+
+                    <input type="hidden" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}">
+                    <input type="hidden" name="tanggal_selesai" value="{{ request('tanggal_selesai') }}">
+                    <input type="hidden" name="karyawan_id" value="{{ request('karyawan_id') }}">
+
+                    <button class="btn btn-success">
+                        <i class="fa fa-file-excel-o"></i> Export Rekap Excel
+                    </button>
+
+                </form>
+                @endif
 
                 {{-- HAPUS MASSAL SESUAI FILTER --}}
                 <form action="{{ route('admin.absensi.destroyAll') }}" method="POST"
@@ -117,7 +132,7 @@
                             $status = 'Alpha';
 
                             if($izin->where('karyawan_id', $item->karyawan_id)
-                                ->where('tanggal_mulai', '<=', $item->tanggal)
+                            ->where('tanggal_mulai', '<=', $item->tanggal)
                                 ->where('tanggal_selesai', '>=', $item->tanggal)
                                 ->count()) {
 
@@ -125,7 +140,7 @@
 
                                 }
                                 elseif($cuti->where('karyawan_id', $item->karyawan_id)
-                                    ->where('tanggal_mulai', '<=', $item->tanggal)
+                                ->where('tanggal_mulai', '<=', $item->tanggal)
                                     ->where('tanggal_selesai', '>=', $item->tanggal)
                                     ->count()) {
 
@@ -195,7 +210,7 @@
 
                 {{-- PAGINATION --}}
                 <div class="mt-3">
-                    {{ $absensi->links() }}
+                   {{ $absensi->appends(request()->query())->links() }}
                 </div>
 
             </div>
