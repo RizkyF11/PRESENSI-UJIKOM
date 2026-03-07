@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\Absensi;
+use App\Models\Cuti;
+use App\Models\Izin;
 use App\Models\Karyawan;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -73,11 +75,37 @@ class GenerateAlpha extends Command
             // ==========================
             // CEK SUDAH ADA ABSENSI?
             // ==========================
-            $sudahAbsen = Absensi::where('laruawan_id', $karyawan->id)
+            $sudahAbsen = Absensi::where('karyawan_id', $karyawan->id)
                 ->whereDate('tanggal', $tanggalKerja->toDateString())
                 ->exists();
 
             if ($sudahAbsen) {
+                continue;
+            }
+
+            // ==========================
+            // CEK IZIN
+            // ==========================
+            $izin = Izin::where('karyawan_id', $karyawan->id)
+                ->where('status', 'approved')
+                ->whereDate('tanggal_mulai', '<=', $tanggalKerja)
+                ->whereDate('tanggal_selesai', '>=', $tanggalKerja)
+                ->exists();
+
+            if ($izin) {
+                continue;
+            }
+
+            // ==========================
+            // CEK CUTI
+            // ==========================
+            $cuti = Cuti::where('karyawan_id', $karyawan->id)
+                ->where('status', 'approved')
+                ->whereDate('tanggal_mulai', '<=', $tanggalKerja)
+                ->whereDate('tanggal_selesai', '>=', $tanggalKerja)
+                ->exists();
+
+            if ($cuti) {
                 continue;
             }
 

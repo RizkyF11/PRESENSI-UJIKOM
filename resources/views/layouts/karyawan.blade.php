@@ -10,7 +10,8 @@
     <!-- CSS Bawaan (Bootstrap & FontAwesome) yang dibutuhkan dashboard/child views lama agar styling tidak pecah -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/font-awesome/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/sweetalert/sweetalert.css') }}" />
+    <!-- Catatan: SweetAlert CSS global dinonaktifkan di layout karyawan -->
+    <!-- <link rel="stylesheet" href="{{ asset('assets/vendor/sweetalert/sweetalert.css') }}" /> -->
 
     <!-- Iconify for modern UI icons -->
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
@@ -226,9 +227,11 @@
     <!-- Scripts JQuery & Bootstrap untuk fitur JS dari template lama (Modal, Dropdown, dll) -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/sweetalert/sweetalert.min.js') }}"></script>
+    <!-- CDN Alert dihapus agar pure menggunakan Modern UI Flowbite Component -->
+    <!-- <script src="{{ asset('assets/vendor/sweetalert/sweetalert.min.js') }}"></script> -->
 
-    @include('components.sweetalert')
+    <!-- Komponen Toast Alert Modern (Bukan SweetAlert) -->
+    @include('components.alert-modern')
     @stack('scripts')
 </body>
 

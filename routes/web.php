@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AbsensiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\AdminQrController;
+use App\Http\Controllers\Admin\IzinController;
 use App\Http\Controllers\Admin\KaryawanShiftController;
 use App\Http\Controllers\Admin\LokasiKantorController;
 use App\Http\Controllers\Admin\ShiftController;
@@ -70,9 +71,18 @@ Route::middleware('auth')->group(function () {
             Route::delete('absensi/{id}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
             Route::delete('absensi-delete-all', [AbsensiController::class, 'destroyAll'])->name('absensi.destroyAll');
 
-            //export excel
+            //export excel absensi
             Route::get('absensi/export', [AbsensiController::class, 'export'])
                 ->name('absensi.export');
+
+            // Route Izin
+            Route::get('izin', [IzinController::class, 'index'])->name('izin.index');
+
+            Route::post('izin/{id}/approve', [IzinController::class, 'approve'])->name('izin.approve');
+
+            Route::post('izin/{id}/reject', [IzinController::class, 'reject'])->name('izin.reject');
+
+            Route::delete('izin/{id}', [IzinController::class, 'destroy'])->name('izin.destroy');
         });
 
 
@@ -90,6 +100,15 @@ Route::middleware('auth')->group(function () {
         // Route Proses Scan (Store)
         Route::post('/karyawan/scan', [App\Http\Controllers\Karyawan\AbsensiController::class, 'storeScan'])
             ->name('karyawan.scan.store');
+
+        // Route Izin Karyawan
+        Route::get('/karyawan/izin', [\App\Http\Controllers\Karyawan\IzinController::class, 'index'])->name('karyawan.izin.index');
+        Route::post('/karyawan/izin', [\App\Http\Controllers\Karyawan\IzinController::class, 'store'])->name('karyawan.izin.store');
+
+        Route::get('/karyawan/izin/{id}/edit', [\App\Http\Controllers\Karyawan\IzinController::class, 'edit'])->name('karyawan.izin.edit');
+        Route::put('/karyawan/izin/{id}', [\App\Http\Controllers\Karyawan\IzinController::class, 'update'])->name('karyawan.izin.update');
+
+        Route::delete('/karyawan/izin/{id}', [\App\Http\Controllers\Karyawan\IzinController::class, 'destroy'])->name('karyawan.izin.destroy');
     });
 
     // Route Profile (Bawaan Breeze)
