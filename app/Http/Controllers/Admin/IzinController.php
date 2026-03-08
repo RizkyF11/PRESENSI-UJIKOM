@@ -102,7 +102,7 @@ class IzinController extends Controller
                     'karyawan_id' => $izin->karyawan_id,
                     'tanggal' => $tanggalMulai->toDateString(),
                     'status' => 'izin',
-                    
+
                 ]);
             }
 

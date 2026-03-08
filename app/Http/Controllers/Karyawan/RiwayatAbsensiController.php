@@ -32,6 +32,15 @@ class RiwayatAbsensiController extends Controller
 
         $riwayatAbsensi = $query->get();
 
-        return view('karyawan_fe.riwayat_absensi.index', compact('riwayatAbsensi', 'bulan', 'tahun'));
+        // Ambil data Izin dan Cuti untuk perhitungan status riwayat absensi seperti pada admin
+        $izin = \App\Models\Izin::where('karyawan_id', $karyawanId)
+            ->where('status', 'approved')
+            ->get();
+
+        $cuti = \App\Models\Cuti::where('karyawan_id', $karyawanId)
+            ->where('status', 'approved')
+            ->get();
+
+        return view('karyawan_fe.riwayat_absensi.index', compact('riwayatAbsensi', 'bulan', 'tahun', 'izin', 'cuti'));
     }
 }
