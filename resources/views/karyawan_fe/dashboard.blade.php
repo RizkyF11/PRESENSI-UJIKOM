@@ -162,6 +162,21 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-6 px-1 mb-2">
+            <div class="card border-0 shadow-sm bg-white" style="border-radius: 12px;">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="mr-3 bg-blue-50 flex items-center justify-center rounded-lg" style="width: 38px; height: 38px;">
+                        <span class="iconify text-blue-500" data-icon="heroicons:information-circle" data-width="22"></span>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs mb-0 font-medium" style="font-size: 10px;">Cuti</p>
+                        <h6 class="font-weight-bold text-gray-800 mb-0" style="font-size: 15px;">{{ $stats['cuti'] ?? 0 }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="col-6 px-1 mb-2">
             <div class="card border-0 shadow-sm bg-white" style="border-radius: 12px;">
                 <div class="card-body p-3 d-flex align-items-center">

@@ -67,7 +67,10 @@
                     <a href="{{ route('admin.absensi.index') }}"><i class="fa fa-list-alt"></i><span>Riwayat Absensi</span></a>
                 </li>
                  <li class="{{ request()->routeIs('admin.izin*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.izin.index') }}"><i class="fa fa-list-alt"></i><span>Pengajuan Izin Karyawan</span></a>
+                    <a href="{{ route('admin.izin.index') }}"><i class="fa fa-list-alt"></i><span>Pengajuan Izin</span></a>
+                </li>
+                <li class="{{ request()->routeIs('admin.cuti*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.cuti.index') }}"><i class="fa fa-list-alt"></i><span>Pengajuan Cuti</span></a>
                 </li>
             </ul>
         </nav>

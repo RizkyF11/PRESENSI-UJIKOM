@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AbsensiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\AdminQrController;
+use App\Http\Controllers\Admin\CutiController;
 use App\Http\Controllers\Admin\IzinController;
 use App\Http\Controllers\Admin\KaryawanShiftController;
 use App\Http\Controllers\Admin\LokasiKantorController;
@@ -83,6 +84,15 @@ Route::middleware('auth')->group(function () {
             Route::post('izin/{id}/reject', [IzinController::class, 'reject'])->name('izin.reject');
 
             Route::delete('izin/{id}', [IzinController::class, 'destroy'])->name('izin.destroy');
+
+            // Route Cuti
+            Route::get('cuti', [CutiController::class, 'index'])->name('cuti.index');
+
+            Route::post('cuti/{id}/approve', [CutiController::class, 'approve'])->name('cuti.approve');
+
+            Route::post('cuti/{id}/reject', [CutiController::class, 'reject'])->name('cuti.reject');
+
+            Route::delete('cuti/{id}', [CutiController::class, 'destroy'])->name('cuti.destroy');
         });
 
 
