@@ -192,8 +192,8 @@
                 </a>
 
                 <!-- Riwayat -->
-                <a href="#" class="nav-item-bottom">
-                    <span class="iconify mb-1" data-icon="heroicons:clock" data-width="24"></span>
+                <a href="{{ route('karyawan.riwayat.index') }}" class="nav-item-bottom {{ request()->routeIs('karyawan.riwayat.index') ? 'active' : '' }}">
+                    <span class="iconify mb-1" data-icon="{{ request()->routeIs('karyawan.riwayat.index') ? 'heroicons:clock-solid' : 'heroicons:clock' }}" data-width="24"></span>
                     <span>Riwayat</span>
                 </a>
 

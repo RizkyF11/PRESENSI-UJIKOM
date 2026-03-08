@@ -58,17 +58,19 @@ Route::middleware('auth')->group(function () {
             Route::post('karyawan-shift', [KaryawanShiftController::class, 'store'])
                 ->name('karyawan_shift.store');
 
-            Route::patch('shift/{id}/deactivate', [ShiftController::class, 'deactivate'])
-                ->name('shift.deactivate');
-
-            Route::patch('shift/{id}/activate', [ShiftController::class, 'activate'])
-                ->name('shift.activate');
+            Route::delete('karyawan-shift/{id}', [KaryawanShiftController::class, 'destroy'])
+                ->name('karyawan_shift.destroy');
 
             // Route Lokasi Kantor
             Route::resource('lokasi-kantor', LokasiKantorController::class)->except(['show']);
 
             // Route Shift
             Route::resource('shift', ShiftController::class);
+            Route::patch('shift/{id}/deactivate', [ShiftController::class, 'deactivate'])
+                ->name('shift.deactivate');
+
+            Route::patch('shift/{id}/activate', [ShiftController::class, 'activate'])
+                ->name('shift.activate');
 
             // Route Absensi
             Route::get('absensi', [AbsensiController::class, 'index'])->name('absensi.index');
@@ -131,6 +133,9 @@ Route::middleware('auth')->group(function () {
         Route::put('/karyawan/cuti/{id}', [\App\Http\Controllers\Karyawan\CutiController::class, 'update'])->name('karyawan.cuti.update');
 
         Route::delete('/karyawan/cuti/{id}', [\App\Http\Controllers\Karyawan\CutiController::class, 'destroy'])->name('karyawan.cuti.destroy');
+
+        // Route Riwayat Absensi
+        Route::get('/karyawan/riwayat', [\App\Http\Controllers\Karyawan\RiwayatAbsensiController::class, 'index'])->name('karyawan.riwayat.index');
     });
 
     // Route Profile (Bawaan Breeze)
