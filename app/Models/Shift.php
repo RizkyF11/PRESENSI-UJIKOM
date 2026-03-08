@@ -15,6 +15,7 @@ class Shift extends Model
         'jam_masuk',
         'jam_keluar',
         'toleransi_menit',
+        'is_active',
     ];
 
     //shift dipakai banyak karyawan
@@ -31,7 +32,7 @@ class Shift extends Model
     {
         return $this->hasMany(Absensi::class);
     }
-    
+
     public function izin()
     {
         return $this->hasMany(Izin::class);
@@ -40,5 +41,10 @@ class Shift extends Model
     public function cuti()
     {
         return $this->hasMany(Cuti::class);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 }

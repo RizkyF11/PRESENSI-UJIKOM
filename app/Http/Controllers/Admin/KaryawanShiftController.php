@@ -19,7 +19,7 @@ class KaryawanShiftController extends Controller
     {
         return view('admin.karyawan_shift.index', [
             'karyawan' => Karyawan::all(),
-            'shifts' => Shift::all(),
+            'shifts' => Shift::where('is_active', true)->get(),
             'data' => KaryawanShift::with(['karyawan', 'shift'])->latest()->get()
         ]);
     }
@@ -32,6 +32,11 @@ class KaryawanShiftController extends Controller
             'tanggal_mulai'    => 'required|date',
             'tanggal_selesai'  => 'required|date|after_or_equal:tanggal_mulai',
         ]);
+
+        //pastikan shift masih aktif
+        $shift = Shift::where('id', $request->shift_id)
+            ->where('is_active', true)
+            ->firstOrFail();
 
         DB::transaction((function () use ($request) {
 

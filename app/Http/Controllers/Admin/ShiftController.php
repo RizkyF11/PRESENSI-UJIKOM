@@ -14,8 +14,10 @@ class ShiftController extends Controller
         return view('admin.shift.index', compact('shift'));
     }
 
-    public function create() 
+    public function create()
     {
+
+        
         return view('admin.shift.form');
     }
 
@@ -29,7 +31,13 @@ class ShiftController extends Controller
             'toleransi_menit' => 'required|integer|min:0',
         ]);
 
-        Shift::create($request->all());
+        Shift::create([
+            'nama_shift' => $request->nama_shift,
+            'jam_masuk' => $request->jam_masuk,
+            'jam_keluar' => $request->jam_keluar,
+            'toleransi_menit' => $request->toleransi_menit,
+            'is_active' => true
+        ]);
 
         return redirect()->route('admin.shift.index')->with('success', 'Shift berhasil ditambahkan');
     }
@@ -52,17 +60,40 @@ class ShiftController extends Controller
         ]);
 
         $shift = Shift::findOrFail($id);
-        $shift->update($request->all());
+
+        $shift->update([
+            'nama_shift' => $request->nama_shift,
+            'jam_masuk' => $request->jam_masuk,
+            'jam_keluar' => $request->jam_keluar,
+            'toleransi_menit' => $request->toleransi_menit,
+        ]);
 
         return redirect()->route('admin.shift.index')->with('success', 'Shift berhasil diupdate');
     }
 
-    //DELETE
-    public function destroy($id)
+    // NONAKTIFKAN SHIFT
+    public function deactivate($id)
     {
         $shift = Shift::findOrFail($id);
-        $shift->delete();
 
-        return redirect()->route('admin.shift.index')->with('success', 'Shift berhasil dihapus');
+        $shift->update([
+            'is_active' => false
+        ]);
+
+        return redirect()->route('admin.shift.index')
+            ->with('success', 'Shift berhasil dinonaktifkan');
+    }
+
+    // AKTIFKAN KEMBALI SHIFT
+    public function activate($id)
+    {
+        $shift = Shift::findOrFail($id);
+
+        $shift->update([
+            'is_active' => true
+        ]);
+
+        return redirect()->route('admin.shift.index')
+            ->with('success', 'Shift berhasil diaktifkan kembali');
     }
 }

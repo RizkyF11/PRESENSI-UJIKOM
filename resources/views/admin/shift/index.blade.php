@@ -39,6 +39,7 @@
                                 <th>Jam Masuk</th>
                                 <th>Jam Keluar</th>
                                 <th>Toleransi (Menit)</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -50,6 +51,7 @@
                                 <th>Jam Masuk</th>
                                 <th>Jam Keluar</th>
                                 <th>Toleransi (Menit)</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
@@ -63,22 +65,46 @@
                                 <td>{{ $item->jam_keluar }}</td>
                                 <td>{{ $item->toleransi_menit }} menit</td>
                                 <td>
+                                    @if ($item->is_active)
+                                    <span class="badge badge-success">Aktif</span>
+                                    @else
+                                    <span class="badge badge-danger">Nonaktif</span>
+                                    @endif
+                                </td>
+                                <td>
                                     <a href="{{ route('admin.shift.edit', $item->id) }}"
                                         class="btn btn-warning btn-sm">
                                         Edit
                                     </a>
 
-                                    <form action="{{ route('admin.shift.destroy', $item->id) }}"
+                                    @if ($item->is_active)
+                                    <form action="{{ route('admin.shift.deactivate', $item->id) }}"
                                         method="POST"
                                         style="display:inline;">
                                         @csrf
-                                        @method('DELETE')
+                                        @method('PATCH')
                                         <button type="submit"
                                             class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Yakin ingin menghapus?')">
-                                            Hapus
+                                            onclick="return confirm('Nonaktifkan shift ini?')">
+                                            Nonaktifkan
                                         </button>
                                     </form>
+
+                                    @else
+
+                                    <form action="{{ route('admin.shift.activate', $item->id) }}"
+                                        method="POST"
+                                        style="display:inline;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                            class="btn btn-success btn-sm"
+                                            onclick="return confirm('Aktifkan shift ini?')">
+                                            Aktifkan
+                                        </button>
+                                    </form>
+
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach

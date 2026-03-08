@@ -58,8 +58,11 @@ Route::middleware('auth')->group(function () {
             Route::post('karyawan-shift', [KaryawanShiftController::class, 'store'])
                 ->name('karyawan_shift.store');
 
-            Route::delete('karyawan-shift/{id}', [KaryawanShiftController::class, 'destroy'])
-                ->name('karyawan_shift.destroy');
+            Route::patch('shift/{id}/deactivate', [ShiftController::class, 'deactivate'])
+                ->name('shift.deactivate');
+
+            Route::patch('shift/{id}/activate', [ShiftController::class, 'activate'])
+                ->name('shift.activate');
 
             // Route Lokasi Kantor
             Route::resource('lokasi-kantor', LokasiKantorController::class)->except(['show']);

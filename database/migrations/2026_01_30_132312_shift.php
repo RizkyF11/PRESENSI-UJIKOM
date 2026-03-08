@@ -17,6 +17,7 @@ return new class extends Migration
             $table->time('jam_masuk');
             $table->time('jam_keluar');
             $table->integer('toleransi_menit');
+            $table->boolean('is_active')->default(true); // shift aktif / nonaktif
             $table->timestamps();
         });
     }
