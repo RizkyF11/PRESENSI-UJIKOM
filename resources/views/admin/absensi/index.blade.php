@@ -200,7 +200,7 @@
                                     @empty
                                     <tr>
                                         <td colspan="8" class="text-center">
-                                            Data tidak ditemukan
+                                            No data available in table
                                         </td>
                                     </tr>
                                     @endforelse

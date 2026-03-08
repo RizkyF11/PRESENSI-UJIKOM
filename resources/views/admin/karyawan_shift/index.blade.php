@@ -129,10 +129,10 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center">
-                                            Belum ada data assign shift
+                                        <td colspan="6" class="text-center">
+                                            No data available in table
                                         </td>
-                                        <td></td>
+                                        
                                     </tr>
                                 @endforelse
                             </tbody>

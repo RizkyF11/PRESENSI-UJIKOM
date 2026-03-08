@@ -108,7 +108,7 @@
         </a>
 
         <!-- Pengajuan Cuti (Baru) -->
-        <a href="#" class="text-decoration-none flex-shrink-0" style="width: 100px;">
+        <a href="{{ route('karyawan.cuti.index') }}" class="text-decoration-none flex-shrink-0" style="width: 100px;">
             <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
                 <div class="card-body p-3 text-center d-flex flex-column align-items-center justify-content-center">
                     <div class="text-purple-500 mb-2 flex items-center justify-center bg-purple-50 rounded-full" style="width:40px;height:40px;">

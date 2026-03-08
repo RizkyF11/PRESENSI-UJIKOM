@@ -54,7 +54,7 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            @foreach ($data as $item)
+                            @forelse ($data as $item)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->nama }}</td>
@@ -81,7 +81,13 @@
                                     </form>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="9" class="text-center">
+                                    No data available in table
+                                </td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

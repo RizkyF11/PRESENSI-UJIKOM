@@ -119,6 +119,15 @@ Route::middleware('auth')->group(function () {
         Route::put('/karyawan/izin/{id}', [\App\Http\Controllers\Karyawan\IzinController::class, 'update'])->name('karyawan.izin.update');
 
         Route::delete('/karyawan/izin/{id}', [\App\Http\Controllers\Karyawan\IzinController::class, 'destroy'])->name('karyawan.izin.destroy');
+
+        // Route Cuti Karyawan
+        Route::get('/karyawan/cuti', [\App\Http\Controllers\Karyawan\CutiController::class, 'index'])->name('karyawan.cuti.index');
+        Route::post('/karyawan/cuti', [\App\Http\Controllers\Karyawan\CutiController::class, 'store'])->name('karyawan.cuti.store');
+
+        Route::get('/karyawan/cuti/{id}/edit', [\App\Http\Controllers\Karyawan\CutiController::class, 'edit'])->name('karyawan.cuti.edit');
+        Route::put('/karyawan/cuti/{id}', [\App\Http\Controllers\Karyawan\CutiController::class, 'update'])->name('karyawan.cuti.update');
+
+        Route::delete('/karyawan/cuti/{id}', [\App\Http\Controllers\Karyawan\CutiController::class, 'destroy'])->name('karyawan.cuti.destroy');
     });
 
     // Route Profile (Bawaan Breeze)

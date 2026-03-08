@@ -9,6 +9,7 @@ use App\Models\Izin;
 use App\Models\Karyawan;
 use Carbon\Carbon;
 
+
 class IzinController extends Controller
 {
 
@@ -96,10 +97,12 @@ class IzinController extends Controller
                 ->exists();
 
             if (!$sudahAda) {
+
                 Absensi::create([
                     'karyawan_id' => $izin->karyawan_id,
                     'tanggal' => $tanggalMulai->toDateString(),
                     'status' => 'izin',
+                    
                 ]);
             }
 

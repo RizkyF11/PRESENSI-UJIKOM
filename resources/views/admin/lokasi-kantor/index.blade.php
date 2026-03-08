@@ -42,7 +42,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($data as $item)
+                            @forelse($data as $item)
                             <tr>
                                 <td>{{ $item->nama_lokasi }}</td>
                                 <td>{{ $item->latitude }}</td>
@@ -50,30 +50,37 @@
                                 <td>{{ $item->radius }} meter</td>
                                 <td>
                                     @if($item->is_active)
-                                        <span class="badge badge-success">Aktif</span>
+                                    <span class="badge badge-success">Aktif</span>
                                     @else
-                                        <span class="badge badge-danger">Non Aktif</span>
+                                    <span class="badge badge-danger">Non Aktif</span>
                                     @endif
                                 </td>
                                 <td>
                                     <a href="{{ route('admin.lokasi-kantor.edit', $item->id) }}"
-                                       class="btn btn-warning btn-sm">
+                                        class="btn btn-warning btn-sm">
                                         Edit
                                     </a>
 
                                     <form action="{{ route('admin.lokasi-kantor.destroy', $item->id) }}"
-                                          method="POST"
-                                          style="display:inline;">
+                                        method="POST"
+                                        style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Yakin ingin menghapus?')">
+                                            onclick="return confirm('Yakin ingin menghapus?')">
                                             Hapus
                                         </button>
                                     </form>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center">
+                                    No data available in table
+                                </td>
+
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

@@ -8,7 +8,7 @@
             <span class="iconify" data-icon="heroicons:arrow-left" data-width="20"></span>
         </div>
     </a>
-    <h1 class="text-[16px] font-bold text-gray-800 ml-auto mr-auto pl-4 mb-0">Pengajuan Izin</h1>
+    <h1 class="text-[16px] font-bold text-gray-800 ml-auto mr-auto pl-4 mb-0">Pengajuan Cuti</h1>
     <div class="w-10"></div> <!-- Placeholder space -->
 </div>
 @endsection
@@ -16,19 +16,19 @@
 @section('content')
 <div class="container-fluid mb-4 px-2 mt-2">
     <div class="mb-4">
-        <!-- Button trigger modal untuk Tambah Izin (tetap sama desainnya dengan Edit) -->
-        <button type="button" class="btn w-100 font-weight-bold d-flex align-items-center justify-content-center gap-2 py-3 shadow-sm border-0" data-toggle="modal" data-target="#modalTambahIzin" style="background-color: #4DB6AC; color: white; border-radius: 12px; font-size: 14px;">
+        <!-- Button trigger modal untuk Tambah Cuti (tetap sama desainnya dengan Edit) -->
+        <button type="button" class="btn w-100 font-weight-bold d-flex align-items-center justify-content-center gap-2 py-3 shadow-sm border-0" data-toggle="modal" data-target="#modalTambahCuti" style="background-color: #4DB6AC; color: white; border-radius: 12px; font-size: 14px;">
             <span class="iconify" data-icon="heroicons:plus-circle" data-width="22"></span>
-            Buat Pengajuan Izin Baru
+            Buat Pengajuan Cuti Baru
         </button>
     </div>
 
     <!-- Title Riwayat -->
-    <h6 class="font-weight-bold text-gray-800 mb-3 px-1" style="font-size: 14px;">Riwayat Pengajuan Izin</h6>
+    <h6 class="font-weight-bold text-gray-800 mb-3 px-1" style="font-size: 14px;">Riwayat Pengajuan Cuti</h6>
 
-    <!-- List Riwayat Izin -->
+    <!-- List Riwayat Cuti -->
     <div class="list-group">
-        @forelse ($izin as $item)
+        @forelse ($cuti as $item)
         <div class="card border-0 shadow-sm mb-3" style="border-radius: 16px;">
             <div class="card-body p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -50,10 +50,10 @@
                     @if($item->status == 'pending')
                     <div class="d-flex gap-2">
                         <!-- Tombol Panggil Modal Edit -->
-                        <button type="button" class="btn btn-sm text-teal-600 bg-teal-50 d-flex align-items-center justify-content-center border-0" data-toggle="modal" data-target="#modalEditIzin{{ $item->id }}" style="width: 32px; height: 32px; border-radius: 8px;">
+                        <button type="button" class="btn btn-sm text-teal-600 bg-teal-50 d-flex align-items-center justify-content-center border-0" data-toggle="modal" data-target="#modalEditCuti{{ $item->id }}" style="width: 32px; height: 32px; border-radius: 8px;">
                             <span class="iconify" data-icon="heroicons:pencil-square" data-width="18"></span>
                         </button>
-                        <form action="{{ route('karyawan.izin.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengajuan izin ini?');">
+                        <form action="{{ route('karyawan.cuti.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengajuan cuti ini?');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm text-red-500 bg-red-50 d-flex align-items-center justify-content-center border-0" style="width: 32px; height: 32px; border-radius: 8px;">
@@ -62,17 +62,17 @@
                         </form>
                     </div>
 
-                    <!-- Modal Edit Izin (Konsisten secara Visual dengan Modal Tambah) -->
-                    <div class="modal fade" id="modalEditIzin{{ $item->id }}" tabindex="-1" aria-labelledby="modalEditIzinLabel{{ $item->id }}" aria-hidden="true">
+                    <!-- Modal Edit Cuti (Konsisten secara Visual dengan Modal Tambah) -->
+                    <div class="modal fade" id="modalEditCuti{{ $item->id }}" tabindex="-1" aria-labelledby="modalEditCutiLabel{{ $item->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered mx-4 sm:mx-auto">
                             <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
                                 <div class="modal-header border-0 pb-0 pt-4 px-4 d-flex justify-content-between align-items-center">
-                                    <h5 class="modal-title font-weight-bold text-gray-800" id="modalEditIzinLabel{{ $item->id }}" style="font-size: 18px;">Ubah Pengajuan Izin</h5>
+                                    <h5 class="modal-title font-weight-bold text-gray-800" id="modalEditCutiLabel{{ $item->id }}" style="font-size: 18px;">Ubah Pengajuan Cuti</h5>
                                     <button type="button" class="btn-close m-0 border-0 outline-none shadow-none focus:outline-none focus:shadow-none" style="font-size: 28px; opacity: 0.6; background: none; box-shadow: none; outline: none; line-height: 1;" data-dismiss="modal" aria-label="Close" style="font-size: 20px; opacity: 0.5; background: none; box-shadow: none; outline: none;">
                                         &times;
                                     </button>
                                 </div>
-                                <form action="{{ route('karyawan.izin.update', $item->id) }}" method="POST">
+                                <form action="{{ route('karyawan.cuti.update', $item->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <div class="modal-body px-4 pt-4 pb-4">
@@ -85,7 +85,7 @@
                                             <input type="date" name="tanggal_selesai" value="{{ \Carbon\Carbon::parse($item->tanggal_selesai)->format('Y-m-d') }}" id="edit_end_{{ $item->id }}" class="form-control bg-gray-50 border-0" required style="border-radius: 12px; padding: 12px 16px; font-size: 14px; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);">
                                         </div>
                                         <div class="form-group mb-2">
-                                            <label class="form-label font-weight-bold text-gray-700" style="font-size: 13px;">Alasan Izin <span class="text-danger">*</span></label>
+                                            <label class="form-label font-weight-bold text-gray-700" style="font-size: 13px;">Alasan Cuti <span class="text-danger">*</span></label>
                                             <textarea class="form-control bg-gray-50 border-0" name="alasan" rows="4" required style="border-radius: 12px; padding: 14px 16px; font-size: 14px; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);">{{ $item->alasan }}</textarea>
                                         </div>
                                     </div>
@@ -99,7 +99,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- /Modal Edit Izin -->
+                    <!-- /Modal Edit Cuti -->
                     @endif
                 </div>
             </div>
@@ -109,28 +109,28 @@
             <div class="text-gray-300 mb-3 flex items-center justify-center">
                 <span class="iconify" data-icon="heroicons:folder-open" data-width="60"></span>
             </div>
-            <p class="text-gray-500 font-medium text-sm">Belum ada riwayat pengajuan izin.</p>
+            <p class="text-gray-500 font-medium text-sm">Belum ada riwayat pengajuan cuti.</p>
         </div>
         @endforelse
     </div>
 
     <!-- Pagination -->
     <div class="d-flex justify-content-center mt-3">
-        {{ $izin->links('pagination::bootstrap-4') }}
+        {{ $cuti->links('pagination::bootstrap-4') }}
     </div>
 </div>
 
-<!-- Modal Tambah Izin (Konsisten secara Visual dengan Modal Edit) -->
-<div class="modal fade" id="modalTambahIzin" tabindex="-1" aria-labelledby="modalTambahIzinLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered mx-4 sm:mx-auto ">
+<!-- Modal Tambah Cuti (Konsisten secara Visual dengan Modal Edit) -->
+<div class="modal fade" id="modalTambahCuti" tabindex="-1" aria-labelledby="modalTambahCutiLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mx-4 sm:mx-auto">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
             <div class="modal-header border-0 pb-0 pt-4 px-4 d-flex justify-content-between align-items-center">
-                <h5 class="modal-title font-weight-bold text-gray-800" id="modalTambahIzinLabel" style="font-size: 18px;">Pengajuan Izin Baru</h5>
+                <h5 class="modal-title font-weight-bold text-gray-800" id="modalTambahCutiLabel" style="font-size: 18px;">Pengajuan Cuti Baru</h5>
                 <button type="button" class="btn-close m-0 border-0 outline-none shadow-none focus:outline-none focus:shadow-none" style="font-size: 28px; opacity: 0.6; background: none; box-shadow: none; outline: none; line-height: 1;" data-dismiss="modal" aria-label="Close" style="font-size: 20px; opacity: 0.5; background: none; box-shadow: none; outline: none;">
                     &times;
                 </button>
             </div>
-            <form action="{{ route('karyawan.izin.store') }}" method="POST">
+            <form action="{{ route('karyawan.cuti.store') }}" method="POST">
                 @csrf
                 <div class="modal-body px-4 pt-4 pb-4">
                     <div class="form-group mb-4">
@@ -142,21 +142,21 @@
                         <input type="date" name="tanggal_selesai" class="form-control bg-gray-50 border-0" required style="border-radius: 12px; padding: 12px 16px; font-size: 14px; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);">
                     </div>
                     <div class="form-group mb-2">
-                        <label class="form-label font-weight-bold text-gray-700" style="font-size: 13px;">Alasan Izin <span class="text-danger">*</span></label>
+                        <label class="form-label font-weight-bold text-gray-700" style="font-size: 13px;">Alasan Cuti <span class="text-danger">*</span></label>
                         <textarea class="form-control bg-gray-50 border-0" name="alasan" rows="4" placeholder="Tuliskan alasan spesifik Anda dengan jelas..." required style="border-radius: 12px; padding: 14px 16px; font-size: 14px; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0 px-4 pb-4">
                     <div class="d-flex w-100 gap-3">
                         <button type="button" class="btn w-50 py-3 font-weight-bold text-gray-600 shadow-none" data-dismiss="modal" style="border-radius: 12px; font-size: 14px; background-color: #F3F4F6; border: none; outline: none; box-shadow: none;">Batal</button>
-                        <button type="submit" class="btn w-50 py-3 font-weight-bold shadow-none" style="background-color: #4DB6AC; color: white; border-radius: 12px; font-size: 14px; border: none; outline: none; box-shadow: none;">Kirim Izin</button>
+                        <button type="submit" class="btn w-50 py-3 font-weight-bold shadow-none" style="background-color: #4DB6AC; color: white; border-radius: 12px; font-size: 14px; border: none; outline: none; box-shadow: none;">Kirim Cuti</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<!-- /Modal Tambah Izin -->
+<!-- /Modal Tambah Cuti -->
 
 <!-- Menggunakan modal Bootstrap script -->
 @push('scripts')
