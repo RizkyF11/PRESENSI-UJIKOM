@@ -72,7 +72,7 @@
     <h6 class="font-weight-bold text-gray-800 mb-2 px-1" style="font-size: 14px;">Menu Cepat</h6>
     <div class="d-flex overflow-auto no-scrollbar mb-4 px-1" style="gap: 12px; padding-bottom: 5px;">
         <!-- Jadwal Shift -->
-        <a href="#" class="text-decoration-none flex-shrink-0" style="width: 100px;">
+        <a href="{{ route('karyawan.jadwal.index') }}" class="text-decoration-none flex-shrink-0" style="width: 100px;">
             <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
                 <div class="card-body p-3 text-center d-flex flex-column align-items-center justify-content-center">
                     <div class="text-blue-500 mb-2 flex items-center justify-center bg-blue-50 rounded-full" style="width:40px;height:40px;">

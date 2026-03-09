@@ -11,7 +11,7 @@ class AbsensiFactory extends Factory
     {
         return [
             'karyawan_id' => Karyawan::factory(),
-            'shift_id' => Shift::factory(),
+            'shift_id' => Shift::factory(), 
             'qr_code_id' => QrCode::factory(),
             'tanggal' => today(),
             'jam_masuk' => '08:05:00',

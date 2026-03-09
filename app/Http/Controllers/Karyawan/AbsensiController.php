@@ -70,7 +70,7 @@ class AbsensiController extends Controller
             'absensiHariIni' => $absensiHariIni,
             'stats' => $stats,
             'riwayatAbsensi' => $riwayatAbsensi,
-            'tanggal' => $tanggalAbsensi 
+            'tanggal' => $tanggalAbsensi
                 ? Carbon::parse($tanggalAbsensi)->translatedFormat('l, d F Y')
                 : Carbon::now()->translatedFormat('l, d F Y'),
         ]);
@@ -353,24 +353,26 @@ class AbsensiController extends Controller
 
     private function validasiLokasi(Request $request)
     {
-        $lokasi = LokasiKantor::where('is_active', true)->first();
+        $daftarLokasi = LokasiKantor::where('is_active', true)->get();
 
-        if (! $lokasi) {
+        if ($daftarLokasi->isEmpty()) {
             abort(500, 'Lokasi kantor belum disetting');
         }
 
-        $jarak = $this->hitungJarak(
-            $request->latitude,
-            $request->longitude,
-            $lokasi->latitude,
-            $lokasi->longitude
-        );
+        foreach ($daftarLokasi as $lokasi) {
+            $jarak = $this->hitungJarak(
+                $request->latitude,
+                $request->longitude,
+                $lokasi->latitude,
+                $lokasi->longitude
+            );
 
-        if ($jarak > $lokasi->radius) {
-            abort(422, 'Anda berada di luar radius kantor');
+            if ($jarak <= $lokasi->radius) {
+                return $lokasi; // Karyawan masuk dalam jangkauan kantor ini
+            }
         }
 
-        return $lokasi;
+        abort(422, 'Anda berada di luar radius dari semua lokasi kantor');
     }
 
     private function hitungJarak($lat1, $lon1, $lat2, $lon2)

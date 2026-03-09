@@ -136,6 +136,9 @@ Route::middleware('auth')->group(function () {
 
         // Route Riwayat Absensi
         Route::get('/karyawan/riwayat', [\App\Http\Controllers\Karyawan\RiwayatAbsensiController::class, 'index'])->name('karyawan.riwayat.index');
+
+        // Route Jadwal Shift
+        Route::get('/karyawan/jadwal-shift', [\App\Http\Controllers\Karyawan\JadwalShiftController::class, 'index'])->name('karyawan.jadwal.index');
     });
 
     // Route Profile (Bawaan Breeze)

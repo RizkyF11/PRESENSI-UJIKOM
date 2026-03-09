@@ -4,7 +4,7 @@
         <div class="navbar-brand">
             <button type="button" class="btn-toggle-offcanvas"><i class="fa fa-bars"></i></button>
             <button type="button" class="btn-toggle-fullwidth"><i class="fa fa-bars"></i></button>
-            <a href="{{ route('admin.dashboard') }}">ICONIC</a>
+            <a href="{{ route('admin.dashboard') }}">Sistem Presensi Digital (S.P.D)</a>
         </div>
 
         <div class="navbar-right">
