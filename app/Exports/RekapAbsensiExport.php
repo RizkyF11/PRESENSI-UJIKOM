@@ -139,7 +139,7 @@ class RekapAbsensiExport implements
     {
         return [
             1 => ['font' => ['bold' => true, 'size' => 14]],
-            4 => ['font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']], 'fill' => ['fillType' => 'solid', 'startColor' => ['rgb' => '366092']]]
+            
         ];
     }
 
