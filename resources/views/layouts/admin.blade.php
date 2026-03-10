@@ -47,6 +47,10 @@
 
     <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
     <script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
+    <script src="{{ asset('assets/bundles/c3.bundle.js') }}"></script>
+    <script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
+    <script src="{{ asset('assets/js/index.js') }}"></script>
+
 
     <script src="{{ asset('assets/bundles/datatablescripts.bundle.js') }}"></script>
     <script src="{{ asset('assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js') }}"></script>
@@ -58,10 +62,8 @@
     <script src="{{ asset('assets/vendor/sweetalert/sweetalert.min.js') }}"></script> <!-- SweetAlert Plugin Js -->
 
     <script src="{{ asset('assets/vendor/toastr/toastr.js') }}"></script>
-    <script src="{{ asset('assets/bundles/c3.bundle.js') }}"></script>
+    
 
-    <script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
-    <script src="{{ asset('assets/js/index.js') }}"></script>
     <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script>
 
     @include('components.sweetalert')

@@ -2,33 +2,34 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        /**
-         * =========================
-         * ADMIN
-         * =========================
-         */
-        User::factory()->create([
-            'nama' => 'Admin',
-            'email' => 'admin@gmail.com',
-            'role' => 'admin',
-            'password' => Hash::make('admin123'),
-        ]);
+        // Admin
+        User::updateOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'nama'     => 'Admin Utama',
+                'role'     => 'admin',
+                'password' => Hash::make('admin123'),
+            ]
+        );
 
-        /**
-         * =========================
-         * KARYAWAN (DUMMY)
-         * =========================
-         */
-        // User::factory(10)->create([
-        //     'role' => 'karyawan',
-        // ]);
+        // 10 Karyawan
+        for ($i = 1; $i <= 10; $i++) {
+            User::updateOrCreate(
+                ['email' => 'karyawan' . $i . '@gmail.com'],
+                [
+                    'nama'     => 'Karyawan ' . $i,
+                    'role'     => 'karyawan',
+                    'password' => Hash::make('password'),
+                ]
+            );
+        }
     }
 }

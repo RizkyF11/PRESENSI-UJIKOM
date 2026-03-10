@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AbsensiController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\AdminQrController;
@@ -40,9 +41,7 @@ Route::middleware('auth')->group(function () {
         ->prefix('admin') // URL jadi /admin/dashboard, dll
         ->as('admin.') // NAMA ROUTE jadi admin.dashboard, admin.karyawan.index, dll
         ->group(function () {
-            Route::get('/dashboard', function () {
-                return view('admin.dashboard'); // Arahkan ke view dashboard admin kamu
-            })->name('dashboard'); // Karena ada ->as('admin.'), ini otomatis jadi admin.dashboard
+            Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
             // Resource Controller untuk Karyawan
             Route::resource('karyawan', KaryawanController::class);

@@ -9,10 +9,11 @@ class ShiftFactory extends Factory
     public function definition(): array
     {
         return [
-            'nama_shift' => $this->faker->randomElement(['Pagi', 'Siang', 'Malam']),
-            'jam_masuk' => '08:00:00',
-            'jam_keluar' => '16:00:00',
-            'toleransi_menit' => 10,
+            'nama_shift'      => $this->faker->randomElement(['Pagi', 'Siang', 'Malam']),
+            'jam_masuk'       => '08:00:00',
+            'jam_keluar'      => '16:00:00',
+            'toleransi_menit' => 15,
+            'is_active'       => true,
         ];
     }
 }

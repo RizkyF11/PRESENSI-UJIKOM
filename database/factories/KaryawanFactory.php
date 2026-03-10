@@ -10,11 +10,12 @@ class KaryawanFactory extends Factory
     public function definition(): array
     {
         return [
-            'nip' => $this->faker->unique()->numerify('EMP###'),
+            'user_id' => User::factory(),
+            'nip'     => 'EMP' . $this->faker->unique()->numerify('####'),
             'jabatan' => $this->faker->jobTitle(),
-            'no_hp' => $this->faker->phoneNumber(),
-            'alamat' => $this->faker->address(),
-            'status' => 'aktif',
+            'no_hp'   => $this->faker->numerify('08##########'),
+            'alamat'  => $this->faker->address(),
+            'status'  => 'aktif',
         ];
     }
 }

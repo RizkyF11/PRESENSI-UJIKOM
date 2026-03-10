@@ -11,22 +11,25 @@ class ShiftSeeder extends Seeder
     {
         $shifts = [
             [
-                'nama_shift' => 'Pagi',
-                'jam_masuk' => '08:00:00',
-                'jam_keluar' => '16:00:00',
-                'toleransi_menit' => 10,
+                'nama_shift'      => 'Pagi',
+                'jam_masuk'       => '08:00:00',
+                'jam_keluar'      => '16:00:00',
+                'toleransi_menit' => 15,
+                'is_active'       => true,
             ],
             [
-                'nama_shift' => 'Siang',
-                'jam_masuk' => '12:00:00',
-                'jam_keluar' => '20:00:00',
-                'toleransi_menit' => 10,
+                'nama_shift'      => 'Siang',
+                'jam_masuk'       => '12:00:00',
+                'jam_keluar'      => '20:00:00',
+                'toleransi_menit' => 15,
+                'is_active'       => true,
             ],
             [
-                'nama_shift' => 'Malam',
-                'jam_masuk' => '00:00:00',
-                'jam_keluar' => '00:30:00',
-                'toleransi_menit' => 10,
+                'nama_shift'      => 'Malam',
+                'jam_masuk'       => '20:00:00',
+                'jam_keluar'      => '04:00:00',
+                'toleransi_menit' => 15,
+                'is_active'       => true,
             ],
         ];
 

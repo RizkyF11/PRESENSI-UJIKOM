@@ -3,20 +3,20 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\QrCode;
 use Illuminate\Support\Str;
+use App\Models\QrCode;
 
 class QrCodeSeeder extends Seeder
 {
     public function run(): void
     {
-        // nonaktifkan semua QR lama
+        // Nonaktifkan semua QR lama
         QrCode::query()->update(['is_active' => false]);
 
-        // buat QR aktif
+        // Buat satu QR aktif baru
         QrCode::create([
-            'kode' => Str::uuid(),
-            'is_active' => true,
+            'kode'       => Str::uuid(),
+            'is_active'  => true,
             'expired_at' => now()->addMinutes(5),
         ]);
     }

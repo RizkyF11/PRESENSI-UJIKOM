@@ -3,63 +3,162 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Karyawan;
+use App\Models\Shift;
+use App\Models\Izin;
+use App\Models\Cuti;
+use App\Models\Absensi;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('admin.dashboard');
-    }
+        $today = Carbon::today();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        // 1. Total Karyawan
+        $totalKaryawan = Karyawan::where('status', 'aktif')->count();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        // 2. Total Shift
+        $totalShift = Shift::where('is_active', true)->count();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        // 3. Pending Izin
+        $pendingIzin = Izin::where('status', 'pending')->count();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        // 4. Pending Cuti
+        $pendingCuti = Cuti::where('status', 'pending')->count();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        // 5. Absensi Hari Ini (hadir)
+        $absensiHariIni = Absensi::whereDate('tanggal', $today)
+            ->where('status_masuk', 'hadir')
+            ->count();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        // 6. Terlambat Hari Ini
+        $terlambatHariIni = Absensi::whereDate('tanggal', $today)
+            ->where('status_masuk', 'terlambat')
+            ->count();
+
+        // 7. Total seharusnya masuk (karyawan aktif)
+        $totalSeharusnyaMasuk = $totalKaryawan;
+
+        // 8. Alpha Hari Ini
+        // Karyawan aktif yang tidak punya record absensi hari ini
+        // dan tidak sedang izin/cuti approved hari ini
+        $karyawanHadirIds = Absensi::whereDate('tanggal', $today)
+            ->whereIn('status_masuk', ['hadir', 'terlambat'])
+            ->pluck('karyawan_id');
+
+        $karyawanIzinIds = Izin::whereDate('tanggal_mulai', '<=', $today)
+            ->whereDate('tanggal_selesai', '>=', $today)
+            ->where('status', 'approved')
+            ->pluck('karyawan_id');
+
+        $karyawanCutiIds = Cuti::whereDate('tanggal_mulai', '<=', $today)
+            ->whereDate('tanggal_selesai', '>=', $today)
+            ->where('status', 'approved')
+            ->pluck('karyawan_id');
+
+        $alphaHariIni = Karyawan::where('status', 'aktif')
+            ->whereNotIn('id', $karyawanHadirIds)
+            ->whereNotIn('id', $karyawanIzinIds)
+            ->whereNotIn('id', $karyawanCutiIds)
+            ->count();
+
+        // 9. Karyawan Izin/Cuti Hari Ini (approved)
+        $izinHariIni = Izin::with('karyawan.user')
+            ->whereDate('tanggal_mulai', '<=', $today)
+            ->whereDate('tanggal_selesai', '>=', $today)
+            ->where('status', 'approved')
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'Izin';
+                return $item;
+            });
+
+        $cutiHariIni = Cuti::with('karyawan.user')
+            ->whereDate('tanggal_mulai', '<=', $today)
+            ->whereDate('tanggal_selesai', '>=', $today)
+            ->where('status', 'approved')
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'Cuti';
+                return $item;
+            });
+
+        $izinCutiHariIni = $izinHariIni->concat($cutiHariIni)->sortBy('karyawan.user.nama');
+
+        // 10. Pending Izin & Cuti dengan detail karyawan
+        $pendingIzinData = Izin::with('karyawan.user')
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'Izin';
+                return $item;
+            });
+
+        $pendingCutiData = Cuti::with('karyawan.user')
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get()
+            ->map(function ($item) {
+                $item->type = 'Cuti';
+                return $item;
+            });
+
+        $pendingPengajuan = $pendingIzinData->concat($pendingCutiData)
+            ->sortByDesc('created_at')
+            ->take(5);
+
+        // 11. Statistik Kehadiran (Last 7 days)
+        $attendanceStats = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::today()->subDays($i);
+
+            $hadir = Absensi::whereDate('tanggal', $date)
+                ->where('status_masuk', 'hadir')
+                ->count();
+
+            $terlambat = Absensi::whereDate('tanggal', $date)
+                ->where('status_masuk', 'terlambat')
+                ->count();
+
+            $sakit = Izin::whereDate('tanggal_mulai', '<=', $date)
+                ->whereDate('tanggal_selesai', '>=', $date)
+                ->where('status', 'approved')
+                ->count();
+
+            $attendanceStats[] = [
+                'date'      => $date->format('D'),
+                'hadir'     => $hadir,
+                'terlambat' => $terlambat,
+                'sakit'     => $sakit,
+            ];
+        }
+
+        // 12. Persentase Kehadiran hari ini
+        $hadirDanTerlambat   = $absensiHariIni + $terlambatHariIni;
+        $persentaseKehadiran = $totalSeharusnyaMasuk > 0
+            ? round(($hadirDanTerlambat / $totalSeharusnyaMasuk) * 100, 1)
+            : 0;
+
+        return view('admin.dashboard', compact(
+            'totalKaryawan',
+            'totalShift',
+            'pendingIzin',
+            'pendingCuti',
+            'absensiHariIni',
+            'terlambatHariIni',
+            'alphaHariIni',
+            'izinCutiHariIni',
+            'pendingPengajuan',
+            'attendanceStats',
+            'persentaseKehadiran',
+            'totalSeharusnyaMasuk'
+        ));
     }
 }
