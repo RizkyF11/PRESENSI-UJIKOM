@@ -49,7 +49,7 @@ class Karyawan extends Model
     {
         return $this->belongsToMany(
             Shift::class,
-            'karyawan_shift'
+            'karyawan_shift',
         )->withPivot('tanggal_mulai', 'tanggal_selesai');
     }
 }

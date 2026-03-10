@@ -209,8 +209,8 @@
                 </div>
 
                 {{-- PAGINATION --}}
-                <div class="mt-3">
-                   {{ $absensi->appends(request()->query())->links() }}
+                <div class="mt-3 d-flex justify-content-center">
+                    {{ $absensi->appends(request()->query())->links('pagination::bootstrap-4') }}
                 </div>
 
             </div>

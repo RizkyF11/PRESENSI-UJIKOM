@@ -124,15 +124,14 @@ class AbsensiController extends Controller
 
     public function export(Request $request)
     {
-        // VALIDASI
-        if (!$request->filled('tanggal_mulai') || !$request->filled('tanggal_selesai')) {
-            return redirect()->back()->with('error', 'Tanggal harus dipilih terlebih dahulu');
-        }
-        
+        $request->validate([
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date',
+        ]);
+
         $tanggalMulai = $request->tanggal_mulai;
         $tanggalSelesai = $request->tanggal_selesai;
-        $karyawanId = $request->karyawan_id;
-
+        $karyawanId = $request->input('karyawan_id');
 
         $namaFile = 'rekap-absensi-' .
             Carbon::parse($tanggalMulai)->format('d-m-Y') .

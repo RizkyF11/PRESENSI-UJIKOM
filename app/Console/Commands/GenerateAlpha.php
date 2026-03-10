@@ -22,17 +22,36 @@ class GenerateAlpha extends Command
     {
         $now = Carbon::now();
 
-        $karyawanList = Karyawan::with(['shift' => function ($q) use ($now) {
+        $karyawanList = Karyawan::whereHas('shifts', function ($q) use ($now) {
             $q->wherePivot('tanggal_mulai', '<=', $now->toDateString())
                 ->where(function ($query) use ($now) {
                     $query->wherePivot('tanggal_selesai', '>=', $now->toDateString())
                         ->orWhereNull('tanggal_selesai');
                 });
-        }])->get();
+        })
+            ->whereDoesntHave('absensi', function ($q) use ($now) {
+                $q->whereDate('tanggal', $now->toDateString());
+            })
+            ->with('shifts')
+            ->get();
 
         foreach ($karyawanList as $karyawan) {
 
-            $shift = $karyawan->shift->first();
+            $shift = $karyawan->shifts
+                ->filter(function ($shift) use ($now) {
+
+                    $mulai = Carbon::parse($shift->pivot->tanggal_mulai);
+                    $selesai = $shift->pivot->tanggal_selesai
+                        ? Carbon::parse($shift->pivot->tanggal_selesai)
+                        : null;
+
+                    if ($selesai) {
+                        return $now->between($mulai, $selesai);
+                    }
+
+                    return $now->gte($mulai);
+                })
+                ->first();
 
             if (!$shift) {
                 continue;
@@ -64,8 +83,6 @@ class GenerateAlpha extends Command
             if ($isShiftMalam) {
                 $batasAlpha->addDay();
             }
-
-            $batasAlpha->addMinutes($shift->toleransi_menit);
 
             // Kalau belum lewat batas → skip
             if ($now->lessThan($batasAlpha)) {
