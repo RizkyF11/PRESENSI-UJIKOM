@@ -206,15 +206,15 @@
                 </div>
 
                 <!-- Profil -->
-                <a href="{{ route('profile.edit') }}" class="nav-item-bottom {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
-                    <span class="iconify mb-1" data-icon="{{ request()->routeIs('profile.edit') ? 'heroicons:user-solid' : 'heroicons:user' }}" data-width="24"></span>
+                <a href="{{ route('karyawan.profile.show') }}" class="nav-item-bottom {{ request()->routeIs('karyawan.profile.*') ? 'active' : '' }}">
+                    <span class="iconify mb-1" data-icon="{{ request()->routeIs('karyawan.profile.*') ? 'heroicons:user-solid' : 'heroicons:user' }}" data-width="24"></span>
                     <span>Profil</span>
                 </a>
 
                 <!-- Logout -->
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-nav').submit();" class="nav-item-bottom text-danger">
                     <span class="iconify mb-1" data-icon="heroicons:arrow-right-on-rectangle" data-width="24"></span>
-                    <span>Keluar</span>
+                    <span>Logout</span>
                 </a>
                 <form id="logout-form-nav" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf

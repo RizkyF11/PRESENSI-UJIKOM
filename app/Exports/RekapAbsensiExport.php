@@ -20,17 +20,17 @@ class RekapAbsensiExport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
+            new RekapAbsensiSheet(
+                $this->tanggalMulai,
+                $this->tanggalSelesai,
+                $this->karyawanId
+            ),
             new DetailAbsensiSheet(
                 $this->tanggalMulai,
                 $this->tanggalSelesai,
                 $this->karyawanId
             ),
 
-            new RekapAbsensiSheet(
-                $this->tanggalMulai,
-                $this->tanggalSelesai,
-                $this->karyawanId
-            )
         ];
     }
 }

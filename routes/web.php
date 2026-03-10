@@ -139,6 +139,11 @@ Route::middleware('auth')->group(function () {
 
         // Route Jadwal Shift
         Route::get('/karyawan/jadwal-shift', [\App\Http\Controllers\Karyawan\JadwalShiftController::class, 'index'])->name('karyawan.jadwal.index');
+
+        // Route Profile Karyawan
+        Route::get('/karyawan/profile', [\App\Http\Controllers\Karyawan\ProfileClientController::class, 'show'])->name('karyawan.profile.show');
+        Route::get('/karyawan/profile/edit', [\App\Http\Controllers\Karyawan\ProfileClientController::class, 'edit'])->name('karyawan.profile.edit');
+        Route::put('/karyawan/profile/update', [\App\Http\Controllers\Karyawan\ProfileClientController::class, 'update'])->name('karyawan.profile.update');
     });
 
     // Route Profile (Bawaan Breeze)
