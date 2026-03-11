@@ -359,14 +359,9 @@
                     <h2><i class="fa fa-bar-chart"></i> Grafik Kehadiran 7 Hari Terakhir</h2>
                 </div>
                 <div class="body">
-                    <div id="chart-data"
-                        data-labels='{{ json_encode(array_column($attendanceStats, 'date')) }}'
-                        data-hadir='{{ json_encode(array_column($attendanceStats, 'hadir')) }}'
-                        data-terlambat='{{ json_encode(array_column($attendanceStats, 'terlambat')) }}'
-                        data-sakit='{{ json_encode(array_column($attendanceStats, 'sakit')) }}'
-                        style="display:none;">
+                    <div style="position: relative; height: 320px;">
+                        <canvas id="attendanceChart"></canvas>
                     </div>
-                    <div id="attendanceChart" style="height: 300px;"></div>
                 </div>
             </div>
         </div>
@@ -434,47 +429,93 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        var el = document.getElementById('chart-data');
-        var labels = JSON.parse(el.getAttribute('data-labels'));
-        var hadir = JSON.parse(el.getAttribute('data-hadir'));
-        var terlambat = JSON.parse(el.getAttribute('data-terlambat'));
-        var sakit = JSON.parse(el.getAttribute('data-sakit'));
+        const ctx = document.getElementById('attendanceChart');
+        if (!ctx) return;
 
-        c3.generate({
-            bindto: '#attendanceChart',
+        const labels = @json(array_column($attendanceStats, 'date'));
+        const hadir = @json(array_column($attendanceStats, 'hadir'));
+        const terlambat = @json(array_column($attendanceStats, 'terlambat'));
+        const sakit = @json(array_column($attendanceStats, 'sakit'));
+
+        new Chart(ctx, {
+            type: 'bar',
             data: {
-                columns: [
-                    ['Hadir'].concat(hadir),
-                    ['Terlambat'].concat(terlambat),
-                    ['Sakit/Izin'].concat(sakit),
-                ],
-                type: 'bar',
-                colors: {
-                    'Hadir': '#4CAF50',
-                    'Terlambat': '#FF9800',
-                    'Sakit/Izin': '#4099FF',
-                }
-            },
-            axis: {
-                x: {
-                    type: 'category',
-                    categories: labels
-                },
-                y: {
-                    min: 0,
-                    padding: {
-                        bottom: 0
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Hadir',
+                        data: hadir,
+                        backgroundColor: 'rgba(76, 175, 80, 0.8)',
+                        borderRadius: 6,
+                        maxBarThickness: 28,
+                    },
+                    {
+                        label: 'Terlambat',
+                        data: terlambat,
+                        backgroundColor: 'rgba(255, 152, 0, 0.85)',
+                        borderRadius: 6,
+                        maxBarThickness: 28,
+                    },
+                    {
+                        label: 'Sakit/Izin',
+                        data: sakit,
+                        backgroundColor: 'rgba(64, 153, 255, 0.85)',
+                        borderRadius: 6,
+                        maxBarThickness: 28,
                     }
-                }
+                ]
             },
-            bar: {
-                width: {
-                    ratio: 0.5
-                }
-            },
-            grid: {
-                y: {
-                    show: true
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 8,
+                            padding: 16,
+                        }
+                    },
+                    tooltip: {
+                        cornerRadius: 8,
+                        backgroundColor: 'rgba(17, 24, 39, 0.9)',
+                        padding: 12,
+                        titleFont: { size: 12, weight: '600' },
+                        bodyFont: { size: 11 },
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            maxRotation: 0,
+                            autoSkip: true,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(156, 163, 175, 0.3)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            precision: 0,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
                 }
             }
         });
