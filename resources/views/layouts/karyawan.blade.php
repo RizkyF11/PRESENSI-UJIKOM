@@ -205,6 +205,12 @@
                     <span class="scan-text {{ request()->routeIs('karyawan.scan') ? 'active' : '' }}">Scan</span>
                 </div>
 
+                 <!-- Rapor -->
+                 <a href="{{ route('karyawan.rapor') }}" class="nav-item-bottom {{ request()->routeIs('karyawan.rapor') ? 'active' : '' }}">
+                        <span class="iconify mb-1" data-icon="{{ request()->routeIs('karyawan.rapor') ? 'heroicons:chart-pie-solid' : 'heroicons:chart-pie' }}" data-width="24"></span>
+                        <span>Rapor</span>
+                    </a>
+
                 <!-- Profil -->
                 <a href="{{ route('karyawan.profile.show') }}" class="nav-item-bottom {{ request()->routeIs('karyawan.profile.*') ? 'active' : '' }}">
                     <span class="iconify mb-1" data-icon="{{ request()->routeIs('karyawan.profile.*') ? 'heroicons:user-solid' : 'heroicons:user' }}" data-width="24"></span>
@@ -212,13 +218,13 @@
                 </a>
 
                 <!-- Logout -->
-                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-nav').submit();" class="nav-item-bottom text-danger">
+                <!-- <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-nav').submit();" class="nav-item-bottom text-danger">
                     <span class="iconify mb-1" data-icon="heroicons:arrow-right-on-rectangle" data-width="24"></span>
                     <span>Logout</span>
                 </a>
                 <form id="logout-form-nav" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
-                </form>
+                </form> -->
 
             </div>
         </nav>

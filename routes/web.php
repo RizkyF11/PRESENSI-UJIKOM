@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\LokasiKantorController;
 use App\Http\Controllers\Admin\ShiftController;
 use App\Http\Controllers\AssessmentCategoryController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\RaporController;
 use App\Http\Controllers\ManagerDashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -171,7 +172,7 @@ Route::middleware('auth')->group(function () {
 
         // Rapor Karyawan (Read Only)
 
-        Route::get('/karyawan/rapor', [AssessmentController::class, 'rapor'])
+        Route::get('/karyawan/rapor', [RaporController::class, 'index'])
             ->name('karyawan.rapor');
     });
 
