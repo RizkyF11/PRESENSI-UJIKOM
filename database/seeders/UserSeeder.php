@@ -20,6 +20,16 @@ class UserSeeder extends Seeder
             ]
         );
 
+        // manager
+        User::updateOrCreate(
+            ['email' => 'manager@gmail.com'],
+            [
+                'nama'     => 'Manager',
+                'role'     => 'manager',
+                'password' => Hash::make('manager123'),
+            ]
+        );
+
         // 10 Karyawan
         for ($i = 1; $i <= 10; $i++) {
             User::updateOrCreate(

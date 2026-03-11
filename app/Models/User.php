@@ -52,4 +52,19 @@ class User extends Authenticatable
     {
         return $this->hasOne(Karyawan::class);
     }
+
+    // 1 manager bisa punya banyak sesi penilaian
+    public function assessmentsAsEvaluator()
+    {
+        return $this->hasMany(Assessment::class, 'evaluator_id');
+    }
+
+    // 1 karyawan bisa di nilai berkali-kali
+    public function assessmentsAsEvaluatee()
+    {
+        return $this->hasMany(Assessment::class, 'evaluatee_id');
+    }
+
+    
+    
 }

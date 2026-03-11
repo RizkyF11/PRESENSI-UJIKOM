@@ -10,6 +10,9 @@ use App\Http\Controllers\Admin\IzinController;
 use App\Http\Controllers\Admin\KaryawanShiftController;
 use App\Http\Controllers\Admin\LokasiKantorController;
 use App\Http\Controllers\Admin\ShiftController;
+use App\Http\Controllers\AssessmentCategoryController;
+use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\ManagerDashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +33,10 @@ Route::middleware('auth')->group(function () {
 
         if ($role === 'karyawan') {
             return redirect()->route('karyawan.dashboard');
+        }
+
+        if ($role === 'manager') {
+            return redirect()->route('manager.dashboard');
         }
 
         return redirect('/'); // Default jika role tidak jelas
@@ -97,7 +104,24 @@ Route::middleware('auth')->group(function () {
             Route::post('cuti/{id}/reject', [CutiController::class, 'reject'])->name('cuti.reject');
 
             Route::delete('cuti/{id}', [CutiController::class, 'destroy'])->name('cuti.destroy');
+
+            // assessment categories
+            Route::resource('assessment-categories', AssessmentCategoryController::class)->except(['show']);
+            Route::patch(
+                'assessment-categories/{assessmentCategory}/toggle',
+                [AssessmentCategoryController::class, 'toggleActive']
+            )
+                ->name('assessment-categories.toggle');
+
+            //assessment laporan read only - admin only
+            Route::get('assessment/laporan', [AssessmentController::class, 'laporanAdmin'])
+                ->name('assessment.laporan');
+
+            // Admin bisa hapus penilaian
+            Route::delete('assessment/{assessment}', [AssessmentController::class, 'destroy'])
+                ->name('assessment.destroy');
         });
+
 
 
 
@@ -143,7 +167,27 @@ Route::middleware('auth')->group(function () {
         Route::get('/karyawan/profile', [\App\Http\Controllers\Karyawan\ProfileClientController::class, 'show'])->name('karyawan.profile.show');
         Route::get('/karyawan/profile/edit', [\App\Http\Controllers\Karyawan\ProfileClientController::class, 'edit'])->name('karyawan.profile.edit');
         Route::put('/karyawan/profile/update', [\App\Http\Controllers\Karyawan\ProfileClientController::class, 'update'])->name('karyawan.profile.update');
+
+
+        // Rapor Karyawan (Read Only)
+
+        Route::get('/karyawan/rapor', [AssessmentController::class, 'rapor'])
+            ->name('karyawan.rapor');
     });
+
+
+    Route::middleware(['auth', 'can:manager'])
+        ->prefix('manager')
+        ->as('manager.')
+        ->group(function () {
+
+            // Dashboard manager
+            Route::get('/dashboard', [AssessmentController::class, 'index'])
+                ->name('dashboard');
+
+            // Penilaian karyawan
+            Route::resource('assessment', AssessmentController::class)->except(['show']);
+        });
 
     // Route Profile (Bawaan Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
