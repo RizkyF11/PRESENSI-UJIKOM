@@ -29,7 +29,7 @@
                 </div>
                 <div class="body">
 
-                    {{-- Filter Periode --}}
+                    {{-- Search --}}
                     <div class="mb-3">
                         <input type="text"
                             id="searchInput"
@@ -40,14 +40,18 @@
 
                     @forelse($assessments as $item)
                     @php
-                        $rataRata = $item->details->avg('score');
-                        $rataRata = round($rataRata, 1);
+                        $rataRata = round($item->details->avg('score'), 1);
 
-                        if ($rataRata >= 4.5)      { $badge = 'badge-success';  $label = 'Istimewa'; }
-                        elseif ($rataRata >= 3.5)  { $badge = 'badge-primary';  $label = 'Sangat Baik'; }
-                        elseif ($rataRata >= 2.5)  { $badge = 'badge-info';     $label = 'Baik'; }
-                        elseif ($rataRata >= 1.5)  { $badge = 'badge-warning';  $label = 'Cukup'; }
-                        else                       { $badge = 'badge-danger';   $label = 'Kurang'; }
+                        if ($rataRata >= 4.5)      { $badge = 'badge-success'; $label = 'Istimewa'; }
+                        elseif ($rataRata >= 3.5)  { $badge = 'badge-primary'; $label = 'Sangat Baik'; }
+                        elseif ($rataRata >= 2.5)  { $badge = 'badge-info';    $label = 'Baik'; }
+                        elseif ($rataRata >= 1.5)  { $badge = 'badge-warning'; $label = 'Cukup'; }
+                        else                       { $badge = 'badge-danger';  $label = 'Kurang'; }
+
+                        // Kelompokkan detail per kategori
+                        $detailsPerKategori = $item->details->groupBy(
+                            fn($d) => $d->question->category->nama ?? 'Lainnya'
+                        );
                     @endphp
 
                     <div class="card mb-3 laporan-card"
@@ -56,7 +60,7 @@
                         <div class="body">
 
                             {{-- Header Card --}}
-                            <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded-circle bg-primary text-white
                                         d-flex align-items-center justify-content-center mr-3"
@@ -68,7 +72,8 @@
                                         <h6 class="mb-0">{{ $item->evaluatee->nama ?? '-' }}</h6>
                                         <small class="text-muted">
                                             {{ $item->evaluatee->karyawan->jabatan ?? '-' }} |
-                                            Dinilai oleh: <strong>{{ $item->evaluator->nama ?? '-' }}</strong>
+                                            Dinilai oleh:
+                                            <strong>{{ $item->evaluator->nama ?? '-' }}</strong>
                                         </small>
                                     </div>
                                 </div>
@@ -84,18 +89,34 @@
                                 </div>
                             </div>
 
-                            {{-- Detail Nilai Per Kategori --}}
-                            <div class="row mt-2">
-                                @foreach($item->details as $detail)
-                                <div class="col-md-4 col-sm-6 mb-2">
-                                    <small class="text-muted d-block">
-                                        {{ $detail->category->nama ?? '-' }}
+                            {{-- Detail Nilai Per Kategori → Per Pertanyaan --}}
+                            @foreach($detailsPerKategori as $namaKategori => $details)
+                            <div class="mb-3">
+                                {{-- Nama Kategori + Rata-rata Kategori --}}
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small class="font-weight-bold text-primary">
+                                        <i class="fa fa-folder-open-o"></i>
+                                        {{ $namaKategori }}
+                                    </small>
+                                    <small class="text-muted">
+                                        Rata-rata:
+                                        <strong>{{ round($details->avg('score'), 1) }}/5</strong>
+                                    </small>
+                                </div>
+
+                                {{-- List Pertanyaan + Bintang --}}
+                                @foreach($details as $detail)
+                                <div class="d-flex justify-content-between align-items-center
+                                    py-1 {{ !$loop->last ? 'border-bottom' : '' }}">
+                                    <small class="text-muted" style="max-width: 60%;">
+                                        {{ $loop->iteration }}.
+                                        {{ $detail->question->question ?? '-' }}
                                     </small>
                                     <div class="d-flex align-items-center">
                                         @for($i = 1; $i <= 5; $i++)
                                             <i class="fa fa-star"
-                                                data-filled="{{ $i <= $detail->score ? '1' : '0' }}"
-                                                style="font-size:14px; margin-right:1px;">
+                                                style="font-size:13px; margin-right:1px;
+                                                color: {{ $i <= $detail->score ? '#f39c12' : '#ddd' }};">
                                             </i>
                                         @endfor
                                         <small class="ml-1 text-muted">
@@ -105,6 +126,7 @@
                                 </div>
                                 @endforeach
                             </div>
+                            @endforeach
 
                             {{-- Catatan --}}
                             @if($item->general_notes)
@@ -146,18 +168,14 @@
 </div>
 
 <script>
-    
-    document.querySelectorAll('.fa-star[data-filled]').forEach(star => {
-        star.style.color = star.dataset.filled === '1' ? '#f39c12' : '#ddd';
-    });
-
+    // Filter pencarian nama / periode
     document.getElementById('searchInput').addEventListener('keyup', function () {
         const keyword = this.value.toLowerCase();
         document.querySelectorAll('.laporan-card').forEach(card => {
             const nama    = card.dataset.nama;
             const periode = card.dataset.periode;
-            card.style.display = (nama.includes(keyword) || periode.includes(keyword))
-                ? 'block' : 'none';
+            card.style.display =
+                (nama.includes(keyword) || periode.includes(keyword)) ? 'block' : 'none';
         });
     });
 </script>

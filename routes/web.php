@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\LokasiKantorController;
 use App\Http\Controllers\Admin\ShiftController;
 use App\Http\Controllers\AssessmentCategoryController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\AssessmentQuestionController;
 use App\Http\Controllers\RaporController;
 use App\Http\Controllers\ManagerDashboardController;
 use Illuminate\Support\Facades\Auth;
@@ -113,6 +114,24 @@ Route::middleware('auth')->group(function () {
                 [AssessmentCategoryController::class, 'toggleActive']
             )
                 ->name('assessment-categories.toggle');
+
+            //assessment questions
+            // 
+            Route::resource(
+                'assessment-categories.questions',
+                AssessmentQuestionController::class
+            )->except(['show'])->names([
+                'index'   => 'assessment-questions.index',
+                'create'  => 'assessment-questions.create',
+                'store'   => 'assessment-questions.store',
+                'edit'    => 'assessment-questions.edit',
+                'update'  => 'assessment-questions.update',
+                'destroy' => 'assessment-questions.destroy',
+            ]);
+            Route::patch(
+                'assessment-categories/{assessmentCategory}/questions/{question}/toggle',
+                [AssessmentQuestionController::class, 'toggleActive']
+            )->name('assessment-questions.toggle');
 
             //assessment laporan read only - admin only
             Route::get('assessment/laporan', [AssessmentController::class, 'laporanAdmin'])

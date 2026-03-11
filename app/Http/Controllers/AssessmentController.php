@@ -55,17 +55,13 @@ class AssessmentController extends Controller
             ->with('karyawan')
             ->findOrFail($request->karyawan_id);
 
-        $categories = AssessmentCategory::where('is_active', true)->get();
+        // Ambil kategori aktif beserta pertanyaan aktifnya (eager load)
+        $categories = AssessmentCategory::with('activeQuestions')
+            ->where('is_active', true)
+            ->orderBy('urutan')
+            ->get();
 
-        // Cek sudah dinilai bulan ini
-        $existing = Assessment::where('evaluator_id', Auth::id())
-            ->where('evaluatee_id', $karyawan->id)
-            ->whereMonth('assessment_date', now()->month)
-            ->whereYear('assessment_date', now()->year)
-            ->with('details')
-            ->first();
-
-        // Karyawan berikutnya yang belum dinilai
+        // Karyawan berikutnya yang belum dinilai bulan ini
         $sudahDinilaiIds = Assessment::where('evaluator_id', Auth::id())
             ->whereMonth('assessment_date', now()->month)
             ->whereYear('assessment_date', now()->year)
@@ -78,18 +74,22 @@ class AssessmentController extends Controller
             ->with('karyawan')
             ->first();
 
+        // existingScores kosong karena ini form baru
+        $existingScores = [];
+        $assessment     = null;
+
         return view('assessment.manager.form', compact(
             'karyawan',
             'categories',
-            'existing',
+            'existingScores',
+            'assessment',
             'berikutnya'
-        ))->with('existingScores', []);
+        ));
     }
 
     // =============================================
     // STORE - Simpan penilaian baru
-    // Header → assessments
-    // Detail scores → assessment_details
+    // scores[] dikirim per question_id
     // =============================================
     public function store(Request $request)
     {
@@ -113,7 +113,7 @@ class AssessmentController extends Controller
                 ->with('error', 'Karyawan ini sudah dinilai bulan ini!');
         }
 
-        // STEP 1 - Simpan header ke tabel assessments
+        // Simpan header ke tabel assessments
         $assessment = Assessment::create([
             'evaluator_id'    => Auth::id(),
             'evaluatee_id'    => $request->evaluatee_id,
@@ -122,10 +122,10 @@ class AssessmentController extends Controller
             'general_notes'   => $request->general_notes,
         ]);
 
-        // STEP 2 - Simpan detail ke tabel assessment_details
-        foreach ($request->scores as $categoryId => $score) {
+        // Simpan detail per question_id ke assessment_details
+        foreach ($request->scores as $questionId => $score) {
             $assessment->details()->create([
-                'category_id' => $categoryId,
+                'question_id' => $questionId,
                 'score'       => $score,
             ]);
         }
@@ -161,22 +161,25 @@ class AssessmentController extends Controller
     // =============================================
     public function edit(Assessment $assessment)
     {
-        // Hanya manager pemilik yang bisa edit
         if ($assessment->evaluator_id !== Auth::id()) {
             abort(403, 'Anda tidak berhak mengubah penilaian ini!');
         }
 
-        $karyawan   = User::with('karyawan')
-                        ->findOrFail($assessment->evaluatee_id);
+        $karyawan = User::with('karyawan')
+            ->findOrFail($assessment->evaluatee_id);
 
-        $categories = AssessmentCategory::where('is_active', true)->get();
+        // Ambil kategori aktif beserta pertanyaan aktifnya
+        $categories = AssessmentCategory::with('activeQuestions')
+            ->where('is_active', true)
+            ->orderBy('urutan')
+            ->get();
 
-        // Map nilai lama [category_id => score]
+        // Map nilai lama [question_id => score]
+        // Dipakai di blade untuk menampilkan bintang yang sudah dipilih
         $existingScores = $assessment->details
-            ->pluck('score', 'category_id')
+            ->pluck('score', 'question_id')
             ->toArray();
-        
-        $existing = null;
+
         $berikutnya = null;
 
         return view('assessment.manager.form', compact(
@@ -184,7 +187,6 @@ class AssessmentController extends Controller
             'categories',
             'assessment',
             'existingScores',
-            'existing',
             'berikutnya'
         ));
     }
@@ -194,7 +196,6 @@ class AssessmentController extends Controller
     // =============================================
     public function update(Request $request, Assessment $assessment)
     {
-        // Hanya manager pemilik yang bisa update
         if ($assessment->evaluator_id !== Auth::id()) {
             abort(403, 'Anda tidak berhak mengubah penilaian ini!');
         }
@@ -206,7 +207,6 @@ class AssessmentController extends Controller
             'scores.*'      => 'required|integer|min:1|max:5',
         ]);
 
-        // Update header di tabel assessments
         $assessment->update([
             'period'        => $request->period,
             'general_notes' => $request->general_notes,
@@ -215,9 +215,9 @@ class AssessmentController extends Controller
         // Hapus detail lama lalu insert ulang
         $assessment->details()->delete();
 
-        foreach ($request->scores as $categoryId => $score) {
+        foreach ($request->scores as $questionId => $score) {
             $assessment->details()->create([
-                'category_id' => $categoryId,
+                'question_id' => $questionId,
                 'score'       => $score,
             ]);
         }
@@ -228,8 +228,6 @@ class AssessmentController extends Controller
 
     // =============================================
     // DESTROY - Hapus penilaian
-    // Manager hanya bisa hapus miliknya sendiri
-    // Admin bisa hapus semua
     // =============================================
     public function destroy(Assessment $assessment)
     {
@@ -244,40 +242,17 @@ class AssessmentController extends Controller
     }
 
     // =============================================
-    // RAPOR - Karyawan lihat nilai diri sendiri
-    // Grafik radar + history feedback
-    // =============================================
-    public function rapor()
-    {
-        $assessments = Assessment::where('evaluatee_id', Auth::id())
-            ->with(['details.category', 'evaluator.karyawan'])
-            ->latest('assessment_date')
-            ->get();
-
-        // Rata-rata nilai per kategori untuk grafik radar
-        $radarData = $assessments->flatMap->details
-            ->groupBy(fn($detail) => $detail->category->nama)
-            ->map(fn($details) => round($details->avg('score'), 1));
-
-        return view('assessment.rapor', compact(
-            'assessments',
-            'radarData'
-        ));
-    }
-
-    // =============================================
-    // LAPORAN ADMIN - Lihat semua penilaian
-    // Read only
+    // LAPORAN ADMIN - Lihat semua penilaian (read only)
     // =============================================
     public function laporanAdmin()
     {
         $assessments = Assessment::with([
             'evaluator.karyawan',
             'evaluatee.karyawan',
-            'details.category'
+            'details.question.category'
         ])
-        ->latest('assessment_date')
-        ->get();
+            ->latest('assessment_date')
+            ->get();
 
         return view('assessment.laporan', compact('assessments'));
     }

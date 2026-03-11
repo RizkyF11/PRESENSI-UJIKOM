@@ -15,11 +15,11 @@ class Assessment extends Model
     ];
 
     protected $casts = [
-        'assessment_date' => 'date', // Otomatis cast ke Carbon date
+        'assessment_date' => 'date',
     ];
 
     // =============================================
-    // Siapa yang menilai (relasi ke manager)
+    // Siapa yang menilai (manager/guru)
     // =============================================
     public function evaluator()
     {
@@ -27,7 +27,7 @@ class Assessment extends Model
     }
 
     // =============================================
-    // Siapa yang dinilai (relasi ke karyawan)
+    // Siapa yang dinilai (karyawan)
     // =============================================
     public function evaluatee()
     {
@@ -36,9 +36,31 @@ class Assessment extends Model
 
     // =============================================
     // 1 sesi penilaian punya banyak detail nilai
+    // Setiap baris detail = 1 pertanyaan yang dinilai
     // =============================================
     public function details()
     {
         return $this->hasMany(AssessmentDetail::class);
+    }
+
+    // =============================================
+    // Helper: hitung rata-rata semua pertanyaan
+    // dalam sesi ini. Pakai: $assessment->rata_rata
+    // =============================================
+    public function getRataRataAttribute(): float
+    {
+        return round($this->details->avg('score') ?? 0, 2);
+    }
+
+    // =============================================
+    // Helper: rata-rata per kategori dalam sesi ini
+    // Pakai: $assessment->rata_rata_per_kategori
+    // Return: ['Teamwork' => 4.2, 'Kedisiplinan' => 3.8]
+    // =============================================
+    public function getRataRataPerKategoriAttribute()
+    {
+        return $this->details
+            ->groupBy(fn($d) => $d->question->category->nama)
+            ->map(fn($group) => round($group->avg('score'), 2));
     }
 }

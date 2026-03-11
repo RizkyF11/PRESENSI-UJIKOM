@@ -44,16 +44,15 @@
                             @method('PUT')
                         @endif
 
-                        {{-- Hidden ID karyawan yang dinilai --}}
                         <input type="hidden" name="evaluatee_id" value="{{ $karyawan->id }}">
 
                         {{-- Info Karyawan --}}
-                        <div class="card mb-4" data-info-card="true">
+                        <div class="card mb-4" style="border-left: 4px solid #007bff;">
                             <div class="body py-3 px-3">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded-circle bg-primary text-white
                                         d-flex align-items-center justify-content-center mr-3"
-                                        style="width:50px; height:50px; font-size:22px;
+                                        style="width:55px; height:55px; font-size:24px;
                                         font-weight:bold; flex-shrink:0;">
                                         {{ strtoupper(substr($karyawan->nama, 0, 1)) }}
                                     </div>
@@ -89,7 +88,7 @@
                             </div>
                         </div>
 
-                        {{-- Star Rating Per Kategori --}}
+                        {{-- Penilaian Per Kategori & Pertanyaan --}}
                         <div class="form-group">
                             <label>
                                 Penilaian Per Indikator
@@ -97,61 +96,75 @@
                             </label>
                             <p class="text-muted small mb-3">
                                 <i class="fa fa-info-circle"></i>
-                                Klik bintang untuk memberikan nilai
+                                Klik bintang untuk memberikan nilai pada setiap pertanyaan
                                 (1 = Kurang, 5 = Istimewa)
                             </p>
 
                             @forelse($categories as $category)
-                            @php
-                                $existingScore = $existingScores[$category->id]
-                                    ?? ($existing?->details
-                                        ->where('category_id', $category->id)
-                                        ->first()?->score)
-                                    ?? 0;
-                                $scoreLabels = [
-                                    0 => 'Belum dinilai',
-                                    1 => 'Kurang',
-                                    2 => 'Cukup',
-                                    3 => 'Baik',
-                                    4 => 'Sangat Baik',
-                                    5 => 'Istimewa'
-                                ];
-                            @endphp
 
-                            <div class="card mb-2" data-category-card="true">
+                            {{-- Card per Kategori --}}
+                            <div class="card mb-3" style="border-left: 4px solid #6c757d;">
                                 <div class="body py-3 px-3">
-                                    <div class="d-flex justify-content-between
-                                        align-items-center flex-wrap">
 
-                                        {{-- Nama & Deskripsi Kategori --}}
-                                        <div style="min-width: 200px;">
-                                            <strong>{{ $category->nama }}</strong>
-                                            @if($category->description)
-                                                <br>
-                                                <small class="text-muted">
-                                                    {{ $category->description }}
-                                                </small>
-                                            @endif
+                                    {{-- Header Kategori --}}
+                                    <h6 class="mb-1 text-primary">
+                                        <i class="fa fa-folder-open-o"></i>
+                                        {{ $category->nama }}
+                                    </h6>
+                                    @if($category->description)
+                                        <small class="text-muted d-block mb-3">
+                                            {{ $category->description }}
+                                        </small>
+                                    @endif
+
+                                    {{-- Loop Pertanyaan dalam Kategori --}}
+                                    @forelse($category->activeQuestions as $question)
+                                    @php
+                                        $existingScore = $existingScores[$question->id] ?? 0;
+                                        $scoreLabels   = [
+                                            0 => 'Belum dinilai',
+                                            1 => 'Kurang',
+                                            2 => 'Cukup',
+                                            3 => 'Baik',
+                                            4 => 'Sangat Baik',
+                                            5 => 'Istimewa',
+                                        ];
+                                    @endphp
+
+                                    <div class="d-flex justify-content-between align-items-center
+                                        flex-wrap py-2 {{ !$loop->last ? 'border-bottom' : '' }}">
+
+                                        {{-- Teks Pertanyaan --}}
+                                        <div style="min-width: 200px; max-width: 55%;">
+                                            <span class="text-dark">
+                                                {{ $loop->iteration }}. {{ $question->question }}
+                                            </span>
                                         </div>
 
-                                        {{-- Bintang --}}
+                                        {{-- Star Rating per Pertanyaan --}}
                                         <div class="star-rating d-flex align-items-center mt-2"
-                                            data-category="{{ $category->id }}"
+                                            data-question="{{ $question->id }}"
                                             data-current="{{ $existingScore }}">
+
+                                            {{-- 5 Bintang --}}
                                             @for($i = 1; $i <= 5; $i++)
                                             <i class="fa fa-star star"
                                                 data-value="{{ $i }}"
-                                                style="font-size:30px; cursor:pointer;
+                                                style="font-size:28px; cursor:pointer;
                                                 margin: 0 2px; transition: color 0.1s;">
                                             </i>
                                             @endfor
+
+                                            {{-- Hidden input — scores[question_id] = nilai --}}
                                             <input type="hidden"
-                                                name="scores[{{ $category->id }}]"
-                                                id="score_{{ $category->id }}"
+                                                name="scores[{{ $question->id }}]"
+                                                id="score_{{ $question->id }}"
                                                 value="{{ $existingScore }}">
-                                            <span class="ml-3"
-                                                id="label_{{ $category->id }}"
-                                                style="min-width: 120px;">
+
+                                            {{-- Label nilai --}}
+                                            <span class="ml-2"
+                                                id="label_{{ $question->id }}"
+                                                style="min-width: 120px; font-size: 13px;">
                                                 @if($existingScore > 0)
                                                     <strong class="text-warning">
                                                         {{ $existingScore }}/5
@@ -164,13 +177,21 @@
                                         </div>
 
                                     </div>
+                                    @empty
+                                    <div class="alert alert-warning mb-0">
+                                        <i class="fa fa-exclamation-triangle"></i>
+                                        Belum ada pertanyaan aktif untuk kategori ini.
+                                    </div>
+                                    @endforelse
+
                                 </div>
                             </div>
+
                             @empty
                             <div class="alert alert-warning">
                                 <i class="fa fa-exclamation-triangle"></i>
                                 Belum ada kategori penilaian aktif.
-                                Hubungi admin untuk menambahkan kategori.
+                                Hubungi admin untuk menambahkan kategori dan pertanyaan.
                             </div>
                             @endforelse
                         </div>
@@ -194,8 +215,8 @@
                             <i class="fa fa-save"></i> Simpan
                         </button>
 
-                        {{-- Tombol Simpan & Lanjut (hanya saat tambah baru) --}}
-                        @if(!isset($assessment) && isset($berikutnya))
+                        {{-- Tombol Simpan & Lanjut (hanya saat tambah baru & ada karyawan berikutnya) --}}
+                        @if(!isset($assessment) && isset($berikutnya) && $berikutnya)
                         <button type="submit" name="next" value="1" class="btn btn-success">
                             <i class="fa fa-arrow-right"></i>
                             Simpan & Lanjut → {{ $berikutnya->nama }}
@@ -216,66 +237,70 @@
 <script>
     const labels = ['', 'Kurang', 'Cukup', 'Baik', 'Sangat Baik', 'Istimewa'];
 
-    // Set warna bintang awal dari data-current
+    // Set warna bintang awal dari data-current saat halaman dimuat
     document.querySelectorAll('.star-rating').forEach(container => {
-        const current = parseInt(container.dataset.current) || 0;
-        const categoryId = container.dataset.category;
-        updateStars(categoryId, current);
+        const current    = parseInt(container.dataset.current) || 0;
+        const questionId = container.dataset.question;
+        updateStars(questionId, current);
     });
 
-    function updateStars(categoryId, value) {
+    // Update warna bintang berdasarkan nilai
+    function updateStars(questionId, value) {
         const stars = document.querySelectorAll(
-            '.star-rating[data-category="' + categoryId + '"] .star'
+            '.star-rating[data-question="' + questionId + '"] .star'
         );
         stars.forEach(star => {
             star.style.color = parseInt(star.dataset.value) <= value ? '#f39c12' : '#ddd';
         });
     }
 
-    function setRating(categoryId, value) {
-        // Update hidden input
-        document.getElementById('score_' + categoryId).value = value;
+    // Set nilai rating: update hidden input + label + bintang
+    function setRating(questionId, value) {
+        document.getElementById('score_' + questionId).value = value;
 
-        // Update label
-        const labelEl = document.getElementById('label_' + categoryId);
-        labelEl.innerHTML = '<strong class="text-warning">' + value + '/5</strong> — ' + labels[value];
+        const labelEl = document.getElementById('label_' + questionId);
+        labelEl.innerHTML =
+            '<strong class="text-warning">' + value + '/5</strong> — ' + labels[value];
 
-        // Update bintang
-        updateStars(categoryId, value);
+        updateStars(questionId, value);
 
-        // Update data-current
-        const container = document.querySelector('.star-rating[data-category="' + categoryId + '"]');
+        const container = document.querySelector(
+            '.star-rating[data-question="' + questionId + '"]'
+        );
         if (container) container.dataset.current = value;
     }
 
-    // Event click & hover pada bintang
+    // Event click & hover pada setiap bintang
     document.querySelectorAll('.star').forEach(star => {
-        // Klik bintang
+
+        // Klik → set rating permanen
         star.addEventListener('click', function () {
-            const categoryId = this.closest('.star-rating').dataset.category;
-            setRating(categoryId, parseInt(this.dataset.value));
+            const questionId = this.closest('.star-rating').dataset.question;
+            setRating(questionId, parseInt(this.dataset.value));
         });
 
-        // Hover masuk
+        // Hover masuk → preview warna
         star.addEventListener('mouseover', function () {
-            const categoryId = this.closest('.star-rating').dataset.category;
-            updateStars(categoryId, parseInt(this.dataset.value));
+            const questionId = this.closest('.star-rating').dataset.question;
+            updateStars(questionId, parseInt(this.dataset.value));
         });
 
         // Hover keluar → balik ke nilai yang sudah dipilih
         star.addEventListener('mouseout', function () {
-            const categoryId = this.closest('.star-rating').dataset.category;
-            const current = parseInt(
-                document.querySelector('.star-rating[data-category="' + categoryId + '"]').dataset.current
+            const questionId = this.closest('.star-rating').dataset.question;
+            const current    = parseInt(
+                document.querySelector(
+                    '.star-rating[data-question="' + questionId + '"]'
+                ).dataset.current
             ) || 0;
-            updateStars(categoryId, current);
+            updateStars(questionId, current);
         });
     });
 
-    // Validasi semua kategori harus dinilai sebelum submit
+    // Validasi: semua pertanyaan harus dinilai sebelum submit
     document.getElementById('assessmentForm').addEventListener('submit', function (e) {
-        const inputs = document.querySelectorAll('[id^="score_"]');
-        let allRated = true;
+        const inputs  = document.querySelectorAll('[id^="score_"]');
+        let allRated  = true;
 
         inputs.forEach(input => {
             if (!input.value || input.value == 0) {
@@ -285,7 +310,7 @@
 
         if (!allRated) {
             e.preventDefault();
-            alert('Harap berikan nilai bintang untuk semua indikator penilaian!');
+            alert('Harap berikan nilai bintang untuk semua pertanyaan penilaian!');
         }
     });
 </script>

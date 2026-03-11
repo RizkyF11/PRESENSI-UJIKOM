@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('assessments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('evaluator_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('evaluatee_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('evaluator_id')->constrained('users')->onDelete('cascade'); // Penilai
+            $table->foreignId('evaluatee_id')->constrained('users')->onDelete('cascade'); // Dinilai
             $table->date('assessment_date');
             $table->string('period');              // "Minggu 1 Jan 2025", "Maret 2025"
             $table->text('general_notes')->nullable(); // Catatan umum dari penilai

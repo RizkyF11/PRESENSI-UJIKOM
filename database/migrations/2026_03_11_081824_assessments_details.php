@@ -11,24 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::create('assessment_details', function (Blueprint $table) {
+        Schema::create('assessment_details', function (Blueprint $table) {
             $table->id();
 
             // FK ke assessments: detail ini milik sesi penilaian mana
             $table->foreignId('assessment_id')
-                  ->constrained('assessments')
-                  ->onDelete('cascade');
+                ->constrained('assessments')
+                ->onDelete('cascade');
 
-            // FK ke assessment_categories: kategori apa yang dinilai
-            $table->foreignId('category_id')
-                  ->constrained('assessment_categories')
-                  ->onDelete('cascade');
+            // FK ke assessment_questions: pertanyaan apa yang dinilai
+            $table->foreignId('question_id')
+                ->constrained('assessment_questions')
+                ->onDelete('cascade');
 
             $table->unsignedTinyInteger('score'); // Nilai 1-5
             $table->timestamps();
+
+            // Satu pertanyaan hanya boleh dinilai 1x dalam 1 sesi
+            $table->unique(['assessment_id', 'question_id']);
         });
     }
-    
+
 
     /**
      * Reverse the migrations.

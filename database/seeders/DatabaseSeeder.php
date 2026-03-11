@@ -25,6 +25,9 @@ class DatabaseSeeder extends Seeder
             AbsensiSeeder::class,
             IzinSeeder::class,
             CutiSeeder::class,
+            
+            // 5. Assessment (tidak bergantung data lain)
+            AssessmentCategorySeeder::class,
         ]);
     }
 }

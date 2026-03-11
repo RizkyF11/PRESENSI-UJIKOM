@@ -110,6 +110,7 @@
                         <span>Kategori Penilaian</span>
                     </a>
                 </li>
+                
                 <li class="{{ request()->routeIs('admin.assessment.laporan*') ? 'active' : '' }}">
                     <a href="{{ route('admin.assessment.laporan') }}">
                         <i class="fa fa-bar-chart"></i>
