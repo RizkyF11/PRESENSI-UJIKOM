@@ -27,7 +27,7 @@ class RaporController extends Controller
             ->groupBy(fn($detail) => $detail->question->category->nama)
             ->map(fn($details) => round($details->avg('score'), 1));
 
-        return view('assessment.rapor', compact(
+        return view('karyawan_fe.rapor.rapor', compact(
             'assessments',
             'radarData'
         ));
