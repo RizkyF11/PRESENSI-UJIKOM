@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 class AssessmentQuestion extends Model
 {
     protected $fillable = ['category_id', 'question', 'urutan', 'is_active'];

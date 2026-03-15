@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Absensi;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-
 class RiwayatAbsensiController extends Controller
 {
     public function index(Request $request)

@@ -1,0 +1,80 @@
+\doxysection{Login\+Request Class Reference}
+\hypertarget{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request}{}\label{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request}\index{LoginRequest@{LoginRequest}}
+Inheritance diagram for Login\+Request:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a49fd51a5864a57e7549db5c97c1fb610}{authorize}} ()
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a17dba92d96b9dd48c62f3ede3eef94d4}{rules}} ()
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a750c93a7dfab5314f2bf662a407bc5a6}{authenticate}} ()
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_ac41aec88950bcb59df0d1d71d6ecc070}{ensure\+Is\+Not\+Rate\+Limited}} ()
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a024c3da726834e18b1b9fc7841a9f5d2}{throttle\+Key}} ()
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a750c93a7dfab5314f2bf662a407bc5a6}\index{LoginRequest@{LoginRequest}!authenticate@{authenticate}}
+\index{authenticate@{authenticate}!LoginRequest@{LoginRequest}}
+\doxysubsubsection{\texorpdfstring{authenticate()}{authenticate()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a750c93a7dfab5314f2bf662a407bc5a6} 
+authenticate (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+Attempt to authenticate the request\textquotesingle{}s credentials.
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em } & \\
+\hline
+\end{DoxyExceptions}
+Illuminate\textbackslash{}\+Validation\textbackslash{}\+Validation\+Exception \Hypertarget{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a49fd51a5864a57e7549db5c97c1fb610}\index{LoginRequest@{LoginRequest}!authorize@{authorize}}
+\index{authorize@{authorize}!LoginRequest@{LoginRequest}}
+\doxysubsubsection{\texorpdfstring{authorize()}{authorize()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a49fd51a5864a57e7549db5c97c1fb610} 
+authorize (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+Determine if the user is authorized to make this request. \Hypertarget{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_ac41aec88950bcb59df0d1d71d6ecc070}\index{LoginRequest@{LoginRequest}!ensureIsNotRateLimited@{ensureIsNotRateLimited}}
+\index{ensureIsNotRateLimited@{ensureIsNotRateLimited}!LoginRequest@{LoginRequest}}
+\doxysubsubsection{\texorpdfstring{ensureIsNotRateLimited()}{ensureIsNotRateLimited()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_ac41aec88950bcb59df0d1d71d6ecc070} 
+ensure\+Is\+Not\+Rate\+Limited (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+Ensure the login request is not rate limited.
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em } & \\
+\hline
+\end{DoxyExceptions}
+Illuminate\textbackslash{}\+Validation\textbackslash{}\+Validation\+Exception \Hypertarget{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a17dba92d96b9dd48c62f3ede3eef94d4}\index{LoginRequest@{LoginRequest}!rules@{rules}}
+\index{rules@{rules}!LoginRequest@{LoginRequest}}
+\doxysubsubsection{\texorpdfstring{rules()}{rules()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a17dba92d96b9dd48c62f3ede3eef94d4} 
+rules (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+Get the validation rules that apply to the request.
+
+\begin{DoxyReturn}{Returns}
+array\texorpdfstring{$<$}{<}string, \textbackslash{}\+Illuminate\textbackslash{}\+Contracts\textbackslash{}\+Validation\textbackslash{}\+Validation\+Rule\texorpdfstring{$\vert$}{|}array$<$mixed$>$\texorpdfstring{$\vert$}{|}string\texorpdfstring{$>$}{>} 
+\end{DoxyReturn}
+\Hypertarget{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a024c3da726834e18b1b9fc7841a9f5d2}\index{LoginRequest@{LoginRequest}!throttleKey@{throttleKey}}
+\index{throttleKey@{throttleKey}!LoginRequest@{LoginRequest}}
+\doxysubsubsection{\texorpdfstring{throttleKey()}{throttleKey()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_requests_1_1_auth_1_1_login_request_a024c3da726834e18b1b9fc7841a9f5d2} 
+throttle\+Key (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+Get the rate limiting throttle key for the request. 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+app/\+\+Http/\+\+Requests/\+\+Auth/\+\doxymbox{\hyperlink{_login_request_8php}{Login\+Request.\+php}}\end{DoxyCompactItemize}

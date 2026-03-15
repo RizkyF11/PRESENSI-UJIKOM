@@ -8,7 +8,6 @@ use App\Models\Cuti;
 use App\Models\Karyawan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-
 class CutiController extends Controller
 {
 

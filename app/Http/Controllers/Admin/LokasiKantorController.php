@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\LokasiKantor;
 use Illuminate\Http\Request;
-
 class LokasiKantorController extends Controller
 {
     /**

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Assessment;
 use Illuminate\Support\Facades\Auth;
-
 class RaporController extends Controller
 {
     // =============================================

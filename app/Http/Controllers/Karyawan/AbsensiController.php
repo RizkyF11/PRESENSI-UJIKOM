@@ -16,7 +16,10 @@ class AbsensiController extends Controller
     public function index()
     {
         $karyawanId = Auth::user()->karyawan->id;
+
+        // object/ instance
         $now = Carbon::now();
+
         $bulanIni = $now->month;
         $tahunIni = $now->year;
 

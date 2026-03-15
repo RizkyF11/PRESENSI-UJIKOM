@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use App\Models\User;
-
 class AppServiceProvider extends ServiceProvider
 {
     /**

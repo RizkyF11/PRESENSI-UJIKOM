@@ -11,7 +11,6 @@ use App\Models\Karyawan;
 use App\Models\Izin;
 use App\Models\Cuti;
 use Carbon\Carbon;
-
 class AbsensiController extends Controller
 {
     public function index(Request $request)

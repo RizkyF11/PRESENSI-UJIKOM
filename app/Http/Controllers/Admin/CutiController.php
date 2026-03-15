@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Models\Cuti;
 use App\Models\Karyawan;
 use Carbon\Carbon;
-
 class CutiController extends Controller
 {
 

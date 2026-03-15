@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 class LokasiKantor extends Model
 {
     protected $table = 'lokasi_kantor';

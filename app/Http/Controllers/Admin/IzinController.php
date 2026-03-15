@@ -8,8 +8,6 @@ use Illuminate\Http\Request;
 use App\Models\Izin;
 use App\Models\Karyawan;
 use Carbon\Carbon;
-
-
 class IzinController extends Controller
 {
 

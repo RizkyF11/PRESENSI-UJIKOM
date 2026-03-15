@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 use function Symfony\Component\Clock\now;
-
 class KaryawanShiftController extends Controller
 {
     // tampilkan form assign shift ke karyawan

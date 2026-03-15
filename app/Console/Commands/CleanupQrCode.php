@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\QrCode;
-
 class CleanupQrCode extends Command
 {
     protected $signature = 'qr:cleanup';

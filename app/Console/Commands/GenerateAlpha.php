@@ -8,7 +8,6 @@ use App\Models\Izin;
 use App\Models\Karyawan;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-
 class GenerateAlpha extends Command
 {
 

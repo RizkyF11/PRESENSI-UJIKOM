@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\AssessmentCategory;
 use Illuminate\Http\Request;
-
 class AssessmentCategoryController extends Controller
 {
     // =============================================

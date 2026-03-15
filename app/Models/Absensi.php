@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 class Absensi extends Model
 {
     use HasFactory;
-    protected $table = 'absensi';
-    protected $fillable = [
+    protected $table = 'absensi'; //property
+    protected $fillable = [         //property
         'lokasi_kantor_id',
         'karyawan_id',
         'shift_id',

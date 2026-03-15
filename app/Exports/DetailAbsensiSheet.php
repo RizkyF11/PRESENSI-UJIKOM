@@ -17,7 +17,6 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Events\AfterSheet;
-
 class DetailAbsensiSheet implements
     FromCollection,
     WithHeadings,
@@ -37,7 +36,7 @@ class DetailAbsensiSheet implements
         $this->karyawanId = $karyawanId;
     }
 
-    public function collection()
+    public function collection()  
     {
         // Ambil semua absensi sesuai filter
         $query = Absensi::with(['karyawan.user', 'shift'])
