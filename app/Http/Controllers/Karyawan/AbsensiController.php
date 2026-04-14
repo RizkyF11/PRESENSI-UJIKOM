@@ -255,6 +255,10 @@ class AbsensiController extends Controller
     private function getShiftAktif($karyawanId)
     {
         $now = Carbon::now();
+
+        if ($now->isWeekend()) {
+            return null;
+        }
         $today = $now->toDateString();
         $jamSekarang = $now->format('H:i:s');
 
@@ -294,7 +298,14 @@ class AbsensiController extends Controller
 
     private function getShiftHariIni($karyawanId)
     {
-        $today = Carbon::today()->toDateString();
+        $todayCarbon = Carbon::today();
+
+        // Jika weekend = libur
+        if ($todayCarbon->isWeekend()) {
+            return null;
+        }
+
+        $today = $todayCarbon->toDateString();
 
         return DB::table('karyawan_shift')
             ->join('shift', 'shift.id', '=', 'karyawan_shift.shift_id')

@@ -4,7 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
-use App\Models\{Izin, Karyawan};
+use App\Models\Izin;
+use App\Models\Karyawan;
 
 class IzinSeeder extends Seeder
 {
@@ -12,63 +13,30 @@ class IzinSeeder extends Seeder
     {
         $alasans = [
             'Sakit',
-            'Keperluan Keluarga',
-            'Urusan Pribadi',
-            'Pemeriksaan Dokter',
             'Acara Keluarga',
+            'Keperluan Pribadi'
         ];
 
-        $karyawans = Karyawan::all();
+        foreach (Karyawan::all() as $karyawan) {
 
-        // Sebagian karyawan izin HARI INI (approved) - untuk dashboard
-        $karyawanHariIni = $karyawans->take(3); // 3 karyawan izin hari ini
+            if (rand(1, 100) > 70) continue;
 
-        foreach ($karyawanHariIni as $karyawan) {
-            $mulai = Carbon::today();
+            $jumlahIzin = rand(1, 3);
 
-            Izin::create([
-                'karyawan_id'     => $karyawan->id,
-                'tanggal_mulai'   => $mulai->toDateString(),
-                'tanggal_selesai' => (clone $mulai)->addDays(rand(1, 2))->toDateString(),
-                'alasan'          => $alasans[array_rand($alasans)],
-                'status'          => 'approved',
-            ]);
-        }
+            for ($i = 0; $i < $jumlahIzin; $i++) {
 
-        // Sisanya izin dengan tanggal historis (mix status)
-        $karyawanHistoris = $karyawans->skip(3);
+                $tanggal = Carbon::today()->subDays(rand(5, 90));
 
-        foreach ($karyawanHistoris as $karyawan) {
-            // Tidak semua karyawan punya izin historis - 70% chance
-            if (rand(1, 10) > 7) continue;
-
-            $jumlah = rand(1, 2);
-
-            for ($i = 0; $i < $jumlah; $i++) {
-                // Tanggal historis 7-60 hari lalu (sudah lewat)
-                $mulai = Carbon::today()->subDays(rand(7, 60));
+                if ($tanggal->isWeekend()) continue;
 
                 Izin::create([
-                    'karyawan_id'     => $karyawan->id,
-                    'tanggal_mulai'   => $mulai->toDateString(),
-                    'tanggal_selesai' => (clone $mulai)->addDays(rand(1, 3))->toDateString(),
-                    'alasan'          => $alasans[array_rand($alasans)],
-                    'status'          => fake()->randomElement(['approved', 'reject']),
+                    'karyawan_id' => $karyawan->id,
+                    'tanggal_mulai' => $tanggal,
+                    'tanggal_selesai' => $tanggal->copy()->addDays(rand(0, 2)),
+                    'alasan' => $alasans[array_rand($alasans)],
+                    'status' => 'approved'
                 ]);
             }
-        }
-
-        // Tambah beberapa pengajuan pending untuk dashboard "Pending Pengajuan"
-        foreach ($karyawans->take(4) as $karyawan) {
-            $mulai = Carbon::today()->addDays(rand(1, 7)); // izin mulai besok/minggu depan
-
-            Izin::create([
-                'karyawan_id'     => $karyawan->id,
-                'tanggal_mulai'   => $mulai->toDateString(),
-                'tanggal_selesai' => (clone $mulai)->addDays(rand(1, 3))->toDateString(),
-                'alasan'          => $alasans[array_rand($alasans)],
-                'status'          => 'pending',
-            ]);
         }
     }
 }

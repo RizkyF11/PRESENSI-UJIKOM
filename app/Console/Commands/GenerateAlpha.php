@@ -8,6 +8,7 @@ use App\Models\Izin;
 use App\Models\Karyawan;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+
 class GenerateAlpha extends Command
 {
 
@@ -28,10 +29,14 @@ class GenerateAlpha extends Command
                         ->orWhereNull('tanggal_selesai');
                 });
         })
-            ->whereDoesntHave('absensi', function ($q) use ($now) {
-                $q->whereDate('tanggal', $now->toDateString());
-            })
-            ->with('shifts')
+
+            ->with(['shifts' => function ($q) use ($now) {
+                $q->wherePivot('tanggal_mulai', '<=', $now->toDateString())
+                    ->where(function ($query) use ($now) {
+                        $query->wherePivot('tanggal_selesai', '>=', $now->toDateString())
+                            ->orWhereNull('tanggal_selesai');
+                    });
+            }])
             ->get();
 
         foreach ($karyawanList as $karyawan) {
@@ -72,6 +77,11 @@ class GenerateAlpha extends Command
                 if ($now->format('H:i:s') <= $shift->jam_keluar) {
                     $tanggalKerja = $now->copy()->subDay()->startOfDay();
                 }
+            }
+
+            // SKIP SABTU / MINGGU
+            if ($tanggalKerja->isWeekend()) {
+                continue;
             }
 
             // buat datetime batas alpha
@@ -132,6 +142,7 @@ class GenerateAlpha extends Command
                 'karyawan_id' => $karyawan->id,
                 'shift_id'    => $shift->id,
                 'tanggal'     => $tanggalKerja,
+                'status'      => 'alpha',
             ]);
         }
 

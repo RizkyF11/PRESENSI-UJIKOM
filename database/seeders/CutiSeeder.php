@@ -4,7 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
-use App\Models\{Cuti, Karyawan};
+use App\Models\Cuti;
+use App\Models\Karyawan;
 
 class CutiSeeder extends Seeder
 {
@@ -12,63 +13,30 @@ class CutiSeeder extends Seeder
     {
         $alasans = [
             'Cuti Tahunan',
-            'Cuti Melahirkan',
-            'Cuti Sakit',
-            'Keperluan Keluarga',
-            'Liburan Keluarga',
+            'Liburan',
+            'Keperluan Keluarga'
         ];
 
-        $karyawans = Karyawan::all();
+        foreach (Karyawan::all() as $karyawan) {
 
-        // Sebagian karyawan cuti HARI INI (approved) - untuk dashboard
-        $karyawanHariIni = $karyawans->skip(3)->take(2); // 2 karyawan cuti hari ini (skip 3 yang sudah izin)
+            if (rand(1, 100) > 60) continue;
 
-        foreach ($karyawanHariIni as $karyawan) {
-            $mulai = Carbon::today();
+            $jumlahCuti = rand(1, 2);
 
-            Cuti::create([
-                'karyawan_id'     => $karyawan->id,
-                'tanggal_mulai'   => $mulai->toDateString(),
-                'tanggal_selesai' => (clone $mulai)->addDays(rand(2, 5))->toDateString(),
-                'alasan'          => $alasans[array_rand($alasans)],
-                'status'          => 'approved',
-            ]);
-        }
+            for ($i = 0; $i < $jumlahCuti; $i++) {
 
-        // Sisanya cuti dengan tanggal historis (mix status)
-        $karyawanHistoris = $karyawans->skip(5);
+                $tanggal = Carbon::today()->subDays(rand(10, 120));
 
-        foreach ($karyawanHistoris as $karyawan) {
-            // 60% chance punya cuti historis
-            if (rand(1, 10) > 6) continue;
-
-            $jumlah = rand(1, 2);
-
-            for ($i = 0; $i < $jumlah; $i++) {
-                // Tanggal historis 14-90 hari lalu (sudah lewat)
-                $mulai = Carbon::today()->subDays(rand(14, 90));
+                if ($tanggal->isWeekend()) continue;
 
                 Cuti::create([
-                    'karyawan_id'     => $karyawan->id,
-                    'tanggal_mulai'   => $mulai->toDateString(),
-                    'tanggal_selesai' => (clone $mulai)->addDays(rand(2, 7))->toDateString(),
-                    'alasan'          => $alasans[array_rand($alasans)],
-                    'status'          => fake()->randomElement(['approved', 'reject']),
+                    'karyawan_id' => $karyawan->id,
+                    'tanggal_mulai' => $tanggal,
+                    'tanggal_selesai' => $tanggal->copy()->addDays(rand(2, 5)),
+                    'alasan' => $alasans[array_rand($alasans)],
+                    'status' => 'approved'
                 ]);
             }
-        }
-
-        // Tambah beberapa pengajuan cuti pending untuk dashboard "Pending Pengajuan"
-        foreach ($karyawans->skip(5)->take(3) as $karyawan) {
-            $mulai = Carbon::today()->addDays(rand(3, 14)); // cuti mulai beberapa hari ke depan
-
-            Cuti::create([
-                'karyawan_id'     => $karyawan->id,
-                'tanggal_mulai'   => $mulai->toDateString(),
-                'tanggal_selesai' => (clone $mulai)->addDays(rand(2, 7))->toDateString(),
-                'alasan'          => $alasans[array_rand($alasans)],
-                'status'          => 'pending',
-            ]);
         }
     }
 }

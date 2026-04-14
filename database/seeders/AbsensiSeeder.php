@@ -4,78 +4,85 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
-use App\Models\{Karyawan, Shift, Absensi, LokasiKantor};
+use App\Models\Absensi;
+use App\Models\Cuti;
+use App\Models\Izin;
+use App\Models\Karyawan;
+use App\Models\LokasiKantor;
+use App\Models\Shift;
 
 class AbsensiSeeder extends Seeder
 {
     public function run(): void
     {
-        $shift  = Shift::where('nama_shift', 'Pagi')->first();
+        $shift = Shift::where('nama_shift', 'Pagi')->first();
         $lokasi = LokasiKantor::first();
 
-        if (! $shift || ! $lokasi) {
-            $this->command->warn('Shift atau Lokasi Kantor belum ada. Jalankan ShiftSeeder & LokasiKantorSeeder dulu.');
-            return;
-        }
+        if (!$shift || !$lokasi) return;
 
-        $baseLat = $lokasi->latitude;
-        $baseLng = $lokasi->longitude;
-
-        // Generate data 1 tahun terakhir untuk setiap karyawan
         $startDate = Carbon::today()->subYear();
-        $endDate   = Carbon::today();
+        $endDate = Carbon::today();
 
-        Karyawan::all()->each(function ($karyawan) use ($shift, $lokasi, $baseLat, $baseLng, $startDate, $endDate) {
-            $currentDate = clone $startDate;
+        foreach (Karyawan::all() as $karyawan) {
+
+            $currentDate = $startDate->copy();
 
             while ($currentDate <= $endDate) {
-                // Lewati weekend
+
                 if ($currentDate->isWeekend()) {
                     $currentDate->addDay();
                     continue;
                 }
 
-                // Hindari duplikat
-                $sudahAda = Absensi::where('karyawan_id', $karyawan->id)
-                    ->whereDate('tanggal', $currentDate)
+                $adaIzin = Izin::where('karyawan_id', $karyawan->id)
+                    ->where('status', 'approved')
+                    ->whereDate('tanggal_mulai', '<=', $currentDate)
+                    ->whereDate('tanggal_selesai', '>=', $currentDate)
                     ->exists();
 
-                if ($sudahAda) {
+                $adaCuti = Cuti::where('karyawan_id', $karyawan->id)
+                    ->where('status', 'approved')
+                    ->whereDate('tanggal_mulai', '<=', $currentDate)
+                    ->whereDate('tanggal_selesai', '>=', $currentDate)
+                    ->exists();
+
+                if ($adaIzin || $adaCuti) {
                     $currentDate->addDay();
                     continue;
                 }
 
                 $rand = rand(1, 100);
 
-                // 5% Alpha - tidak insert
-                if ($rand <= 5) {
+                if ($rand <= 10) {
                     $currentDate->addDay();
                     continue;
                 }
 
-                // 10% Terlambat, 85% Hadir
-                $isLate      = ($rand > 5 && $rand <= 15);
-                $masukHour   = $isLate ? 8 : 7;
-                $masukMinute = $isLate ? rand(16, 59) : rand(30, 59);
+                $isLate = $rand <= 25;
 
                 Absensi::create([
-                    'karyawan_id'      => $karyawan->id,
-                    'shift_id'         => $shift->id,
+                    'karyawan_id' => $karyawan->id,
+                    'shift_id' => $shift->id,
                     'lokasi_kantor_id' => $lokasi->id,
-                    'qr_code_id'       => null,
-                    'tanggal'          => $currentDate->toDateString(),
-                    'jam_masuk'        => sprintf('%02d:%02d:00', $masukHour, $masukMinute),
-                    'jam_keluar'       => sprintf('17:%02d:00', rand(0, 30)),
-                    'latitude_masuk'   => $baseLat + (rand(-100, 100) / 1000000),
-                    'longitude_masuk'  => $baseLng + (rand(-100, 100) / 1000000),
-                    'latitude_keluar'  => $baseLat + (rand(-100, 100) / 1000000),
-                    'longitude_keluar' => $baseLng + (rand(-100, 100) / 1000000),
-                    'status_masuk'     => $isLate ? 'terlambat' : 'hadir',
-                    'status_keluar'    => 'pulang',
+                    'tanggal' => $currentDate,
+
+                    'jam_masuk' => $isLate
+                        ? '08:' . rand(10, 59) . ':00'
+                        : '07:' . rand(0, 59) . ':00',
+
+                    'jam_keluar' => '17:' . rand(0, 59) . ':00',
+
+                    'latitude_masuk' => $lokasi->latitude,
+                    'longitude_masuk' => $lokasi->longitude,
+                    'latitude_keluar' => $lokasi->latitude,
+                    'longitude_keluar' => $lokasi->longitude,
+
+                    'status_masuk' => $isLate ? 'terlambat' : 'hadir',
+                    'status_keluar' => 'pulang',
                 ]);
 
                 $currentDate->addDay();
             }
-        });
+        }
     }
 }

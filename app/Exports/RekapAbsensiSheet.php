@@ -17,6 +17,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Events\AfterSheet;
+
 class RekapAbsensiSheet implements
     FromCollection,
     WithHeadings,
@@ -46,7 +47,17 @@ class RekapAbsensiSheet implements
 
         $karyawanList = $karyawanQuery->get();
 
-        // Ambil data izin dan cuti approved untuk periode ini
+        /*
+        |--------------------------------------------------------------------------
+        | PRELOAD DATA SEKALI SAJA (OPTIMASI QUERY)
+        |--------------------------------------------------------------------------
+        */
+
+        $absensiList = Absensi::whereBetween('tanggal', [
+            $this->tanggalMulai,
+            $this->tanggalSelesai
+        ])->get();
+
         $izinList = Izin::where('status', 'approved')
             ->where(function ($q) {
                 $q->whereBetween('tanggal_mulai', [$this->tanggalMulai, $this->tanggalSelesai])
@@ -55,8 +66,7 @@ class RekapAbsensiSheet implements
                         $q2->where('tanggal_mulai', '<=', $this->tanggalMulai)
                             ->where('tanggal_selesai', '>=', $this->tanggalSelesai);
                     });
-            })
-            ->get();
+            })->get();
 
         $cutiList = Cuti::where('status', 'approved')
             ->where(function ($q) {
@@ -66,8 +76,7 @@ class RekapAbsensiSheet implements
                         $q2->where('tanggal_mulai', '<=', $this->tanggalMulai)
                             ->where('tanggal_selesai', '>=', $this->tanggalSelesai);
                     });
-            })
-            ->get();
+            })->get();
 
         $data = [];
 
@@ -87,10 +96,25 @@ class RekapAbsensiSheet implements
 
             foreach ($periode as $tanggal) {
 
-                // Cek apakah ada shift pada tanggal ini
+                /*
+                |--------------------------------------------------------------------------
+                | SKIP WEEKEND
+                |--------------------------------------------------------------------------
+                */
+                if ($tanggal->isWeekend()) {
+                    continue;
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | CEK ADA SHIFT ATAU TIDAK
+                |--------------------------------------------------------------------------
+                */
                 $punyaShift = $karyawan->shifts
                     ->filter(function ($shift) use ($tanggal) {
+
                         $mulai = Carbon::parse($shift->pivot->tanggal_mulai)->startOfDay();
+
                         $selesai = $shift->pivot->tanggal_selesai
                             ? Carbon::parse($shift->pivot->tanggal_selesai)->endOfDay()
                             : null;
@@ -105,60 +129,78 @@ class RekapAbsensiSheet implements
                     })
                     ->first();
 
-                // Jika tidak punya shift, skip tanggal ini
                 if (!$punyaShift) {
                     continue;
                 }
 
                 $hariKerja++;
 
-                // Format tanggal untuk perbandingan
                 $tanggalStr = $tanggal->format('Y-m-d');
 
-                // Cek izin terlebih dahulu
-                $adaIzin = $izinList->where('karyawan_id', $karyawan->id)
+                /*
+                |--------------------------------------------------------------------------
+                | CEK IZIN
+                |--------------------------------------------------------------------------
+                */
+                $adaIzin = $izinList
+                    ->where('karyawan_id', $karyawan->id)
                     ->filter(function ($item) use ($tanggalStr) {
-                        $mulai = Carbon::parse($item->tanggal_mulai)->format('Y-m-d');
-                        $selesai = Carbon::parse($item->tanggal_selesai)->format('Y-m-d');
-                        return $mulai <= $tanggalStr && $tanggalStr <= $selesai;
+
+                        return $tanggalStr >= $item->tanggal_mulai
+                            && $tanggalStr <= $item->tanggal_selesai;
                     })
-                    ->count() > 0;
+                    ->isNotEmpty();
 
                 if ($adaIzin) {
                     $izin++;
                     continue;
                 }
 
-                // Cek cuti
-                $adaCuti = $cutiList->where('karyawan_id', $karyawan->id)
+                /*
+                |--------------------------------------------------------------------------
+                | CEK CUTI
+                |--------------------------------------------------------------------------
+                */
+                $adaCuti = $cutiList
+                    ->where('karyawan_id', $karyawan->id)
                     ->filter(function ($item) use ($tanggalStr) {
-                        $mulai = Carbon::parse($item->tanggal_mulai)->format('Y-m-d');
-                        $selesai = Carbon::parse($item->tanggal_selesai)->format('Y-m-d');
-                        return $mulai <= $tanggalStr && $tanggalStr <= $selesai;
+
+                        return $tanggalStr >= $item->tanggal_mulai
+                            && $tanggalStr <= $item->tanggal_selesai;
                     })
-                    ->count() > 0;
+                    ->isNotEmpty();
 
                 if ($adaCuti) {
                     $cuti++;
                     continue;
                 }
 
-                // Cek absensi
-                $absen = Absensi::where('karyawan_id', $karyawan->id)
-                    ->whereDate('tanggal', $tanggalStr)
+                /*
+                |--------------------------------------------------------------------------
+                | CEK ABSENSI
+                |--------------------------------------------------------------------------
+                */
+                $absen = $absensiList
+                    ->where('karyawan_id', $karyawan->id)
+                    ->where('tanggal', $tanggalStr)
                     ->first();
 
                 if ($absen && !is_null($absen->jam_masuk)) {
+
                     $hadir++;
 
-                    if ($absen->status_masuk == 'terlambat') {
+                    if ($absen->status_masuk === 'terlambat') {
                         $terlambat++;
                     }
 
                     continue;
                 }
 
-                // Jika tidak ada izin, cuti, atau absensi dengan jam masuk = alpha
+                /*
+                |--------------------------------------------------------------------------
+                | JIKA TIDAK HADIR = ALPHA
+                |--------------------------------------------------------------------------
+                */
                 $alpha++;
             }
 
@@ -182,7 +224,7 @@ class RekapAbsensiSheet implements
             'Nama Karyawan',
             'Total Hari Kerja',
             'Hadir',
-            'Terlambat',
+            'Terlambat (dari hadir)',
             'Izin',
             'Cuti',
             'Alpha'
@@ -197,7 +239,12 @@ class RekapAbsensiSheet implements
     public function styles(Worksheet $sheet)
     {
         return [
-            1 => ['font' => ['bold' => true, 'size' => 14]],
+            1 => [
+                'font' => [
+                    'bold' => true,
+                    'size' => 14
+                ]
+            ]
         ];
     }
 
@@ -208,59 +255,16 @@ class RekapAbsensiSheet implements
 
                 $sheet = $event->sheet;
 
-                // Insert 3 rows di awal untuk title dan periode
                 $sheet->insertNewRowBefore(1, 3);
 
-                // Set title dan periode
                 $sheet->mergeCells('A1:G1');
                 $sheet->setCellValue('A1', 'LAPORAN REKAP ABSENSI KARYAWAN');
-                $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
-                $sheet->getRowDimension(1)->setRowHeight(25);
 
                 $sheet->mergeCells('A2:G2');
                 $sheet->setCellValue(
                     'A2',
                     'Periode : ' . $this->tanggalMulai . ' s/d ' . $this->tanggalSelesai
                 );
-                $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(11);
-
-                // Row 3 dibiarkan kosong untuk spacing
-                $sheet->getRowDimension(3)->setRowHeight(10);
-                $sheet->getStyle('A3:G3')->getFill()->setFillType(null);
-
-                // Format heading (row 4 setelah insert)
-                $sheet->getStyle('A4:G4')->getFont()->setBold(true)->getColor()->setRGB('FFFFFF');
-                $sheet->getStyle('A4:G4')->getFill()->setFillType('solid')->getStartColor()->setRGB('366092');
-                $sheet->getRowDimension(4)->setRowHeight(20);
-
-                // Format borders hanya untuk heading
-                $sheet->getStyle('A4:G4')->applyFromArray([
-                    'borders' => [
-                        'allBorders' => [
-                            'borderStyle' =>
-                            \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-                        ]
-                    ]
-                ]);
-
-                // Format borders untuk data rows
-                $sheet->getStyle('A5:G1000')->applyFromArray([
-                    'borders' => [
-                        'allBorders' => [
-                            'borderStyle' =>
-                            \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-                        ]
-                    ]
-                ]);
-
-                // Auto size columns
-                $sheet->getColumnDimension('A')->setWidth(25);
-                $sheet->getColumnDimension('B')->setWidth(15);
-                $sheet->getColumnDimension('C')->setWidth(12);
-                $sheet->getColumnDimension('D')->setWidth(12);
-                $sheet->getColumnDimension('E')->setWidth(12);
-                $sheet->getColumnDimension('F')->setWidth(12);
-                $sheet->getColumnDimension('G')->setWidth(12);
             }
         ];
     }
