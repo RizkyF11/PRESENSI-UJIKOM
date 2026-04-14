@@ -19,6 +19,7 @@ class IzinController extends Controller
     {
         $query = Izin::with('karyawan.user')
             ->orderBy('created_at', 'desc');
+            
 
         // filter status
         if ($request->filled('status')) {

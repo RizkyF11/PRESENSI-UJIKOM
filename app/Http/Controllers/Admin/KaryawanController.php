@@ -20,6 +20,8 @@ class KaryawanController extends Controller
     {
         // Mengambil user dengan role karyawan beserta data detailnya
         $data = User::with('karyawan')->where('role', 'karyawan')->latest()->get();
+
+        // dd($data);
         return view('admin.karyawan.index', compact('data'));
     }
 

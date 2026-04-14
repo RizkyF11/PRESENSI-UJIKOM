@@ -51,71 +51,52 @@
                     </a>
                 </li>
 
-                <li class="header">Master Data</li>
-                <li class="{{ request()->is('admin/karyawan*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.karyawan.index') }}">
-                        <i class="fa fa-users"></i>
-                        <span>Data Karyawan</span>
-                    </a>
-                </li>
-                <li class="{{ request()->is('admin/shift*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.shift.index') }}">
-                        <i class="fa fa-clock-o"></i>
-                        <span>Shift</span>
-                    </a>
-                </li>
-                <li class="{{ request()->is('admin/lokasi-kantor*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.lokasi-kantor.index') }}">
-                        <i class="fa fa-map-marker"></i>
-                        <span>Lokasi Kantor</span>
-                    </a>
+                <li class="{{ request()->routeIs('admin.karyawan.*') || request()->routeIs('admin.shift.*') || request()->routeIs('admin.lokasi-kantor.*') ? 'active' : '' }}">
+                    <a href="#MasterData" class="has-arrow"><i class="fa fa-database"></i><span>Master Data</span></a>
+                    <ul>
+                        <li class="{{ request()->routeIs('admin.karyawan.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.karyawan.index') }}">Data Karyawan</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.shift.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.shift.index') }}">Shift</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.lokasi-kantor.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.lokasi-kantor.index') }}">Lokasi Kantor</a>
+                        </li>
+                    </ul>
                 </li>
 
-                <li class="header">Absensi</li>
-                <li class="{{ request()->routeIs('admin.qrcode*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.qrcode.index') }}">
-                        <i class="fa fa-qrcode"></i>
-                        <span>Generate QR Code</span>
-                    </a>
-                </li>
-                <li class="{{ request()->routeIs('admin.karyawan_shift*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.karyawan_shift.index') }}">
-                        <i class="fa fa-list-alt"></i>
-                        <span>Assign Shift</span>
-                    </a>
-                </li>
-                <li class="{{ request()->routeIs('admin.absensi*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.absensi.index') }}">
-                        <i class="fa fa-list-alt"></i>
-                        <span>Riwayat Absensi</span>
-                    </a>
-                </li>
-                <li class="{{ request()->routeIs('admin.izin*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.izin.index') }}">
-                        <i class="fa fa-list-alt"></i>
-                        <span>Pengajuan Izin</span>
-                    </a>
-                </li>
-                <li class="{{ request()->routeIs('admin.cuti*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.cuti.index') }}">
-                        <i class="fa fa-list-alt"></i>
-                        <span>Pengajuan Cuti</span>
-                    </a>
+                <li class="{{ request()->routeIs('admin.qrcode.*') || request()->routeIs('admin.karyawan_shift.*') || request()->routeIs('admin.absensi.*') || request()->routeIs('admin.izin.*') || request()->routeIs('admin.cuti.*') ? 'active' : '' }}">
+                    <a href="#Absensi" class="has-arrow"><i class="fa fa-calendar-check-o"></i><span>Absensi</span></a>
+                    <ul>
+                        <li class="{{ request()->routeIs('admin.qrcode.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.qrcode.index') }}">Generate QR Code</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.karyawan_shift.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.karyawan_shift.index') }}">Assign Shift</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.absensi.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.absensi.index') }}">Riwayat Absensi</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.izin.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.izin.index') }}">Pengajuan Izin</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.cuti.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.cuti.index') }}">Pengajuan Cuti</a>
+                        </li>
+                    </ul>
                 </li>
 
-                <li class="header">Assessments</li>
-                <li class="{{ request()->routeIs('admin.assessment-categories*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.assessment-categories.index') }}">
-                        <i class="fa fa-list"></i>
-                        <span>Kategori Penilaian</span>
-                    </a>
-                </li>
-                
-                <li class="{{ request()->routeIs('admin.assessment.laporan*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.assessment.laporan') }}">
-                        <i class="fa fa-bar-chart"></i>
-                        <span>Laporan Penilaian</span>
-                    </a>
+                <li class="{{ request()->routeIs('admin.assessment-categories.*') || request()->routeIs('admin.assessment.laporan') ? 'active' : '' }}">
+                    <a href="#Assessments" class="has-arrow"><i class="fa fa-bar-chart"></i><span>Assessments</span></a>
+                    <ul>
+                        <li class="{{ request()->routeIs('admin.assessment-categories.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.assessment-categories.index') }}">Kategori Penilaian</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.assessment.laporan') ? 'active' : '' }}">
+                            <a href="{{ route('admin.assessment.laporan') }}">Laporan Penilaian</a>
+                        </li>
+                    </ul>
                 </li>
 
                 {{-- =============================================
