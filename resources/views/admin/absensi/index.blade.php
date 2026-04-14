@@ -77,10 +77,17 @@
                     <input type="hidden" name="tanggal_selesai" value="{{ request('tanggal_selesai') }}">
                     <input type="hidden" name="karyawan_id" value="{{ request('karyawan_id') }}">
 
+                    {{-- BUTTON EXCEL --}}
                     <button class="btn btn-success">
                         <i class="fa fa-file-excel-o"></i> Export Rekap Excel
                     </button>
 
+                    {{-- BUTTON PDF --}}
+                    <button
+                        formaction="{{ route('admin.absensi.exportPdf') }}"
+                        class="btn btn-danger">
+                        <i class="fa fa-file-pdf-o"></i> Export PDF
+                    </button>
                 </form>
                 @endif
 

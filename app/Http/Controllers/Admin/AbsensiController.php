@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\RekapAbsensiExport;
+use App\Exports\Pdf\RekapAbsensiPdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,6 +13,7 @@ use App\Models\Karyawan;
 use App\Models\Izin;
 use App\Models\Cuti;
 use Carbon\Carbon;
+
 class AbsensiController extends Controller
 {
     public function index(Request $request)
@@ -141,6 +144,38 @@ class AbsensiController extends Controller
         return Excel::download(
             new RekapAbsensiExport($tanggalMulai, $tanggalSelesai, $karyawanId),
             $namaFile
+        );
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $request->validate([
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date',
+        ]);
+
+        $tanggalMulai = $request->tanggal_mulai;
+        $tanggalSelesai = $request->tanggal_selesai;
+        $karyawanId = $request->karyawan_id;
+
+        $rekap = new RekapAbsensiPdf(
+            $tanggalMulai,
+            $tanggalSelesai,
+            $karyawanId
+        );
+
+        $pdf = Pdf::loadView('admin.absensi.pdf.rekap', [
+            'data' => $rekap->getData(),
+            'tanggalMulai' => $tanggalMulai,
+            'tanggalSelesai' => $tanggalSelesai
+        ])->setPaper('A4', 'landscape');
+
+        return $pdf->download(
+            'rekap-absensi-' .
+                Carbon::parse($tanggalMulai)->format('d-m-Y') .
+                '-sd-' .
+                Carbon::parse($tanggalSelesai)->format('d-m-Y') .
+                '.pdf'
         );
     }
 }

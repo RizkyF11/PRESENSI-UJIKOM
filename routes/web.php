@@ -89,6 +89,12 @@ Route::middleware('auth')->group(function () {
             Route::get('absensi/export', [AbsensiController::class, 'export'])
                 ->name('absensi.export');
 
+            //expoert pdf rekap absensi
+            Route::get(
+                '/absensi/export-pdf',
+                [AbsensiController::class, 'exportPdf']
+            )->name('absensi.exportPdf');
+
             // Route Izin
             Route::get('izin', [IzinController::class, 'index'])->name('izin.index');
 
