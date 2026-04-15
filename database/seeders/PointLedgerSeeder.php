@@ -10,22 +10,38 @@ class PointLedgerSeeder extends Seeder
 {
     public function run(): void
     {
-        $users = User::whereIn('role', ['karyawan', 'manager'])->get();
+        // Ambil hanya karyawan dari UserSeeder kamu
+        $users = User::where('role', 'karyawan')
+            ->where('email', 'like', 'karyawan%@gmail.com')
+            ->get();
 
-        foreach ($users as $user) {
+        foreach ($users as $index => $user) {
 
-            $balance = 0;
+            /*
+            |--------------------------------------------------------------------------
+            | Set base score biar leaderboard tidak random 100% chaos
+            |--------------------------------------------------------------------------
+            | Karyawan 1 = paling bagus
+            | Karyawan 10 = paling rendah
+            */
+            $baseScore = (10 - $index) * 10; // 90 - 0
 
+            $balance = $baseScore;
+
+            // bikin histori 10 transaksi
             for ($i = 1; $i <= 10; $i++) {
 
+                // lebih sering EARN daripada PENALTY
                 $type = fake()->randomElement([
+                    'EARN',
+                    'EARN',
                     'EARN',
                     'PENALTY'
                 ]);
 
-                $amount = rand(5, 20);
+                $amount = rand(5, 15);
 
-                if ($type == 'EARN') {
+                if ($type === 'EARN') {
                     $balance += $amount;
                 } else {
                     $balance -= $amount;
@@ -40,7 +56,9 @@ class PointLedgerSeeder extends Seeder
                     'transaction_type' => $type,
                     'amount' => $amount,
                     'current_balance' => $balance,
-                    'description' => 'Seeder Dummy Leaderboard'
+                    'description' => "Seeder transaksi {$user->nama}",
+                    'created_at' => now()->subDays(rand(1, 30)),
+                    'updated_at' => now()->subDays(rand(1, 30)),
                 ]);
             }
         }

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\CutiController;
 use App\Http\Controllers\Admin\FlexibilityItemController;
 use App\Http\Controllers\Admin\IzinController;
 use App\Http\Controllers\Admin\KaryawanShiftController;
+use App\Http\Controllers\Admin\LeaderboardController;
 use App\Http\Controllers\Admin\LokasiKantorController;
 use App\Http\Controllers\Admin\PointRuleController;
 use App\Http\Controllers\Admin\ShiftController;

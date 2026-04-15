@@ -65,10 +65,16 @@
                             </a>
                         </li>
 
-                        
+
                         <li class="{{ request()->routeIs('admin.flexibility-items.*') ? 'active' : '' }}">
                             <a href="{{ route('admin.flexibility-items.index') }}">
                                 Flexibility Items
+                            </a>
+                        </li>
+
+                        <li class="{{ request()->routeIs('admin.leaderboard.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.leaderboard.index') }}">
+                                <span>Leaderboard</span>
                             </a>
                         </li>
 
