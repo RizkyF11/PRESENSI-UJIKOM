@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Absensi;
 use App\Models\LokasiKantor;
 use App\Models\QrCode;
+use App\Services\GamificationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -108,6 +109,8 @@ class AbsensiController extends Controller
         $karyawanId = Auth::user()->karyawan->id;
         $now        = Carbon::now();
 
+          
+
         DB::beginTransaction();
         try {
 
@@ -140,7 +143,7 @@ class AbsensiController extends Controller
                 ? 'terlambat'
                 : 'hadir';
 
-            Absensi::create([
+            $absensi = Absensi::create([
                 'karyawan_id'      => $karyawanId,
                 'shift_id'         => $shift->id,
                 'lokasi_kantor_id' => $lokasi->id,
@@ -151,8 +154,13 @@ class AbsensiController extends Controller
                 'longitude_masuk'  => $request->longitude,
                 'status_masuk'     => $statusMasuk,
             ]);
+            $absensi->load('shift', 'karyawan.user');
 
+            app(GamificationService::class)
+                ->evaluateAndRecord($absensi);
+                
             DB::commit();
+
 
             return response()->json([
                 'status'  => 'success',

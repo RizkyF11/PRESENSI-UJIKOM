@@ -26,6 +26,10 @@ class GamificationService
     */
     public function evaluateAndRecord(Absensi $absensi): void
     {
+        if ($absensi->is_alpha_generated) {
+            return;
+        }
+
         // Ambil user dari relasi karyawan
         $user = $absensi->karyawan->user;
 
@@ -199,8 +203,7 @@ class GamificationService
                 user: $user,
                 type: $type,
                 amount: abs($rule->point_modifier),
-                description:
-                    "Rule [{$rule->rule_name}] - Absensi {$absensi->tanggal}",
+                description: "Rule [{$rule->rule_name}] - Absensi {$absensi->tanggal}",
                 absensi: $absensi
             );
 
@@ -354,7 +357,6 @@ class GamificationService
                 'status' => 'USED',
                 'used_at_absensi_id' => $absensi->id,
             ]);
-
         });
 
         return true;
@@ -419,5 +421,46 @@ class GamificationService
             'success' => true,
             'message' => 'Token berhasil ditukar.'
         ];
+    }
+
+    public function evaluateAlpha(Absensi $absensi): void
+    {
+        $user = $absensi->karyawan?->user;
+
+        if (!$user) return;
+
+        // prevent double alpha only
+        if (PointLedger::where('absensi_id', $absensi->id)
+            ->where('transaction_type', 'PENALTY')
+            ->where('description', 'Alpha')
+            ->exists()
+        ) {
+            return;
+        }
+
+        $rules = PointRule::where('target_role', $user->role)
+            ->where('conditional_type', 'ALPHA')
+            ->get();
+
+        if ($rules->isEmpty()) {
+            $this->recordLedger(
+                user: $user,
+                type: 'PENALTY',
+                amount: 10,
+                description: "Alpha default penalty - {$absensi->tanggal}",
+                absensi: $absensi
+            );
+            return;
+        }
+
+        foreach ($rules as $rule) {
+            $this->recordLedger(
+                user: $user,
+                type: 'PENALTY',
+                amount: abs($rule->point_modifier),
+                description: "Alpha penalty - {$absensi->tanggal}",
+                absensi: $absensi
+            );
+        }
     }
 }

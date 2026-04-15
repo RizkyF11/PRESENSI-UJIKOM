@@ -23,6 +23,11 @@ class Absensi extends Model
         'longitude_keluar',
         'status_masuk',
         'status_keluar',
+        'is_alpha_generated',
+    ];
+
+    protected $casts = [
+        'is_alpha_generated' => 'boolean',
     ];
 
     // Absensi milik 1 karyawan

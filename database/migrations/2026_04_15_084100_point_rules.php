@@ -24,7 +24,8 @@ return new class extends Migration
 
             $table->enum('conditional_type', [
                 'EARLY_MINUTES',
-                'LATE_MINUTES'
+                'LATE_MINUTES',
+                'ALPHA',
             ]);
 
             $table->enum('condition_operator', ['<', '>', 'BETWEEN']);

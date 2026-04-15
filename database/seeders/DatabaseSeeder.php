@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             AssessmentCategorySeeder::class,
 
             // point ledger
-            // PointLedgerSeeder::class,
+            PointLedgerSeeder::class,
         ]);
     }
 }
