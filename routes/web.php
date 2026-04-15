@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\AdminQrController;
 use App\Http\Controllers\Admin\CutiController;
+use App\Http\Controllers\Admin\FlexibilityItemController;
 use App\Http\Controllers\Admin\IzinController;
 use App\Http\Controllers\Admin\KaryawanShiftController;
 use App\Http\Controllers\Admin\LokasiKantorController;
@@ -150,6 +151,24 @@ Route::middleware('auth')->group(function () {
 
             // point rules
             Route::resource('point-rules', PointRuleController::class)->except(['show']);
+
+            // flexibility items
+            Route::resource('flexibility-items', FlexibilityItemController::class)->except(['show', 'destroy']);
+
+            // Route untuk activate/deactivate item fleksibilitas
+            Route::patch(
+                'flexibility-items/{id}/deactivate',
+                [FlexibilityItemController::class, 'deactivate']
+            )->name('flexibility-items.deactivate');
+
+            Route::patch(
+                'flexibility-items/{id}/activate',
+                [FlexibilityItemController::class, 'activate']
+            )->name('flexibility-items.activate');
+
+            //leaderboard
+            Route::get('/leaderboard', [LeaderboardController::class, 'index'])
+                ->name('leaderboard.index');
         });
 
 

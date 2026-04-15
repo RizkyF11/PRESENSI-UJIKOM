@@ -116,9 +116,9 @@ class GamificationService
 
             $selisih = floor(($jamMasuk - $jamShift) / 60);
 
-            // Jika melebihi toleransi shift baru dianggap telat
+            // Jika melebihi toleransi menit maka dihitung late minutesnya
             if ($selisih > $shift->toleransi_menit) {
-                $lateMinutes = $selisih;
+                $lateMinutes = $selisih - $shift->toleransi_menit;
             }
         }
 
@@ -332,7 +332,7 @@ class GamificationService
     private function interceptToken(Absensi $absensi, User $user): bool
     {
         // Jika status bukan terlambat skip
-        if ($absensi->status_masuk !== 'TERLAMBAT') {
+        if ($absensi->status_masuk !== 'terlambat') {
             return false;
         }
 
@@ -355,10 +355,6 @@ class GamificationService
                 'used_at_absensi_id' => $absensi->id,
             ]);
 
-            // Ubah status absensi
-            $absensi->update([
-                'status_masuk' => 'TOKEN_USED'
-            ]);
         });
 
         return true;

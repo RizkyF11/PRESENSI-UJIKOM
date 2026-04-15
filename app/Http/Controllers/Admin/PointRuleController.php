@@ -138,11 +138,9 @@ class PointRuleController extends Controller
             $validated['condition_operator'] === 'BETWEEN' &&
             !str_contains($validated['condition_value'], ',')
         ) {
-            abort(
-                back()->withInput()->withErrors([
-                    'condition_value' => 'Format BETWEEN wajib pakai koma. Contoh: 5,15'
-                ])
-            );
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'condition_value' => 'Format BETWEEN wajib pakai koma. Contoh: 5,15'
+            ]);
         }
 
 
@@ -158,11 +156,9 @@ class PointRuleController extends Controller
             if ($validated['condition_operator'] !== 'BETWEEN') {
 
                 if (!is_numeric($validated['condition_value'])) {
-                    abort(
-                        back()->withInput()->withErrors([
-                            'condition_value' => 'Value harus berupa angka.'
-                        ])
-                    );
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'condition_value' => 'Untuk operator selain BETWEEN, nilai harus angka.'
+                    ]);
                 }
             }
         }

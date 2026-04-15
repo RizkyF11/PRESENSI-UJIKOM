@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('item_name');
             $table->integer('point_cost');
-
             $table->integer('stock_limit')->nullable();
+            $table->boolean('is_active')->default(true);
 
             $table->timestamps();
         });

@@ -28,6 +28,9 @@ class DatabaseSeeder extends Seeder
             
             // 5. Assessment (tidak bergantung data lain)
             AssessmentCategorySeeder::class,
+
+            // point ledger
+            // PointLedgerSeeder::class,
         ]);
     }
 }
