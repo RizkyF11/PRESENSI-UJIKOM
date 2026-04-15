@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -64,6 +65,28 @@ class User extends Authenticatable
         return $this->hasMany(Assessment::class, 'evaluatee_id');
     }
 
-    
-    
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELATION TO POINT LEDGER
+    |--------------------------------------------------------------------------
+    | 1 User memiliki banyak histori transaksi poin
+    |
+    */
+    public function pointLedgers()
+    {
+        return $this->hasMany(PointLedger::class);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELATION TO USER TOKENS
+    |--------------------------------------------------------------------------
+    | 1 User memiliki banyak token reward/inventory
+    |
+    */
+    public function userTokens()
+    {
+        return $this->hasMany(UserToken::class);
+    }
 }

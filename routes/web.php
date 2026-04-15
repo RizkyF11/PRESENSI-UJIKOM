@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\CutiController;
 use App\Http\Controllers\Admin\IzinController;
 use App\Http\Controllers\Admin\KaryawanShiftController;
 use App\Http\Controllers\Admin\LokasiKantorController;
+use App\Http\Controllers\Admin\PointRuleController;
 use App\Http\Controllers\Admin\ShiftController;
 use App\Http\Controllers\AssessmentCategoryController;
 use App\Http\Controllers\AssessmentController;
@@ -146,6 +147,9 @@ Route::middleware('auth')->group(function () {
             // Admin bisa hapus penilaian
             Route::delete('assessment/{assessment}', [AssessmentController::class, 'destroy'])
                 ->name('assessment.destroy');
+
+            // point rules
+            Route::resource('point-rules', PointRuleController::class)->except(['show']);
         });
 
 

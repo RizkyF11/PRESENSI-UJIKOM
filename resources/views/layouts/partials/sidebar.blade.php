@@ -51,6 +51,23 @@
                     </a>
                 </li>
 
+                <li class="{{ request()->routeIs('admin.point-rules.*') ? 'active' : '' }}">
+                    <a href="#Gamification" class="has-arrow">
+                        <i class="fa fa-trophy"></i>
+                        <span>Gamification</span>
+                    </a>
+
+                    <ul>
+
+                        <li class="{{ request()->routeIs('admin.point-rules.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.point-rules.index') }}">
+                                Point Rules
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
                 <li class="{{ request()->routeIs('admin.karyawan.*') || request()->routeIs('admin.shift.*') || request()->routeIs('admin.lokasi-kantor.*') ? 'active' : '' }}">
                     <a href="#MasterData" class="has-arrow"><i class="fa fa-database"></i><span>Master Data</span></a>
                     <ul>
