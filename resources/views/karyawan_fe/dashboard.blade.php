@@ -71,6 +71,19 @@
     <!-- MAIN MENU SEC -->
     <h6 class="font-weight-bold text-gray-800 mb-2 px-1" style="font-size: 14px;">Menu Cepat</h6>
     <div class="d-flex overflow-auto no-scrollbar mb-4 px-1" style="gap: 12px; padding-bottom: 5px;">
+
+         <!-- Dompet Integritas -->
+        <a href="{{ route('karyawan.dompet.index') }}" class="text-decoration-none flex-shrink-0" style="width: 100px;">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(145deg, #fff, #f8f9fa);">
+                <div class="card-body p-3 text-center d-flex flex-column align-items-center justify-content-center">
+                    <div class="text-yellow-600 mb-2 flex items-center justify-center rounded-full" style="width:40px;height:40px; background: rgba(234, 179, 8, 0.15);">
+                        <span class="iconify" data-icon="heroicons:wallet" data-width="22"></span>
+                    </div>
+                    <span class="text-gray-700 font-medium" style="font-size: 10px; line-height: 1.2;">Dompet Integritas</span>
+                </div>
+            </div>
+        </a>
+
         <!-- Jadwal Shift -->
         <a href="{{ route('karyawan.jadwal.index') }}" class="text-decoration-none flex-shrink-0" style="width: 100px;">
             <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
@@ -118,6 +131,8 @@
                 </div>
             </div>
         </a>
+
+       
     </div>
 
     <!-- STATISTIK BULANAN -->

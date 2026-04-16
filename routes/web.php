@@ -223,6 +223,10 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/karyawan/rapor', [RaporController::class, 'index'])
             ->name('karyawan.rapor');
+
+        // Dompet Integritas
+        Route::get('/karyawan/dompet', [\App\Http\Controllers\Karyawan\DompetIntegritasController::class, 'index'])->name('karyawan.dompet.index');
+        Route::post('/karyawan/dompet/redeem/{id}', [\App\Http\Controllers\Karyawan\DompetIntegritasController::class, 'redeem'])->name('karyawan.dompet.redeem');
     });
 
 

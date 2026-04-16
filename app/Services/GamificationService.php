@@ -135,8 +135,11 @@ class GamificationService
             $selisih = $waktuShift->diffInMinutes($waktuMasuk);
             $toleransi = $shift->toleransi_menit ?? 0;
 
-            if ($selisih > $toleransi) {
-                $lateMinutes = $selisih - $toleransi;
+            // Fix ✅ — jika selisih >= toleransi, berarti sudah terlambat
+            if ($selisih >= $toleransi) {
+                // Pakai selisih penuh, bukan dikurangi toleransi
+                // karena rule LATE_MINUTES > 0 harus match
+                $lateMinutes = $selisih;
             }
         }
 

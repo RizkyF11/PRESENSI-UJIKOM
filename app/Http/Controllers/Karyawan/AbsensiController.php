@@ -139,8 +139,9 @@ class AbsensiController extends Controller
             // ===== VALIDASI TERLAMBAT =====
             $batasTerlambat = Carbon::parse($tanggalAbsensi . ' ' . $shift->jam_masuk)
                 ->addMinutes($shift->toleransi_menit ?? 0);
-
-            $statusMasuk = $now->greaterThan($batasTerlambat)
+                
+            // Fix ✅
+            $statusMasuk = $now->greaterThanOrEqualTo($batasTerlambat)
                 ? 'terlambat'
                 : 'hadir';
 
