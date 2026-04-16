@@ -84,6 +84,18 @@
             </div>
         </a>
 
+        <!-- Leaderboard -->
+        <a href="{{ route('karyawan.leaderboard.index') }}" class="text-decoration-none flex-shrink-0" style="width: 100px;">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: linear-gradient(145deg, #fff, #f8f9fa);">
+                <div class="card-body p-3 text-center d-flex flex-column align-items-center justify-content-center">
+                    <div class="text-orange-500 mb-2 flex items-center justify-center bg-orange-50 rounded-full" style="width:40px;height:40px;">
+                        <span class="iconify animate-bounce" data-icon="heroicons:trophy" data-width="20"></span>
+                    </div>
+                    <span class="text-gray-700 font-medium" style="font-size: 10px; line-height: 1.2;">Leaderboard</span>
+                </div>
+            </div>
+        </a>
+
         <!-- Jadwal Shift -->
         <a href="{{ route('karyawan.jadwal.index') }}" class="text-decoration-none flex-shrink-0" style="width: 100px;">
             <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
@@ -207,4 +219,14 @@
         </div>
     </div>
 </div>
+
+<style>
+@keyframes bounce {
+  0%, 100% { transform: translateY(-15%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+  50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+}
+.animate-bounce {
+  animation: bounce 2s infinite;
+}
+</style>
 @endsection

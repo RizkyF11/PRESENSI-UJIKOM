@@ -227,6 +227,9 @@ Route::middleware('auth')->group(function () {
         // Dompet Integritas
         Route::get('/karyawan/dompet', [\App\Http\Controllers\Karyawan\DompetIntegritasController::class, 'index'])->name('karyawan.dompet.index');
         Route::post('/karyawan/dompet/redeem/{id}', [\App\Http\Controllers\Karyawan\DompetIntegritasController::class, 'redeem'])->name('karyawan.dompet.redeem');
+
+        // Leaderboard
+        Route::get('/karyawan/leaderboard', [\App\Http\Controllers\Karyawan\LeaderboardController::class, 'index'])->name('karyawan.leaderboard.index');
     });
 
 

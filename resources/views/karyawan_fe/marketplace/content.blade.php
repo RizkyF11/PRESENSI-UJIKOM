@@ -43,15 +43,35 @@
                     <h6 class="font-bold text-gray-800 text-[13px] mb-2 leading-tight">
                         {{ $item->item_name }}
                     </h6>
-                    <p class="text-[10px] text-gray-500 mb-3" style="line-height: 1.4;">
+                    <p class="text-[10px] text-gray-500 mb-2" style="line-height: 1.4;">
                         {{ \Illuminate\Support\Str::limit($item->description ?? 'Gunakan poinmu untuk mendapatkan token ini.', 50) }}
                     </p>
+                    
+                    <!-- Indikator Stok -->
+                    <div class="flex items-center gap-1 text-[10px] font-bold mt-1 {{ $item->stock_limit !== null && $item->stock_limit <= 0 ? 'text-red-500' : 'text-teal-600' }}">
+                        <span class="iconify" data-icon="heroicons:archive-box" data-width="12"></span>
+                        <span>Stok: {{ $item->stock_limit === null ? 'Unlimited' : $item->stock_limit }}</span>
+                    </div>
                 </div>
 
-                <form action="{{ route('karyawan.dompet.redeem', $item->id) }}" method="POST">
+                <form action="{{ route('karyawan.dompet.redeem', $item->id) }}" method="POST" class="mt-3">
                     @csrf
-                    <button type="submit" class="btn w-full font-bold text-[11px] py-2 rounded-xl transition shadow-sm {{ $balance >= $item->point_cost ? 'bg-teal-500 text-white hover:bg-teal-600' : 'bg-gray-100 text-gray-400 cursor-not-allowed' }}" {{ $balance < $item->point_cost ? 'disabled' : '' }}>
-                        {{ $balance >= $item->point_cost ? 'Tukar Poin' : 'Poin Kurang' }}
+                    @php
+                        $isOwned = $inventory->where('item_id', $item->id)->where('status', 'AVAILABLE')->isNotEmpty();
+                        $isOutOfStock = $item->stock_limit !== null && $item->stock_limit <= 0;
+                        $canBuy = !$isOwned && !$isOutOfStock && $balance >= $item->point_cost;
+                    @endphp
+
+                    <button type="submit" class="btn w-full font-bold text-[11px] py-2 rounded-xl transition shadow-sm {{ $canBuy ? 'bg-teal-500 text-white hover:bg-teal-600' : 'bg-gray-100 text-gray-400 cursor-not-allowed' }}" {{ !$canBuy ? 'disabled' : '' }}>
+                        @if($isOwned)
+                            Sudah Dimiliki
+                        @elseif($isOutOfStock)
+                            Stok Habis
+                        @elseif($balance < $item->point_cost)
+                            Poin Kurang
+                        @else
+                            Tukar Poin
+                        @endif
                     </button>
                 </form>
             </div>

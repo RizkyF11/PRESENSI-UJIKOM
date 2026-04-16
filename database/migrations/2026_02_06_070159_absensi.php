@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('longitude_masuk', 10, 7)->nullable();
             $table->decimal('latitude_keluar', 10, 7)->nullable();
             $table->decimal('longitude_keluar', 10, 7)->nullable();
-            $table->enum('status_masuk', ['hadir', 'terlambat',])->nullable();
+            $table->enum('status_masuk', ['hadir', 'terlambat'])->nullable();
             $table->enum('status_keluar', ['pulang', 'pulang_cepat',])->nullable();
             $table->boolean('is_alpha_generated')->default(false);
             $table->timestamps();

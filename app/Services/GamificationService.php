@@ -339,6 +339,11 @@ class GamificationService
                 'status' => 'USED',
                 'used_at_absensi_id' => $absensi->id,
             ]);
+
+            // ubah status absensi
+            $absensi->update([
+                'status_masuk' => 'hadir'
+            ]);
         });
 
         return true;
@@ -367,27 +372,52 @@ class GamificationService
     */
     public function redeemToken(User $user, FlexibilityItem $item): array
     {
-        if ($this->getCurrentBalance($user) < $item->point_cost) {
-            return ['success' => false, 'message' => 'Saldo poin tidak cukup.'];
+        // 1. Cek ketersediaan stok
+        if ($item->stock_limit !== null && $item->stock_limit <= 0) {
+            return ['success' => false, 'message' => 'Maaf, stok penukaran kupon ini sudah habis.'];
         }
 
-        // recordLedger sudah pakai DB::transaction() sendiri, tidak perlu wrap lagi
-        $ledger = $this->recordLedger(
-            user: $user,
-            type: 'SPEND',
-            amount: $item->point_cost,
-            description: "Redeem token {$item->item_name}"
-        );
+        // 2. Cek apakah user sudah punya token ini yang masih murni (AVAILABLE)
+        $hasAvailableToken = UserToken::where('user_id', $user->id)
+            ->where('item_id', $item->id)
+            ->where('status', 'AVAILABLE')
+            ->exists();
 
-        $token = UserToken::create([
-            'user_id' => $user->id,
-            'item_id' => $item->id,
-            'status'  => 'AVAILABLE',
-        ]);
+        if ($hasAvailableToken) {
+            return ['success' => false, 'message' => 'Anda masih memiliki kupon jenis ini di inventory yang belum dipakai.'];
+        }
 
-        $ledger->update(['user_token_id' => $token->id]);
+        // 3. Cek perbandingan saldo dan harga
+        if ($this->getCurrentBalance($user) < $item->point_cost) {
+            return ['success' => false, 'message' => 'Saldo poin tidak cukup untuk ditukar dengan kupon ini.'];
+        }
 
-        return ['success' => true, 'message' => 'Token berhasil ditukar.'];
+        return DB::transaction(function () use ($user, $item) {
+            
+            // Pengurangan stock item (jika tidak unlimited)
+            if ($item->stock_limit !== null) {
+                $item->decrement('stock_limit', 1);
+            }
+
+            // Record mutasi ke ledger
+            $ledger = $this->recordLedger(
+                user: $user,
+                type: 'SPEND',
+                amount: $item->point_cost,
+                description: "Redeem token {$item->item_name}"
+            );
+
+            // Tambahkan ke inventory token
+            $token = UserToken::create([
+                'user_id' => $user->id,
+                'item_id' => $item->id,
+                'status'  => 'AVAILABLE',
+            ]);
+
+            $ledger->update(['user_token_id' => $token->id]);
+
+            return ['success' => true, 'message' => 'Kupon berhasil ditukarkan dan telah masuk ke inventory!'];
+        });
     }
 
 
@@ -400,13 +430,13 @@ class GamificationService
         // prevent double alpha only
         if (PointLedger::where('absensi_id', $absensi->id)
             ->where('transaction_type', 'PENALTY')
-            ->where('description', 'Alpha')
+            ->where('description', 'LIKE', '%Alpha%')
             ->exists()
         ) {
             return;
         }
 
-        $rules = PointRule::where('target_role', $user->role)
+        $rules = PointRule::whereRaw('LOWER(target_role) = ?', [strtolower($user->role)])
             ->where('conditional_type', 'ALPHA')
             ->get();
 
@@ -414,7 +444,7 @@ class GamificationService
             $this->recordLedger(
                 user: $user,
                 type: 'PENALTY',
-                amount: 10,
+                amount: 15,
                 description: "Alpha default penalty - {$absensi->tanggal}",
                 absensi: $absensi
             );

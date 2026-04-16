@@ -81,9 +81,13 @@
                                     </td>
 
                                     <td>
-                                        @if($item->stock_limit)
+                                        @if($item->stock_limit !== null && $item->stock_limit > 0)
                                             <span class="badge badge-info">
                                                 {{ $item->stock_limit }} Slot
+                                            </span>
+                                        @elseif($item->stock_limit !== null && $item->stock_limit <= 0)
+                                            <span class="badge badge-danger">
+                                                Habis (0 Slot)
                                             </span>
                                         @else
                                             <span class="badge badge-success">

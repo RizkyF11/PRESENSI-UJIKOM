@@ -31,6 +31,9 @@ class DatabaseSeeder extends Seeder
 
             // point ledger
             PointLedgerSeeder::class,
+
+            //point rule
+            PointRuleSeeder::class,
         ]);
     }
 }

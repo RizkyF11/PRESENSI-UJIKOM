@@ -45,7 +45,7 @@ class FlexibilityItemController extends Controller
         $validated = $request->validate([
             'item_name'   => 'required|string|max:255|unique:flexibility_items,item_name',
             'point_cost'  => 'required|integer|min:1',
-            'stock_limit' => 'nullable|integer|min:1',
+            'stock_limit' => 'nullable|integer|min:0',
             'is_active'  => 'required|boolean',
         ]);
 
@@ -79,7 +79,7 @@ class FlexibilityItemController extends Controller
         $validated = $request->validate([
             'item_name'   => 'required|string|max:255|unique:flexibility_items,item_name,' . $flexibilityItem->id,
             'point_cost'  => 'required|integer|min:1',
-            'stock_limit' => 'nullable|integer|min:1',
+            'stock_limit' => 'nullable|integer|min:0',
             'is_active'  => 'required|boolean',
         ]);
 
