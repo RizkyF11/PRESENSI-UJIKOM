@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AbsensiController extends Controller
 {
@@ -109,7 +110,7 @@ class AbsensiController extends Controller
         $karyawanId = Auth::user()->karyawan->id;
         $now        = Carbon::now();
 
-          
+
 
         DB::beginTransaction();
         try {
@@ -156,20 +157,27 @@ class AbsensiController extends Controller
             ]);
             $absensi->load('shift', 'karyawan.user');
 
-            app(GamificationService::class)
-                ->evaluateAndRecord($absensi);
-                
+
             DB::commit();
-
-
-            return response()->json([
-                'status'  => 'success',
-                'message' => 'Absen masuk berhasil',
-            ]);
         } catch (\Throwable $e) {
             DB::rollback();
             return $this->exception($e);
         }
+        // Gamification SETELAH transaction absensi selesai
+        if ($absensi) {
+            try {
+                $absensi->load('shift', 'karyawan.user');
+                app(GamificationService::class)->evaluateAndRecord($absensi);
+            } catch (\Throwable $e) {
+                Log::error('Gamification gagal absensi #' . $absensi->id . ': ' . $e->getMessage());
+                // Absensi tetap sukses, gamification gagal tidak rollback absensi
+            }
+        }
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Absen masuk berhasil',
+        ]);
     }
 
 
@@ -275,8 +283,9 @@ class AbsensiController extends Controller
             ->where('karyawan_shift.karyawan_id', $karyawanId)
             ->whereDate('karyawan_shift.tanggal_mulai', '<=', $today)
             ->where(function ($q) use ($today) {
-                $q->whereNull('tanggal_selesai')
-                    ->orWhereDate('tanggal_selesai', '>=', $today);
+                // [!] PERBAIKAN DI SINI: Tambahkan prefix karyawan_shift.
+                $q->whereNull('karyawan_shift.tanggal_selesai')
+                    ->orWhereDate('karyawan_shift.tanggal_selesai', '>=', $today);
             })
             ->select('shift.*')
             ->get();
@@ -286,20 +295,25 @@ class AbsensiController extends Controller
             $jamMasuk  = Carbon::createFromTimeString($shift->jam_masuk);
             $jamKeluar = Carbon::createFromTimeString($shift->jam_keluar);
 
+            // BUKA GERBANG ABSEN 60 MENIT LEBIH AWAL
+            $jamMulaiBisaAbsen = $jamMasuk->copy()->subMinutes(60)->format('H:i:s');
+
             // Shift normal
             if ($jamKeluar->greaterThan($jamMasuk)) {
-                if ($jamSekarang >= $shift->jam_masuk && $jamSekarang <= $shift->jam_keluar) {
+                if ($jamSekarang >= $jamMulaiBisaAbsen && $jamSekarang <= $shift->jam_keluar) {
                     return $shift;
                 }
             }
 
             // Shift lintas hari
             if ($jamKeluar->lessThan($jamMasuk)) {
-                if ($jamSekarang >= $shift->jam_masuk || $jamSekarang <= $shift->jam_keluar) {
+                // Logika lintas hari: jika sekarang >= sejam sebelum masuk, ATAU <= jam keluar
+                if ($jamSekarang >= $jamMulaiBisaAbsen || $jamSekarang <= $shift->jam_keluar) {
                     return $shift;
                 }
             }
         }
+
 
         return null;
     }
@@ -422,7 +436,8 @@ class AbsensiController extends Controller
     {
         return response()->json([
             'status' => 'error',
-            'message' => 'Terjadi kesalahan sistem',
+            // Tampilkan pesan error asli beserta file & barisnya
+            'message' => $e->getMessage() . ' (Line: ' . $e->getLine() . ' di ' . class_basename($e->getFile()) . ')',
             'error'   => $e->getMessage()
         ], 500);
     }

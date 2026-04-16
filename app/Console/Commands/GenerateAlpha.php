@@ -128,8 +128,12 @@ class GenerateAlpha extends Command
                 // ==========================
                 // TRIGGER GAMIFICATION
                 // ==========================
-                app(GamificationService::class)
-                    ->evaluateAlpha($absensi);
+                try {
+                    app(GamificationService::class)
+                        ->evaluateAlpha($absensi);
+                } catch (\Throwable $e) {
+                    $this->error('Gagal evaluasi alpha: ' . $e->getMessage());
+                }
             }
         }
 

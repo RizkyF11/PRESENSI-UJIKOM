@@ -26,15 +26,18 @@ class GamificationService
     */
     public function evaluateAndRecord(Absensi $absensi): void
     {
-        if ($absensi->is_alpha_generated) {
-            return;
-        }
 
         // Ambil user dari relasi karyawan
-        $user = $absensi->karyawan->user;
+        $user = $absensi->karyawan?->user;
 
         // Jika user tidak ditemukan hentikan proses
         if (!$user) {
+            return;
+        }
+
+        // kalau alpha dari scheduler
+        if ($absensi->is_alpha_generated) {
+            $this->evaluateAlpha($absensi);
             return;
         }
 
@@ -58,8 +61,16 @@ class GamificationService
             return;
         }
 
+        if (!$absensi->jam_masuk || !$absensi->shift) {
+            return;
+        }
+
         // Jalankan evaluasi semua point rules
-        $this->evaluateRules($absensi, $user);
+        try {
+            $this->evaluateRules($absensi, $user);
+        } catch (\Throwable $e) {
+            throw new \Exception('Evaluasi rules gagal: ' . $e->getMessage());
+        }
     }
 
 
@@ -75,94 +86,81 @@ class GamificationService
     |
     | Jika cocok dengan rule maka ledger akan dibuat.
     */
+    /*
+    |--------------------------------------------------------------------------
+    | RULE ENGINE (UPGRADED)
+    |--------------------------------------------------------------------------
+    */
     private function evaluateRules(Absensi $absensi, User $user): void
     {
-        // Ambil semua rule sesuai role user
-        $rules = PointRule::where('target_role', $user->role)
+        // 1. ANTI MISKOM ROLE: Jadikan huruf kecil semua agar kebal huruf besar/kecil (Case Insensitive)
+        $rules = PointRule::whereRaw('LOWER(target_role) = ?', [strtolower($user->role)])
             ->orderBy('point_modifier', 'asc')
             ->get();
 
-        // Jika tidak ada rule maka stop
+        // Jika tidak ada rule untuk role tersebut, hentikan
         if ($rules->isEmpty()) {
             return;
         }
 
-        // Ambil shift dari absensi
         $shift = $absensi->shift;
-
-        // Jika shift kosong stop
         if (!$shift) {
             return;
         }
 
-        // Convert jam masuk dan jam shift ke timestamp
-        $jamMasuk = strtotime($absensi->jam_masuk);
-        $jamShift = strtotime($shift->jam_masuk);
+        // 2. ANTI MISKOM JAM: Gunakan Carbon agar tanggal & jam ikut dihitung (Jangan pakai strtotime)
+        $waktuShift = \Carbon\Carbon::parse($absensi->tanggal . ' ' . $shift->jam_masuk);
+        $waktuMasuk = \Carbon\Carbon::parse($absensi->tanggal . ' ' . $absensi->jam_masuk);
+
+        // Penyesuaian Jika Shift Lintas Malam (Misal: Shift 00:00, Absen 23:50)
+        if ($waktuShift->format('H') < 12 && $waktuMasuk->format('H') >= 12) {
+            $waktuShift->addDay();
+        } elseif ($waktuShift->format('H') >= 12 && $waktuMasuk->format('H') < 12) {
+            $waktuShift->subDay();
+        }
 
         /*
         |--------------------------------------------------------------------------
-        | Hitung EARLY & LATE Minutes
+        | Hitung EARLY & LATE Minutes yang Akurat
         |--------------------------------------------------------------------------
-        | Menghitung:
-        | - berapa menit user datang lebih awal
-        | - berapa menit user terlambat
         */
         $earlyMinutes = 0;
         $lateMinutes = 0;
 
-        // Jika datang sebelum shift = early
-        if ($jamMasuk < $jamShift) {
-            $earlyMinutes = floor(($jamShift - $jamMasuk) / 60);
-        }
+        if ($waktuMasuk->lessThan($waktuShift)) {
+            // Hitung persis berapa menit dia datang lebih awal
+            $earlyMinutes = $waktuMasuk->diffInMinutes($waktuShift);
+        } elseif ($waktuMasuk->greaterThan($waktuShift)) {
+            // Hitung keterlambatan
+            $selisih = $waktuShift->diffInMinutes($waktuMasuk);
+            $toleransi = $shift->toleransi_menit ?? 0;
 
-        // Jika datang setelah shift = potential late
-        if ($jamMasuk > $jamShift) {
-
-            $selisih = floor(($jamMasuk - $jamShift) / 60);
-
-            // Jika melebihi toleransi menit maka dihitung late minutesnya
-            if ($selisih > $shift->toleransi_menit) {
-                $lateMinutes = $selisih - $shift->toleransi_menit;
+            if ($selisih > $toleransi) {
+                $lateMinutes = $selisih - $toleransi;
             }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Anti double penalty
-        |--------------------------------------------------------------------------
-        | Mencegah lebih dari 1 penalty dalam 1 absensi.
-        */
         $penaltyApplied = false;
+
+
 
         // Loop seluruh rule satu-persatu
         foreach ($rules as $rule) {
 
             $value = 0;
 
-            /*
-            |--------------------------------------------------------------------------
-            | Mapping nilai evaluasi berdasarkan conditional type
-            |--------------------------------------------------------------------------
-            */
             switch ($rule->conditional_type) {
-
                 case 'EARLY_MINUTES':
                     $value = $earlyMinutes;
                     break;
-
                 case 'LATE_MINUTES':
                     $value = $lateMinutes;
                     break;
-
                 default:
                     continue 2;
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | Evaluasi apakah kondisi rule match
-            |--------------------------------------------------------------------------
-            */
+            // 3. Evaluasi Kondisi
             $match = $this->evaluateCondition(
                 $value,
                 $rule->condition_operator,
@@ -174,40 +172,21 @@ class GamificationService
                 continue;
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | Tentukan jenis transaksi ledger
-            |--------------------------------------------------------------------------
-            */
-            $type =
-                $rule->point_modifier > 0
-                ? 'EARN'
-                : 'PENALTY';
+            $type = $rule->point_modifier > 0 ? 'EARN' : 'PENALTY';
 
-            /*
-            |--------------------------------------------------------------------------
-            | Prevent double penalty
-            |--------------------------------------------------------------------------
-            | Jika penalty sudah pernah diterapkan skip penalty berikutnya.
-            */
             if ($type === 'PENALTY' && $penaltyApplied) {
                 continue;
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | Simpan ledger transaksi point
-            |--------------------------------------------------------------------------
-            */
+            // SIMPAN POIN KE LEDGER
             $this->recordLedger(
                 user: $user,
                 type: $type,
                 amount: abs($rule->point_modifier),
-                description: "Rule [{$rule->rule_name}] - Absensi {$absensi->tanggal}",
+                description: "Rule[{$rule->rule_name}] - Absensi {$absensi->tanggal}",
                 absensi: $absensi
             );
 
-            // Tandai bahwa penalty sudah dipakai
             if ($type === 'PENALTY') {
                 $penaltyApplied = true;
             }
@@ -385,43 +364,29 @@ class GamificationService
     */
     public function redeemToken(User $user, FlexibilityItem $item): array
     {
-        // Cek apakah saldo cukup
         if ($this->getCurrentBalance($user) < $item->point_cost) {
-
-            return [
-                'success' => false,
-                'message' => 'Saldo poin tidak cukup.'
-            ];
+            return ['success' => false, 'message' => 'Saldo poin tidak cukup.'];
         }
 
-        DB::transaction(function () use ($user, $item) {
+        // recordLedger sudah pakai DB::transaction() sendiri, tidak perlu wrap lagi
+        $ledger = $this->recordLedger(
+            user: $user,
+            type: 'SPEND',
+            amount: $item->point_cost,
+            description: "Redeem token {$item->item_name}"
+        );
 
-            // Potong point user
-            $ledger = $this->recordLedger(
-                user: $user,
-                type: 'SPEND',
-                amount: $item->point_cost,
-                description: "Redeem token {$item->item_name}"
-            );
+        $token = UserToken::create([
+            'user_id' => $user->id,
+            'item_id' => $item->id,
+            'status'  => 'AVAILABLE',
+        ]);
 
-            // Tambahkan token baru
-            $token = UserToken::create([
-                'user_id' => $user->id,
-                'item_id' => $item->id,
-                'status' => 'AVAILABLE',
-            ]);
+        $ledger->update(['user_token_id' => $token->id]);
 
-            // Update relasi ledger ke token
-            $ledger->update([
-                'user_token_id' => $token->id
-            ]);
-        });
-
-        return [
-            'success' => true,
-            'message' => 'Token berhasil ditukar.'
-        ];
+        return ['success' => true, 'message' => 'Token berhasil ditukar.'];
     }
+
 
     public function evaluateAlpha(Absensi $absensi): void
     {

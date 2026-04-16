@@ -11,4 +11,4 @@ Artisan::command('inspire', function () {
 Schedule::command('qr:cleanup')->daily();
 
 Schedule::command('absensi:generate-alpha')
-    ->everyMinute(); // production bisa dailyAt('23:59')
+    ->dailyAt('23:59'); // production bisa dailyAt('23:59')
