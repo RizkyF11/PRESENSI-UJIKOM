@@ -131,6 +131,7 @@ class TicketController extends Controller
         }
 
         $ticket->save();
+        
 
         // Catat perubahan status sebagai log otomatis di thread
         TicketsResponse::create([

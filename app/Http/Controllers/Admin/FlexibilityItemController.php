@@ -17,6 +17,7 @@ class FlexibilityItemController extends Controller
     */
     public function index()
     {
+        // Abstract
         $items = FlexibilityItem::latest()->get();
 
         return view('admin.flexibility-items.index', compact('items'));

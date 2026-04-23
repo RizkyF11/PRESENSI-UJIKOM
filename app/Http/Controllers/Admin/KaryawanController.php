@@ -57,7 +57,7 @@ class KaryawanController extends Controller
             $user = User::create([
                 'nama'     => $request->nama,
                 'email'    => $request->email,
-                'password' => Hash::make($request->password), // Hash password dari input
+                'password' => Hash::make($request->password), // Hash password dari input // Abstract
                 'role'     => 'karyawan',
             ]);
 
