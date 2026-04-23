@@ -170,6 +170,26 @@ Route::middleware('auth')->group(function () {
             //leaderboard
             Route::get('/leaderboard', [LeaderboardController::class, 'index'])
                 ->name('leaderboard.index');
+
+            // Dashboard Analitik Helpdesk
+            Route::get('/helpdesk/dashboard', [\App\Http\Controllers\Admin\TicketController::class, 'dashboard'])
+                ->name('helpdesk.dashboard');
+
+            // Antrean semua tiket (diurutkan by prioritas)
+            Route::get('/helpdesk/tickets', [\App\Http\Controllers\Admin\TicketController::class, 'index'])
+                ->name('helpdesk.tickets.index');
+
+            // Detail tiket + thread percakapan
+            Route::get('/helpdesk/tickets/{ticket}', [\App\Http\Controllers\Admin\TicketController::class, 'show'])
+                ->name('helpdesk.tickets.show');
+
+            // Admin membalas tiket
+            Route::post('/helpdesk/tickets/{ticket}/reply', [\App\Http\Controllers\Admin\TicketController::class, 'reply'])
+                ->name('helpdesk.tickets.reply');
+
+            // Admin mengubah status tiket (tanpa reply)
+            Route::patch('/helpdesk/tickets/{ticket}/status', [\App\Http\Controllers\Admin\TicketController::class, 'updateStatus'])
+                ->name('helpdesk.tickets.update-status');
         });
 
 
@@ -230,6 +250,26 @@ Route::middleware('auth')->group(function () {
 
         // Leaderboard
         Route::get('/karyawan/leaderboard', [\App\Http\Controllers\Karyawan\LeaderboardController::class, 'index'])->name('karyawan.leaderboard.index');
+
+        // Resource untuk CRUD dasar tiket
+        Route::resource('karyawan/tickets', \App\Http\Controllers\Karyawan\TicketController::class)
+            ->except(['edit', 'update', 'destroy'])
+            ->names([
+                'index' => 'karyawan.tickets.index',
+                'create' => 'karyawan.tickets.create',
+                'store' => 'karyawan.tickets.store',
+                'show' => 'karyawan.tickets.show',
+            ]);
+
+        // Sisanya manual karena bukan bagian dari resource standar
+        Route::post('/karyawan/tickets/{ticket}/reply', [\App\Http\Controllers\Karyawan\TicketController::class, 'reply'])
+            ->name('karyawan.tickets.reply');
+
+        Route::post('/karyawan/tickets/{ticket}/rate', [\App\Http\Controllers\Karyawan\TicketController::class, 'rate'])
+            ->name('karyawan.tickets.rate');
+
+        Route::get('/karyawan/search-similar', [\App\Http\Controllers\Karyawan\TicketController::class, 'searchSimilar'])
+            ->name('karyawan.tickets.search-similar');
     });
 
 
@@ -244,6 +284,10 @@ Route::middleware('auth')->group(function () {
 
             // Penilaian karyawan
             Route::resource('assessment', AssessmentController::class)->except(['show']);
+
+            // Tambahkan di group middleware('can:manager') yang sudah ada di web.php
+            Route::get('/helpdesk/dashboard', [\App\Http\Controllers\Admin\TicketController::class, 'dashboard'])
+                ->name('helpdesk.dashboard');
         });
 
     // Route Profile (Bawaan Breeze)

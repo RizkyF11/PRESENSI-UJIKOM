@@ -24,7 +24,7 @@
 */
 var NAVTREE =
 [
-  [ "Absensi Karyawan", "index.html", [
+  [ "PRESENSI_UJIKOM", "index.html", [
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ]
     ] ],

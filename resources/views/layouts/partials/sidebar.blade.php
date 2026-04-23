@@ -117,6 +117,18 @@
                     </ul>
                 </li>
 
+                <li class="{{ request()->routeIs('admin.helpdesk.*') ? 'active' : '' }}">
+                    <a href="#Helpdesk" class="has-arrow"><i class="fa fa-support"></i><span>Helpdesk</span></a>
+                    <ul>
+                        <li class="{{ request()->routeIs('admin.helpdesk.dashboard') ? 'active' : '' }}">
+                            <a href="{{ route('admin.helpdesk.dashboard') }}">Analitik Performa</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.helpdesk.tickets.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.helpdesk.tickets.index') }}">Antrean Tiket</a>
+                        </li>
+                    </ul>
+                </li>
+
                 <li class="{{ request()->routeIs('admin.assessment-categories.*') || request()->routeIs('admin.assessment.laporan') ? 'active' : '' }}">
                     <a href="#Assessments" class="has-arrow"><i class="fa fa-bar-chart"></i><span>Assessments</span></a>
                     <ul>
@@ -140,6 +152,15 @@
                         <i class="fa fa-tachometer"></i>
                         <span>Dashboard Penilaian</span>
                     </a>
+                </li>
+
+                <li class="{{ request()->routeIs('manager.helpdesk.dashboard') ? 'active' : '' }}">
+                    <a href="#Helpdesk" class="has-arrow"><i class="fa fa-support"></i><span>Helpdesk</span></a>
+                    <ul>
+                        <li class="{{ request()->routeIs('manager.helpdesk.dashboard') ? 'active' : '' }}">
+                            <a href="{{ route('manager.helpdesk.dashboard') }}">Analitik Performa</a>
+                        </li>
+                    </ul>
                 </li>
 
                 @endif

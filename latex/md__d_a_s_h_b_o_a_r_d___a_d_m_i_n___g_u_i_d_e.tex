@@ -1,0 +1,322 @@
+\chapter{Admin Dashboard -\/ Panduan Lengkap }
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e}{}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e}\index{Admin Dashboard -\/ Panduan Lengkap@{Admin Dashboard -\/ Panduan Lengkap}}
+\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md0}%
+\Hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md0}%
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md1}{}\doxysection{\texorpdfstring{📊 Ikhtisar Dashboard}{📊 Ikhtisar Dashboard}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md1}
+Dashboard admin yang telah dibuat mencakup {\bfseries{4 komponen utama}} dengan statistik real-\/time dan fitur manajemen lengkap untuk HR dan admin.
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md3}{}\doxysection{\texorpdfstring{🎯 Komponen Utama Dashboard}{🎯 Komponen Utama Dashboard}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md3}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md4}{}\doxysubsection{\texorpdfstring{1. {\bfseries{Stat Cards (Top Section)}}}{1. {\bfseries{Stat Cards (Top Section)}}}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md4}
+Panel statistik dengan 4 kartu informasi penting:\+
+
+
+\begin{DoxyTable}{4}{}{}{1}
+\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Card  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Ikon  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Info  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Warna  \\
+{\bfseries{Total Karyawan}}  &👥  &Jumlah karyawan aktif  &Biru (\#4099FF)  \\
+{\bfseries{Total Shift}}  &🕐  &Jumlah shift aktif  &Cyan (\#00BCD4)  \\
+{\bfseries{Pending Pengajuan}}  &⏳  &Total izin + cuti pending  &Orange (\+\#\+FF9800)  \\
+{\bfseries{Kehadiran Hari Ini}}  &✓  &Hadir/\+\+Total \& persentase  &Hijau (\#4CAF50)  \\
+\end{DoxyTable}
+
+
+{\bfseries{Fitur:\+}}
+
+
+\begin{DoxyItemize}
+\item Update real-\/time dari database
+\item Hover effect dengan shadow dan translasi
+\item Responsive design (3 kolom desktop, 1-\/2 kolom mobile)
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md6}{}\doxysubsection{\texorpdfstring{2. {\bfseries{Pengajuan Izin \& Cuti Pending}}}{2. {\bfseries{Pengajuan Izin \& Cuti Pending}}}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md6}
+Tabel yang menampilkan semua pengajuan izin/\+cuti yang masih pending.
+
+{\bfseries{Kolom yang ditampilkan:\+}}
+
+
+\begin{DoxyItemize}
+\item {\bfseries{Karyawan}}:\+ Nama + NIP (dengan avatar inisial)
+\item {\bfseries{Tipe}}:\+ Badge "{}\+Izin"{} (Info) atau "{}\+Cuti"{} (Warning)
+\item {\bfseries{Tanggal}}:\+ Range tanggal mulai -\/ selesai
+\item {\bfseries{Alasan}}:\+ Preview alasan (max 20 karakter dengan tooltip)
+\item {\bfseries{Aksi}}:\+ Button untuk approval
+\end{DoxyItemize}
+
+{\bfseries{Fitur:\+}}
+
+
+\begin{DoxyItemize}
+\item Avatar dengan gradient color
+\item Badge untuk membedakan tipe permintaan
+\item Link quick-\/action ke halaman detail pengajuan
+\item "{}\+Lihat Semua"{} untuk akses full list
+\item Empty state jika tidak ada pending
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md8}{}\doxysubsection{\texorpdfstring{3. {\bfseries{Statistik Kehadiran 7 Hari}}}{3. {\bfseries{Statistik Kehadiran 7 Hari}}}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md8}
+Tabel ringkas menampilkan data kehadiran 7 hari terakhir.
+
+{\bfseries{Kolom:\+}}
+
+
+\begin{DoxyItemize}
+\item Hari (Mon, Tue, Wed, dst)
+\item Jumlah Hadir (badge hijau)
+\item Jumlah Terlambat (badge kuning)
+\end{DoxyItemize}
+
+{\bfseries{Fitur:\+}}
+
+
+\begin{DoxyItemize}
+\item Update otomatis berdasarkan data absensi
+\item Format hari dalam singkatan
+\item Badge untuk visualisasi lebih baik
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md10}{}\doxysubsection{\texorpdfstring{4. {\bfseries{Data Karyawan Terbaru}}}{4. {\bfseries{Data Karyawan Terbaru}}}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md10}
+Tabel 5 karyawan terbaru dengan informasi lengkap.
+
+{\bfseries{Kolom:\+}}
+
+
+\begin{DoxyItemize}
+\item No (urutan)
+\item Nama (dengan avatar)
+\item NIP
+\item Jabatan
+\item Email
+\item No HP
+\item Status (badge aktif/\+non-\/aktif)
+\item Aksi (edit button)
+\end{DoxyItemize}
+
+{\bfseries{Fitur:\+}}
+
+
+\begin{DoxyItemize}
+\item Avatar dengan inisial nama
+\item Status badge dengan warna berbeda
+\item Link edit langsung ke form edit karyawan
+\item "{}\+Lihat Semua"{} untuk akses full daftar
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md12}{}\doxysection{\texorpdfstring{🔗 Routing \& Navigation}{🔗 Routing \& Navigation}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md12}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md13}{}\doxysubsection{\texorpdfstring{Route Admin Dashboard}{Route Admin Dashboard}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md13}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{GET\ /admin/dashboard\ →\ DashboardController@index\ →\ admin.dashboard}
+
+\end{DoxyCode}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md14}{}\doxysubsection{\texorpdfstring{Quick Links di Dashboard}{Quick Links di Dashboard}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md14}
+
+\begin{DoxyItemize}
+\item 🏢 {\bfseries{Kelola Karyawan}} → {\ttfamily /\+admin/\+karyawan}
+\item 📋 {\bfseries{Lihat Semua Pengajuan}} → {\ttfamily /\+admin/\+izin?status=pending}
+\item 👥 {\bfseries{Lihat Semua Karyawan}} → {\ttfamily /\+admin/\+karyawan}
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md16}{}\doxysection{\texorpdfstring{📊 Fitur \& Statistik yang Tercakup}{📊 Fitur \& Statistik yang Tercakup}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md16}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md17}{}\doxysubsection{\texorpdfstring{✅ Sudah Terimplementasi}{✅ Sudah Terimplementasi}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md17}
+
+\begin{DoxyItemize}
+\item[\DoxyChecked] Total karyawan aktif
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item[\DoxyChecked] Total shift aktif
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item[\DoxyChecked] Pending izin (count \& detail)
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item[\DoxyChecked] Pending cuti (count \& detail)
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item[\DoxyChecked] Kehadiran hari ini dengan persentase
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item[\DoxyChecked] Statistik 7 hari kehadiran
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item[\DoxyChecked] Data karyawan terbaru
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item[\DoxyChecked] Responsive design
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item[\DoxyChecked] Modern UI dengan gradients \& shadows
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item[\DoxyChecked] Action buttons untuk approval
+\end{DoxyItemize}\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md18}{}\doxysubsection{\texorpdfstring{🎁 Bonus Features}{🎁 Bonus Features}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md18}
+
+\begin{DoxyItemize}
+\item Avatar dengan inisial nama \& gradient color
+\item Type badge untuk membedakan Izin vs Cuti
+\item Empty state handling
+\item Hover effects untuk interaktivitas
+\item Tooltip untuk teks panjang
+\item Quick navigation buttons
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md20}{}\doxysection{\texorpdfstring{📈 Standard Company Metrics (Sudah Ditambahkan)}{📈 Standard Company Metrics (Sudah Ditambahkan)}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md20}
+✓ {\bfseries{Employee Metrics}}
+
+
+\begin{DoxyItemize}
+\item Total active employees
+\item Recent hires tracking
+\item Employee status overview
+\end{DoxyItemize}
+
+✓ {\bfseries{Attendance Metrics}}
+
+
+\begin{DoxyItemize}
+\item Daily attendance count
+\item Attendance percentage
+\item 7-\/day trend
+\item Late arrival tracking
+\end{DoxyItemize}
+
+✓ {\bfseries{Request Management}}
+
+
+\begin{DoxyItemize}
+\item Pending leave requests
+\item Pending time-\/off requests
+\item Combined view dengan type differentiation
+\end{DoxyItemize}
+
+✓ {\bfseries{Shift Management}}
+
+
+\begin{DoxyItemize}
+\item Active shift count
+\item Shift utilization
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md22}{}\doxysection{\texorpdfstring{🎨 Design \& Styling}{🎨 Design \& Styling}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md22}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md23}{}\doxysubsection{\texorpdfstring{Color Scheme}{Color Scheme}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md23}
+
+\begin{DoxyItemize}
+\item {\bfseries{Biru Muda}} (\#4099FF):\+ Primary actions, karyawan
+\item {\bfseries{Cyan}} (\#00BCD4):\+ Time/\+shift related
+\item {\bfseries{Orange}} (\+\#\+FF9800):\+ Pending/\+attention needed
+\item {\bfseries{Hijau}} (\#4CAF50):\+ Success/\+attendance
+\item {\bfseries{Merah}} (\+\#\+F44336):\+ Error/\+inactive (if needed)
+\end{DoxyItemize}\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md24}{}\doxysubsection{\texorpdfstring{Typography}{Typography}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md24}
+
+\begin{DoxyItemize}
+\item Heading:\+ Font weight 700
+\item Body:\+ Font weight 400
+\item Small text:\+ Font size 12px, muted color
+\end{DoxyItemize}\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md25}{}\doxysubsection{\texorpdfstring{Components}{Components}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md25}
+
+\begin{DoxyItemize}
+\item {\bfseries{Cards}}:\+ Border-\/top 4px, rounded 8px, shadow + hover effect
+\item {\bfseries{Tables}}:\+ Striped, hover effect, responsive
+\item {\bfseries{Badges}}:\+ Rounded 12px, padding 6px 12px
+\item {\bfseries{Buttons}}:\+ Bootstrap standard dengan icon
+\item {\bfseries{Avatars}}:\+ 32px circular dengan gradient background
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md27}{}\doxysection{\texorpdfstring{🔧 Backend Files Modified}{🔧 Backend Files Modified}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md27}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md28}{}\doxysubsection{\texorpdfstring{1. {\bfseries{Dashboard\+Controller.\+php}}}{1. {\bfseries{Dashboard\+Controller.\+php}}}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md28}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Queries\ yang\ dijalankan:}
+\DoxyCodeLine{-\/\ Karyawan::count()}
+\DoxyCodeLine{-\/\ Shift::where(\textcolor{stringliteral}{'is\_active'},\ \textcolor{keyword}{true})-\/>count()}
+\DoxyCodeLine{-\/\ Izin::where(\textcolor{stringliteral}{'status'},\ \textcolor{stringliteral}{'pending'})-\/>count()}
+\DoxyCodeLine{-\/\ Cuti::where(\textcolor{stringliteral}{'status'},\ \textcolor{stringliteral}{'pending'})-\/>count()}
+\DoxyCodeLine{-\/\ Absensi::whereDate(\textcolor{stringliteral}{'tanggal'},\ \$today)-\/>where(\textcolor{stringliteral}{'status\_masuk'},\ \textcolor{stringliteral}{'hadir'})-\/>count()}
+\DoxyCodeLine{-\/\ 7-\/day\ attendance\ breakdown}
+\DoxyCodeLine{-\/\ Recent\ employees\ dengan\ relations}
+
+\end{DoxyCode}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md29}{}\doxysubsection{\texorpdfstring{2. {\bfseries{dashboard.\+blade.\+php}}}{2. {\bfseries{dashboard.\+blade.\+php}}}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md29}
+
+\begin{DoxyItemize}
+\item Blade template dengan section extend
+\item Looping untuk stats cards
+\item Conditional rendering untuk empty states
+\item Bootstrap grid system
+\item Font Awesome icons
+\end{DoxyItemize}\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md30}{}\doxysubsection{\texorpdfstring{3. {\bfseries{web.\+php}}}{3. {\bfseries{web.\+php}}}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md30}
+
+\begin{DoxyItemize}
+\item Added Dashboard\+Controller import
+\item Updated admin.\+dashboard route
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md32}{}\doxysection{\texorpdfstring{📱 Responsive Breakpoints}{📱 Responsive Breakpoints}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md32}
+
+\begin{DoxyTable}{3}{}{}{1}
+\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Device  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Kolom  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Layout  \\
+Desktop (≥1200px)  &4 cards per row  &Full display  \\
+Tablet (768-\/1199px)  &2 cards per row  &2-\/column tables  \\
+Mobile (\texorpdfstring{$<$}{<}768px)  &1 card per row  &Stacked layout  \\
+\end{DoxyTable}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md34}{}\doxysection{\texorpdfstring{🚀 Performance Notes}{🚀 Performance Notes}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md34}
+
+\begin{DoxyItemize}
+\item Menggunakan {\ttfamily with()} untuk eager loading (prevent N+1)
+\item Query dioptimalkan dengan indexing di database
+\item Caching consideration untuk statistik jika diperlukan
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md36}{}\doxysection{\texorpdfstring{📝 Maintenance \& Future Enhancements}{📝 Maintenance \& Future Enhancements}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md36}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md37}{}\doxysubsection{\texorpdfstring{Potential Improvements}{Potential Improvements}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md37}
+
+\begin{DoxyEnumerate}
+\item Add export-\/to-\/\+PDF functionality
+\item Add department/\+division filter
+\item Add date range picker for statistics
+\item Add performance metrics/\+\+KPI
+\item Add announcement/\+notice board
+\item Add activity log
+\item Add real-\/time notifications
+\item Add interactive charts (Chart.\+js/\+\+ECharts)
+\end{DoxyEnumerate}\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md38}{}\doxysubsection{\texorpdfstring{Customization Points}{Customization Points}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md38}
+
+\begin{DoxyItemize}
+\item Warna scheme:\+ Ganti hex colors di CSS
+\item Stat card icon:\+ Update class Font\+Awesome
+\item Table columns:\+ Modify Blade loop
+\item Query filters:\+ Update Dashboard\+Controller conditions
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md40}{}\doxysection{\texorpdfstring{✨ Quality Standards Met}{✨ Quality Standards Met}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md40}
+✓ Clean code dengan proper documentation ✓ Responsive \& modern design ✓ Full CRUD support untuk pengajuan ✓ Real-\/time data dari database ✓ Better UX dengan badges \& avatars ✓ Proper Laravel conventions ✓ Bootstrap 5 compatible ✓ Font\+Awesome v4+ icon support ✓ SEO-\/friendly structure ✓ Accessibility ready
+
+\DoxyHorRuler{0}
+\hypertarget{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md42}{}\doxysection{\texorpdfstring{📚 Related Documentation}{📚 Related Documentation}}\label{md__d_a_s_h_b_o_a_r_d___a_d_m_i_n___g_u_i_d_e_autotoc_md42}
+
+\begin{DoxyItemize}
+\item {\bfseries{Karyawan Module}}:\+ {\ttfamily /\+admin/\+karyawan}
+\item {\bfseries{Shift Module}}:\+ {\ttfamily /\+admin/\+shift}
+\item {\bfseries{Izin Module}}:\+ {\ttfamily /\+admin/\+izin}
+\item {\bfseries{Cuti Module}}:\+ {\ttfamily /\+admin/\+cuti}
+\item {\bfseries{Absensi Module}}:\+ {\ttfamily /\+admin/\+absensi}
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+
+
+{\bfseries{Last Updated}}:\+ March 10, 2026 {\bfseries{Version}}:\+ 1.\+0 {\bfseries{Status}}:\+ Production Ready ✅ 

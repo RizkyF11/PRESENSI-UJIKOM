@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['jadwalshiftcontroller_2ephp_0',['JadwalShiftController.php',['../_jadwal_shift_controller_8php.html',1,'']]]
+  ['izin_2ephp_0',['Izin.php',['../_izin_8php.html',1,'']]],
+  ['izincontroller_2ephp_1',['IzinController.php',['../_admin_2_izin_controller_8php.html',1,'(Global Namespace)'],['../_karyawan_2_izin_controller_8php.html',1,'(Global Namespace)']]]
 ];

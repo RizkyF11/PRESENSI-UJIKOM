@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['izin_2ephp_0',['Izin.php',['../_izin_8php.html',1,'']]],
-  ['izincontroller_2ephp_1',['IzinController.php',['../_admin_2_izin_controller_8php.html',1,'(Global Namespace)'],['../_karyawan_2_izin_controller_8php.html',1,'(Global Namespace)']]]
+  ['gamificationservice_2ephp_0',['GamificationService.php',['../_gamification_service_8php.html',1,'']]],
+  ['generatealpha_2ephp_1',['GenerateAlpha.php',['../_generate_alpha_8php.html',1,'']]],
+  ['guestlayout_2ephp_2',['GuestLayout.php',['../_guest_layout_8php.html',1,'']]]
 ];

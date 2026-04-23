@@ -144,6 +144,18 @@
             </div>
         </a>
 
+        <!-- Helpdesk Tiket -->
+        <a href="{{ route('karyawan.tickets.index') }}" class="text-decoration-none flex-shrink-0" style="width: 100px;">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-body p-3 text-center d-flex flex-column align-items-center justify-content-center">
+                    <div class="text-teal-500 mb-2 flex items-center justify-center bg-teal-50 rounded-full" style="width:40px;height:40px;">
+                        <span class="iconify" data-icon="heroicons:chat-bubble-oval-left-ellipsis" data-width="20"></span>
+                    </div>
+                    <span class="text-gray-700 font-medium" style="font-size: 10px; line-height: 1.2;">Helpdesk Tiket</span>
+                </div>
+            </div>
+        </a>
+
        
     </div>
 

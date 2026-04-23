@@ -32,15 +32,15 @@ class Shift extends Model
         return $this->hasMany(Absensi::class);
     }
 
-    public function izin()
-    {
-        return $this->hasMany(Izin::class);
-    }
+    // public function izin()
+    // {
+    //     return $this->hasMany(Izin::class);
+    // }
 
-    public function cuti()
-    {
-        return $this->hasMany(Cuti::class);
-    }
+    // public function cuti()
+    // {
+    //     return $this->hasMany(Cuti::class);
+    // }
 
     public function scopeActive($query)
     {

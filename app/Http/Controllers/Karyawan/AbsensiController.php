@@ -15,6 +15,12 @@ use Illuminate\Support\Facades\Log;
 
 class AbsensiController extends Controller
 {
+    /**
+     * Menampilkan halaman dashboard karyawan.
+     *
+     * Mengambil data shift hari ini, absensi hari ini, statistik kehadiran
+     * bulan berjalan, dan 5 riwayat absensi terakhir milik karyawan yang login.
+     */
     public function index()
     {
         $karyawanId = Auth::user()->karyawan->id;
@@ -83,6 +89,11 @@ class AbsensiController extends Controller
     /* =======================
      |  STORE SCAN (Unified)
      =======================*/
+    /**
+     * Entry point terpadu untuk scan absensi masuk maupun keluar.
+     *
+     * Meneruskan request ke metode yang sesuai berdasarkan nilai `tipe_scan`.
+     */
     public function storeScan(Request $request)
     {
         $request->validate([
@@ -99,6 +110,18 @@ class AbsensiController extends Controller
     /* =======================
      |  SCAN MASUK
      =======================*/
+    /**
+     * Memproses absensi masuk karyawan melalui scan QR Code.
+     *
+     * Alur:
+     * 1. Validasi shift aktif karyawan saat ini.
+     * 2. Cegah double scan masuk pada shift dan tanggal yang sama.
+     * 3. Validasi QR Code (tipe masuk, aktif, belum expired).
+     * 4. Validasi lokasi (karyawan harus berada dalam radius kantor).
+     * 5. Tentukan status masuk: 'hadir' atau 'terlambat'.
+     * 6. Simpan record absensi dalam transaksi database.
+     * 7. Jalankan evaluasi gamifikasi setelah transaksi berhasil.
+     */
     public function scanMasuk(Request $request)
     {
         $request->validate([
@@ -139,7 +162,7 @@ class AbsensiController extends Controller
             // ===== VALIDASI TERLAMBAT =====
             $batasTerlambat = Carbon::parse($tanggalAbsensi . ' ' . $shift->jam_masuk)
                 ->addMinutes($shift->toleransi_menit ?? 0);
-                
+
             // Fix ✅
             $statusMasuk = $now->greaterThanOrEqualTo($batasTerlambat)
                 ? 'terlambat'
@@ -185,6 +208,20 @@ class AbsensiController extends Controller
     /* =======================
      |  SCAN KELUAR
      =======================*/
+    /**
+     * Memproses absensi keluar karyawan melalui scan QR Code.
+     *
+     * Alur:
+     * 1. Validasi shift aktif karyawan saat ini.
+     * 2. Pastikan karyawan sudah melakukan absen masuk terlebih dahulu.
+     * 3. Cegah double scan keluar.
+     * 4. Validasi QR Code (tipe keluar, aktif, belum expired).
+     * 5. Validasi lokasi karyawan.
+     * 6. Tentukan status keluar: 'pulang_cepat' atau 'pulang'.
+     *    - 'pulang_cepat' : scan dilakukan dalam 15 menit sebelum jam pulang.
+     *    - 'pulang'       : scan dilakukan pada atau setelah jam pulang.
+     * 7. Update record absensi.
+     */
     public function scanKeluar(Request $request)
     {
         $request->validate([
@@ -268,6 +305,19 @@ class AbsensiController extends Controller
     /* =======================
      |  HELPER
      =======================*/
+    /**
+     * Mengambil shift karyawan yang sedang aktif berdasarkan waktu sekarang.
+     *
+     * Shift dianggap aktif jika:
+     * - Hari ini bukan akhir pekan (Sabtu/Minggu).
+     * - Tanggal hari ini berada dalam rentang tanggal_mulai - tanggal_selesai shift.
+     * - Jam sekarang berada dalam jendela absen (sejak 60 menit sebelum jam masuk
+     *   hingga jam keluar shift).
+     * - Untuk shift lintas hari: jendela absen tetap berlaku meski melewati tengah malam.
+     *
+     * @param  int  $karyawanId
+     * @return object|null  Row shift atau null jika tidak ada shift aktif
+     */
 
     private function getShiftAktif($karyawanId)
     {
@@ -319,6 +369,15 @@ class AbsensiController extends Controller
         return null;
     }
 
+    /**
+     * Mengambil shift karyawan yang berlaku pada hari ini (tanpa memeriksa jam aktif).
+     *
+     * Digunakan di halaman dashboard untuk menampilkan informasi shift,
+     * bukan untuk validasi waktu absen. Akhir pekan mengembalikan null.
+     *
+     * @param  int  $karyawanId
+     * @return object|null  Row shift pertama yang ditemukan, atau null
+     */
     private function getShiftHariIni($karyawanId)
     {
         $todayCarbon = Carbon::today();
@@ -343,11 +402,33 @@ class AbsensiController extends Controller
     }
 
 
+    /**
+     * Memeriksa apakah jam sekarang berada dalam rentang aktif shift.
+     *
+     * Catatan: metode ini belum menangani shift lintas hari.
+     * Untuk validasi absen aktual, gunakan getShiftAktif().
+     *
+     * @param  object  $shift        Row shift dari database
+     * @param  string  $jamSekarang  Waktu dalam format 'H:i:s'
+     * @return bool
+     */
     private function isShiftAktif($shift, $jamSekarang)
     {
         return $jamSekarang >= $shift->jam_masuk && $jamSekarang <= $shift->jam_keluar;
     }
 
+
+    /**
+     * Menentukan tanggal yang dipakai sebagai kunci absensi.
+     *
+     * Untuk shift lintas hari (misal 22:00 – 06:00), jika sekarang masih
+     * di bawah jam 12 siang maka absensi dianggap milik hari sebelumnya.
+     * Untuk shift normal, tanggal absensi adalah tanggal hari ini.
+     *
+     * @param  object  $shift  Row shift dari database
+     * @param  Carbon  $now    Waktu sekarang
+     * @return string  Tanggal dalam format 'Y-m-d'
+     */
     private function tentukanTanggalAbsensi($shift, Carbon $now)
     {
         if ($this->isShiftLintasHari($shift) && $now->hour < 12) {
@@ -356,11 +437,28 @@ class AbsensiController extends Controller
         return $now->toDateString();
     }
 
+    /**
+     * Memeriksa apakah shift melewati tengah malam (lintas hari).
+     *
+     * Shift dinyatakan lintas hari apabila jam_keluar lebih kecil dari jam_masuk,
+     * contoh: masuk 22:00, keluar 06:00.
+     *
+     * @param  object  $shift  Row shift dari database
+     * @return bool
+     */
     private function isShiftLintasHari($shift)
     {
         return Carbon::createFromTimeString($shift->jam_keluar)
             ->lessThan(Carbon::createFromTimeString($shift->jam_masuk));
     }
+
+     /**
+     * Memeriksa apakah karyawan sudah melakukan absen masuk pada tanggal tertentu.
+     *
+     * @param  int     $karyawanId
+     * @param  string  $tanggal  Format 'Y-m-d'
+     * @return bool
+     */
 
     private function sudahAbsenMasuk($karyawanId, $tanggal)
     {
@@ -370,6 +468,22 @@ class AbsensiController extends Controller
             ->exists();
     }
 
+
+    /**
+     * Memvalidasi QR Code yang di-scan oleh karyawan.
+     *
+     * QR Code dianggap valid jika:
+     * - Kode cocok dengan yang tersimpan di database.
+     * - Tipe QR sesuai ('masuk' atau 'keluar').
+     * - Status aktif (is_active = true).
+     * - Belum melewati waktu expired_at.
+     *
+     * Jika tidak valid, fungsi langsung melakukan abort dengan response JSON 422.
+     *
+     * @param  string  $kode  Kode QR yang di-scan
+     * @param  string  $tipe  'masuk' atau 'keluar'
+     * @return QrCode
+     */
     private function validasiQr($kode, $tipe)
     {
         $qr = QrCode::where('kode', $kode)
@@ -388,6 +502,20 @@ class AbsensiController extends Controller
         return $qr;
     }
 
+
+    /**
+     * Memvalidasi lokasi karyawan terhadap semua lokasi kantor yang aktif.
+     *
+     * Menghitung jarak antara koordinat karyawan dengan setiap lokasi kantor
+     * menggunakan formula Haversine. Mengembalikan lokasi pertama yang
+     * jaraknya masih dalam radius yang diizinkan.
+     *
+     * Jika tidak ada lokasi kantor aktif: abort 500.
+     * Jika karyawan di luar semua radius kantor: abort 422.
+     *
+     * @param  Request  $request  Harus mengandung latitude & longitude
+     * @return LokasiKantor  Lokasi kantor yang cocok
+     */
     private function validasiLokasi(Request $request)
     {
         $daftarLokasi = LokasiKantor::where('is_active', true)->get();
@@ -412,6 +540,19 @@ class AbsensiController extends Controller
         abort(422, 'Anda berada di luar radius dari semua lokasi kantor');
     }
 
+
+    /**
+     * Menghitung jarak antara dua titik koordinat menggunakan formula Haversine.
+     *
+     * Formula Haversine memperhitungkan kelengkungan bumi sehingga cocok
+     * digunakan untuk menghitung jarak pendek (dalam meter) secara akurat.
+     *
+     * @param  float  $lat1  Latitude titik pertama (karyawan)
+     * @param  float  $lon1  Longitude titik pertama (karyawan)
+     * @param  float  $lat2  Latitude titik kedua (kantor)
+     * @param  float  $lon2  Longitude titik kedua (kantor)
+     * @return float  Jarak dalam meter
+     */
     private function hitungJarak($lat1, $lon1, $lat2, $lon2)
     {
         $earthRadius = 6371000;
@@ -425,6 +566,13 @@ class AbsensiController extends Controller
         return $earthRadius * (2 * atan2(sqrt($a), sqrt(1 - $a)));
     }
 
+
+    /**
+     * Mengembalikan JSON response error dengan HTTP status 422.
+     *
+     * @param  string  $message  Pesan error yang akan ditampilkan ke pengguna
+     * @return \Illuminate\Http\JsonResponse
+     */
     private function error($message)
     {
         return response()->json([
@@ -433,6 +581,17 @@ class AbsensiController extends Controller
         ], 422);
     }
 
+
+     /**
+     * Menangani exception yang tidak tertangkap dan mengembalikan JSON response 500.
+     *
+     * Menyertakan pesan error, nama file, dan nomor baris untuk keperluan debugging.
+     * Sebaiknya hanya aktif di lingkungan development; pertimbangkan untuk
+     * menyembunyikan detail teknis di production.
+     *
+     * @param  \Throwable  $e  Exception yang ditangkap
+     * @return \Illuminate\Http\JsonResponse
+     */
     private function exception(\Throwable $e)
     {
         return response()->json([

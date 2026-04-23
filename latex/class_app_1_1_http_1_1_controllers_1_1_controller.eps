@@ -5,7 +5,7 @@
 %%For: 
 %Magnification: 1.00
 %%Orientation: Portrait
-%%BoundingBox: 0 0 500 1282.051270
+%%BoundingBox: 0 0 500 1495.726440
 %%Pages: 0
 %%BeginSetup
 %%EndSetup
@@ -19,12 +19,12 @@
 /marginwidth 10 def
 /distx 20 def
 /disty 40 def
-/boundaspect 0.390000 def  % aspect ratio of the BoundingBox (width/height)
+/boundaspect 0.334286 def  % aspect ratio of the BoundingBox (width/height)
 /boundx 500 def
 /boundy boundx boundaspect div def
 /xspacing 0 def
 /yspacing 0 def
-/rows 30 def
+/rows 35 def
 /cols 2 def
 /scalefactor 0 def
 /boxfont /Times-Roman findfont fontheight scalefont def
@@ -178,10 +178,13 @@ boxfont setfont
 (AdminQrController) cw
 (CutiController) cw
 (DashboardController) cw
+(FlexibilityItemController) cw
 (IzinController) cw
 (KaryawanController) cw
 (KaryawanShiftController) cw
+(LeaderboardController) cw
 (LokasiKantorController) cw
+(PointRuleController) cw
 (ShiftController) cw
 (AssessmentCategoryController) cw
 (AssessmentController) cw
@@ -197,8 +200,10 @@ boxfont setfont
 (VerifyEmailController) cw
 (AbsensiController) cw
 (CutiController) cw
+(DompetIntegritasController) cw
 (IzinController) cw
 (JadwalShiftController) cw
+(LeaderboardController) cw
 (ProfileClientController) cw
 (RiwayatAbsensiController) cw
 (ProfileController) cw
@@ -214,32 +219,37 @@ boundx scalefactor div boundy scalefactor div scale
 
 % ----- classes -----
 
- (Controller) 0.000000 29.000000 box
- (AbsensiController) 1.000000 28.000000 box
- (AdminQrController) 1.000000 27.000000 box
- (CutiController) 1.000000 26.000000 box
- (DashboardController) 1.000000 25.000000 box
- (IzinController) 1.000000 24.000000 box
- (KaryawanController) 1.000000 23.000000 box
- (KaryawanShiftController) 1.000000 22.000000 box
- (LokasiKantorController) 1.000000 21.000000 box
- (ShiftController) 1.000000 20.000000 box
- (AssessmentCategoryController) 1.000000 19.000000 box
- (AssessmentController) 1.000000 18.000000 box
- (AssessmentQuestionController) 1.000000 17.000000 box
- (AuthenticatedSessionController) 1.000000 16.000000 box
- (ConfirmablePasswordController) 1.000000 15.000000 box
- (EmailVerificationNotificationController) 1.000000 14.000000 box
- (EmailVerificationPromptController) 1.000000 13.000000 box
- (NewPasswordController) 1.000000 12.000000 box
- (PasswordController) 1.000000 11.000000 box
- (PasswordResetLinkController) 1.000000 10.000000 box
- (RegisteredUserController) 1.000000 9.000000 box
- (VerifyEmailController) 1.000000 8.000000 box
- (AbsensiController) 1.000000 7.000000 box
- (CutiController) 1.000000 6.000000 box
- (IzinController) 1.000000 5.000000 box
- (JadwalShiftController) 1.000000 4.000000 box
+ (Controller) 0.000000 34.000000 box
+ (AbsensiController) 1.000000 33.000000 box
+ (AdminQrController) 1.000000 32.000000 box
+ (CutiController) 1.000000 31.000000 box
+ (DashboardController) 1.000000 30.000000 box
+ (FlexibilityItemController) 1.000000 29.000000 box
+ (IzinController) 1.000000 28.000000 box
+ (KaryawanController) 1.000000 27.000000 box
+ (KaryawanShiftController) 1.000000 26.000000 box
+ (LeaderboardController) 1.000000 25.000000 box
+ (LokasiKantorController) 1.000000 24.000000 box
+ (PointRuleController) 1.000000 23.000000 box
+ (ShiftController) 1.000000 22.000000 box
+ (AssessmentCategoryController) 1.000000 21.000000 box
+ (AssessmentController) 1.000000 20.000000 box
+ (AssessmentQuestionController) 1.000000 19.000000 box
+ (AuthenticatedSessionController) 1.000000 18.000000 box
+ (ConfirmablePasswordController) 1.000000 17.000000 box
+ (EmailVerificationNotificationController) 1.000000 16.000000 box
+ (EmailVerificationPromptController) 1.000000 15.000000 box
+ (NewPasswordController) 1.000000 14.000000 box
+ (PasswordController) 1.000000 13.000000 box
+ (PasswordResetLinkController) 1.000000 12.000000 box
+ (RegisteredUserController) 1.000000 11.000000 box
+ (VerifyEmailController) 1.000000 10.000000 box
+ (AbsensiController) 1.000000 9.000000 box
+ (CutiController) 1.000000 8.000000 box
+ (DompetIntegritasController) 1.000000 7.000000 box
+ (IzinController) 1.000000 6.000000 box
+ (JadwalShiftController) 1.000000 5.000000 box
+ (LeaderboardController) 1.000000 4.000000 box
  (ProfileClientController) 1.000000 3.000000 box
  (RiwayatAbsensiController) 1.000000 2.000000 box
  (ProfileController) 1.000000 1.000000 box
@@ -248,7 +258,17 @@ boundx scalefactor div boundy scalefactor div scale
 % ----- relations -----
 
 solid
-1 0.000000 28.250000 out
+1 0.000000 33.250000 out
+solid
+0 0.000000 33.500000 hedge
+solid
+0 0.000000 32.500000 hedge
+solid
+0 0.000000 31.500000 hedge
+solid
+0 0.000000 30.500000 hedge
+solid
+0 0.000000 29.500000 hedge
 solid
 0 0.000000 28.500000 hedge
 solid
@@ -308,4 +328,4 @@ solid
 solid
 0 0.000000 0.500000 hedge
 solid
-0.000000 29.000000 0.500000 vedge
+0.000000 34.000000 0.500000 vedge

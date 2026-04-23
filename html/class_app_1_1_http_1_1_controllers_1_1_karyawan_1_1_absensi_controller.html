@@ -91,9 +91,6 @@ $(function(){initNavTree('class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_ab
   <div class="headertitle"><div class="title">AbsensiController Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Controller untuk memanajemen absensi karyawan secara spesifik.</p>
-<p>Kelas ini bertanggung jawab atas fitur dashboard karyawan, absen masuk, absen keluar, validasi lokasi GPS, validasi QR Code, hingga pengaturan jadwal berdasar shift aktif.</p>
-</div>
 <div class="dynheader">
 Inheritance diagram for AbsensiController:</div>
 <div class="dyncontent">
@@ -107,13 +104,9 @@ Inheritance diagram for AbsensiController:</div>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a149eb92716c1084a935e04a8d95f7347" id="r_a149eb92716c1084a935e04a8d95f7347"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a149eb92716c1084a935e04a8d95f7347">index</a> ()</td></tr>
-<tr class="memdesc:a149eb92716c1084a935e04a8d95f7347"><td class="mdescLeft">&#160;</td><td class="mdescRight">Menampilkan halaman Dashboard utama untuk Karyawan.<br /></td></tr>
 <tr class="memitem:a279ac8d42f505c057d1b22442ed93079" id="r_a279ac8d42f505c057d1b22442ed93079"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a279ac8d42f505c057d1b22442ed93079">storeScan</a> (Request $request)</td></tr>
-<tr class="memdesc:a279ac8d42f505c057d1b22442ed93079"><td class="mdescLeft">&#160;</td><td class="mdescRight">Menjadi titik entri (Router) proses scan absensi.<br /></td></tr>
 <tr class="memitem:a9b3451b6b41ec4bacafa4ed9d6fbb996" id="r_a9b3451b6b41ec4bacafa4ed9d6fbb996"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a9b3451b6b41ec4bacafa4ed9d6fbb996">scanMasuk</a> (Request $request)</td></tr>
-<tr class="memdesc:a9b3451b6b41ec4bacafa4ed9d6fbb996"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memproses dan menyimpan data perekaman absensi masuk karyawan.<br /></td></tr>
 <tr class="memitem:a8786456c1c45d1ab8f2d0756030e4f95" id="r_a8786456c1c45d1ab8f2d0756030e4f95"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a8786456c1c45d1ab8f2d0756030e4f95">scanKeluar</a> (Request $request)</td></tr>
-<tr class="memdesc:a8786456c1c45d1ab8f2d0756030e4f95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memproses perekaman kepulangan / absensi keluar karyawan terkait.<br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="a149eb92716c1084a935e04a8d95f7347" name="a149eb92716c1084a935e04a8d95f7347"></a>
@@ -130,7 +123,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Menampilkan halaman Dashboard utama untuk Karyawan. Berisi statistik absensi bulan ini, shift hari ini, dan riwayat absensi terbaru.</p>
+<p>Menampilkan halaman dashboard karyawan.</p>
+<p>Mengambil data shift hari ini, absensi hari ini, statistik kehadiran bulan berjalan, dan 5 riwayat absensi terakhir milik karyawan yang login. </p>
+
 </div>
 </div>
 <a id="a8786456c1c45d1ab8f2d0756030e4f95" name="a8786456c1c45d1ab8f2d0756030e4f95"></a>
@@ -147,7 +142,21 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Memproses perekaman kepulangan / absensi keluar karyawan terkait. Memvalidasi status kehadiran sebelumnya, jadwal kepulangan, lokasi GPS, dan QR Code.</p>
+<p>Memproses absensi keluar karyawan melalui scan QR Code.</p>
+<p>Alur:</p><ol type="1">
+<li>Validasi shift aktif karyawan saat ini.</li>
+<li>Pastikan karyawan sudah melakukan absen masuk terlebih dahulu.</li>
+<li>Cegah double scan keluar.</li>
+<li>Validasi QR Code (tipe keluar, aktif, belum expired).</li>
+<li>Validasi lokasi karyawan.</li>
+<li>Tentukan status keluar: 'pulang_cepat' atau 'pulang'.<ul>
+<li>'pulang_cepat' : scan dilakukan dalam 15 menit sebelum jam pulang.</li>
+<li>'pulang' : scan dilakukan pada atau setelah jam pulang.</li>
+</ul>
+</li>
+<li>Update record absensi. </li>
+</ol>
+
 </div>
 </div>
 <a id="a9b3451b6b41ec4bacafa4ed9d6fbb996" name="a9b3451b6b41ec4bacafa4ed9d6fbb996"></a>
@@ -164,7 +173,17 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Memproses dan menyimpan data perekaman absensi masuk karyawan. Memvalidasi shift aktif, lokasi GPS, dan keabsahan QR Code.</p>
+<p>Memproses absensi masuk karyawan melalui scan QR Code.</p>
+<p>Alur:</p><ol type="1">
+<li>Validasi shift aktif karyawan saat ini.</li>
+<li>Cegah double scan masuk pada shift dan tanggal yang sama.</li>
+<li>Validasi QR Code (tipe masuk, aktif, belum expired).</li>
+<li>Validasi lokasi (karyawan harus berada dalam radius kantor).</li>
+<li>Tentukan status masuk: 'hadir' atau 'terlambat'.</li>
+<li>Simpan record absensi dalam transaksi database.</li>
+<li>Jalankan evaluasi gamifikasi setelah transaksi berhasil. </li>
+</ol>
+
 </div>
 </div>
 <a id="a279ac8d42f505c057d1b22442ed93079" name="a279ac8d42f505c057d1b22442ed93079"></a>
@@ -181,7 +200,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Menjadi titik entri (Router) proses scan absensi. Menentukan apakah akan memproses absen masuk atau keluar berdasarkan parameter tipe_scan.</p>
+<p>Entry point terpadu untuk scan absensi masuk maupun keluar.</p>
+<p>Meneruskan request ke metode yang sesuai berdasarkan nilai <span class="tt">tipe_scan</span>. </p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>

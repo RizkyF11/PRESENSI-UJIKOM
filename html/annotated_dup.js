@@ -8,6 +8,9 @@ var annotated_dup =
         ] ]
       ] ],
       [ "Exports", "namespace_app_1_1_exports.html", [
+        [ "Pdf", "namespace_app_1_1_exports_1_1_pdf.html", [
+          [ "RekapAbsensiPdf", "class_app_1_1_exports_1_1_pdf_1_1_rekap_absensi_pdf.html", "class_app_1_1_exports_1_1_pdf_1_1_rekap_absensi_pdf" ]
+        ] ],
         [ "DetailAbsensiSheet", "class_app_1_1_exports_1_1_detail_absensi_sheet.html", "class_app_1_1_exports_1_1_detail_absensi_sheet" ],
         [ "RekapAbsensiExport", "class_app_1_1_exports_1_1_rekap_absensi_export.html", "class_app_1_1_exports_1_1_rekap_absensi_export" ],
         [ "RekapAbsensiSheet", "class_app_1_1_exports_1_1_rekap_absensi_sheet.html", "class_app_1_1_exports_1_1_rekap_absensi_sheet" ]
@@ -19,10 +22,13 @@ var annotated_dup =
             [ "AdminQrController", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_admin_qr_controller.html", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_admin_qr_controller" ],
             [ "CutiController", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_cuti_controller.html", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_cuti_controller" ],
             [ "DashboardController", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_dashboard_controller.html", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_dashboard_controller" ],
+            [ "FlexibilityItemController", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_flexibility_item_controller.html", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_flexibility_item_controller" ],
             [ "IzinController", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_izin_controller.html", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_izin_controller" ],
             [ "KaryawanController", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_karyawan_controller.html", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_karyawan_controller" ],
             [ "KaryawanShiftController", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_karyawan_shift_controller.html", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_karyawan_shift_controller" ],
+            [ "LeaderboardController", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_leaderboard_controller.html", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_leaderboard_controller" ],
             [ "LokasiKantorController", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_lokasi_kantor_controller.html", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_lokasi_kantor_controller" ],
+            [ "PointRuleController", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_point_rule_controller.html", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_point_rule_controller" ],
             [ "ShiftController", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_shift_controller.html", "class_app_1_1_http_1_1_controllers_1_1_admin_1_1_shift_controller" ]
           ] ],
           [ "Auth", "namespace_app_1_1_http_1_1_controllers_1_1_auth.html", [
@@ -39,8 +45,10 @@ var annotated_dup =
           [ "Karyawan", "namespace_app_1_1_http_1_1_controllers_1_1_karyawan.html", [
             [ "AbsensiController", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller.html", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller" ],
             [ "CutiController", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_cuti_controller.html", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_cuti_controller" ],
+            [ "DompetIntegritasController", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_dompet_integritas_controller.html", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_dompet_integritas_controller" ],
             [ "IzinController", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_izin_controller.html", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_izin_controller" ],
             [ "JadwalShiftController", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_jadwal_shift_controller.html", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_jadwal_shift_controller" ],
+            [ "LeaderboardController", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_leaderboard_controller.html", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_leaderboard_controller" ],
             [ "ProfileClientController", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_profile_client_controller.html", null ],
             [ "RiwayatAbsensiController", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_riwayat_absensi_controller.html", "class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_riwayat_absensi_controller" ]
           ] ],
@@ -65,16 +73,23 @@ var annotated_dup =
         [ "AssessmentDetail", "class_app_1_1_models_1_1_assessment_detail.html", "class_app_1_1_models_1_1_assessment_detail" ],
         [ "AssessmentQuestion", "class_app_1_1_models_1_1_assessment_question.html", "class_app_1_1_models_1_1_assessment_question" ],
         [ "Cuti", "class_app_1_1_models_1_1_cuti.html", "class_app_1_1_models_1_1_cuti" ],
+        [ "FlexibilityItem", "class_app_1_1_models_1_1_flexibility_item.html", "class_app_1_1_models_1_1_flexibility_item" ],
         [ "Izin", "class_app_1_1_models_1_1_izin.html", "class_app_1_1_models_1_1_izin" ],
         [ "Karyawan", "class_app_1_1_models_1_1_karyawan.html", "class_app_1_1_models_1_1_karyawan" ],
         [ "KaryawanShift", "class_app_1_1_models_1_1_karyawan_shift.html", "class_app_1_1_models_1_1_karyawan_shift" ],
         [ "LokasiKantor", "class_app_1_1_models_1_1_lokasi_kantor.html", "class_app_1_1_models_1_1_lokasi_kantor" ],
+        [ "PointLedger", "class_app_1_1_models_1_1_point_ledger.html", "class_app_1_1_models_1_1_point_ledger" ],
+        [ "PointRule", "class_app_1_1_models_1_1_point_rule.html", "class_app_1_1_models_1_1_point_rule" ],
         [ "QrCode", "class_app_1_1_models_1_1_qr_code.html", "class_app_1_1_models_1_1_qr_code" ],
         [ "Shift", "class_app_1_1_models_1_1_shift.html", "class_app_1_1_models_1_1_shift" ],
-        [ "User", "class_app_1_1_models_1_1_user.html", "class_app_1_1_models_1_1_user" ]
+        [ "User", "class_app_1_1_models_1_1_user.html", "class_app_1_1_models_1_1_user" ],
+        [ "UserToken", "class_app_1_1_models_1_1_user_token.html", "class_app_1_1_models_1_1_user_token" ]
       ] ],
       [ "Providers", "namespace_app_1_1_providers.html", [
         [ "AppServiceProvider", "class_app_1_1_providers_1_1_app_service_provider.html", "class_app_1_1_providers_1_1_app_service_provider" ]
+      ] ],
+      [ "Services", "namespace_app_1_1_services.html", [
+        [ "GamificationService", "class_app_1_1_services_1_1_gamification_service.html", "class_app_1_1_services_1_1_gamification_service" ]
       ] ],
       [ "View", null, [
         [ "Components", "namespace_app_1_1_view_1_1_components.html", [

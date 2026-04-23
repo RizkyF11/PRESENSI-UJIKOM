@@ -10,7 +10,7 @@ class PointRuleController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | 1. INDEX
+    | 1. INDEX (MENAMPILKAN SEMUA RULE)
     |--------------------------------------------------------------------------
     */
     public function index()
@@ -23,7 +23,7 @@ class PointRuleController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | 2. FORM CREATE
+    | 2. FORM CREATE (MENAMPILKAN FORM UNTUK MENAMBAH RULE BARU)
     |--------------------------------------------------------------------------
     */
     public function create()
@@ -34,7 +34,7 @@ class PointRuleController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | 3. STORE
+    | 3. STORE (MENYIMMPAN RULE BARU KE DATABASE)
     |--------------------------------------------------------------------------
     */
     public function store(Request $request)
@@ -66,7 +66,7 @@ class PointRuleController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | 4. FORM EDIT
+    | 4. FORM EDIT (MENGEDIT RULE YANG SUDAH ADA)
     |--------------------------------------------------------------------------
     */
     public function edit(PointRule $pointRule)
@@ -77,7 +77,7 @@ class PointRuleController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | 5. UPDATE
+    | 5. UPDATE (MENGUPDATE RULE YANG SUDAH ADA DI DATABASE)
     |--------------------------------------------------------------------------
     */
     public function update(Request $request, PointRule $pointRule)
@@ -109,7 +109,7 @@ class PointRuleController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | 6. DELETE
+    | 6. DELETE (MENGHAPUS RULE YANG SUDAH ADA)
     |--------------------------------------------------------------------------
     */
     public function destroy(PointRule $pointRule)

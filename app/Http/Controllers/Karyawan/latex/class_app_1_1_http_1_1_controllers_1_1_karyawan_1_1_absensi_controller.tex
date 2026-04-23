@@ -1,0 +1,83 @@
+\doxysection{Absensi\+Controller Class Reference}
+\hypertarget{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller}{}\label{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller}\index{AbsensiController@{AbsensiController}}
+Inheritance diagram for Absensi\+Controller:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a149eb92716c1084a935e04a8d95f7347}{index}} ()
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a279ac8d42f505c057d1b22442ed93079}{store\+Scan}} (Request \$request)
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a9b3451b6b41ec4bacafa4ed9d6fbb996}{scan\+Masuk}} (Request \$request)
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a8786456c1c45d1ab8f2d0756030e4f95}{scan\+Keluar}} (Request \$request)
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a149eb92716c1084a935e04a8d95f7347}\index{AbsensiController@{AbsensiController}!index@{index}}
+\index{index@{index}!AbsensiController@{AbsensiController}}
+\doxysubsubsection{\texorpdfstring{index()}{index()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a149eb92716c1084a935e04a8d95f7347} 
+index (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+Menampilkan halaman dashboard karyawan.
+
+Mengambil data shift hari ini, absensi hari ini, statistik kehadiran bulan berjalan, dan 5 riwayat absensi terakhir milik karyawan yang login. \Hypertarget{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a8786456c1c45d1ab8f2d0756030e4f95}\index{AbsensiController@{AbsensiController}!scanKeluar@{scanKeluar}}
+\index{scanKeluar@{scanKeluar}!AbsensiController@{AbsensiController}}
+\doxysubsubsection{\texorpdfstring{scanKeluar()}{scanKeluar()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a8786456c1c45d1ab8f2d0756030e4f95} 
+scan\+Keluar (\begin{DoxyParamCaption}\item[{Request}]{\$request}{}\end{DoxyParamCaption})}
+
+Memproses absensi keluar karyawan melalui scan QR Code.
+
+Alur:\+
+\begin{DoxyEnumerate}
+\item Validasi shift aktif karyawan saat ini.
+\item Pastikan karyawan sudah melakukan absen masuk terlebih dahulu.
+\item Cegah double scan keluar.
+\item Validasi QR Code (tipe keluar, aktif, belum expired).
+\item Validasi lokasi karyawan.
+\item Tentukan status keluar:\+ \textquotesingle{}pulang\+\_\+cepat\textquotesingle{} atau \textquotesingle{}pulang\textquotesingle{}.
+\begin{DoxyItemize}
+\item \textquotesingle{}pulang\+\_\+cepat\textquotesingle{} :\+ scan dilakukan dalam 15 menit sebelum jam pulang.
+\item \textquotesingle{}pulang\textquotesingle{} :\+ scan dilakukan pada atau setelah jam pulang.
+\end{DoxyItemize}
+\item Update record absensi. 
+\end{DoxyEnumerate}\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a9b3451b6b41ec4bacafa4ed9d6fbb996}\index{AbsensiController@{AbsensiController}!scanMasuk@{scanMasuk}}
+\index{scanMasuk@{scanMasuk}!AbsensiController@{AbsensiController}}
+\doxysubsubsection{\texorpdfstring{scanMasuk()}{scanMasuk()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a9b3451b6b41ec4bacafa4ed9d6fbb996} 
+scan\+Masuk (\begin{DoxyParamCaption}\item[{Request}]{\$request}{}\end{DoxyParamCaption})}
+
+Memproses absensi masuk karyawan melalui scan QR Code.
+
+Alur:\+
+\begin{DoxyEnumerate}
+\item Validasi shift aktif karyawan saat ini.
+\item Cegah double scan masuk pada shift dan tanggal yang sama.
+\item Validasi QR Code (tipe masuk, aktif, belum expired).
+\item Validasi lokasi (karyawan harus berada dalam radius kantor).
+\item Tentukan status masuk:\+ \textquotesingle{}hadir\textquotesingle{} atau \textquotesingle{}terlambat\textquotesingle{}.
+\item Simpan record absensi dalam transaksi database.
+\item Jalankan evaluasi gamifikasi setelah transaksi berhasil. 
+\end{DoxyEnumerate}\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a279ac8d42f505c057d1b22442ed93079}\index{AbsensiController@{AbsensiController}!storeScan@{storeScan}}
+\index{storeScan@{storeScan}!AbsensiController@{AbsensiController}}
+\doxysubsubsection{\texorpdfstring{storeScan()}{storeScan()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_karyawan_1_1_absensi_controller_a279ac8d42f505c057d1b22442ed93079} 
+store\+Scan (\begin{DoxyParamCaption}\item[{Request}]{\$request}{}\end{DoxyParamCaption})}
+
+Entry point terpadu untuk scan absensi masuk maupun keluar.
+
+Meneruskan request ke metode yang sesuai berdasarkan nilai {\ttfamily tipe\+\_\+scan}. 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{_absensi_controller_8php}{Absensi\+Controller.\+php}}\end{DoxyCompactItemize}

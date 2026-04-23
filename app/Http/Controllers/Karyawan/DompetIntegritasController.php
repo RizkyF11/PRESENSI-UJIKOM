@@ -45,6 +45,7 @@ class DompetIntegritasController extends Controller
         return view('karyawan_fe.dompet.index', compact('balance', 'ledgers', 'items', 'inventory'));
     }
 
+    // Proses penukaran item di marketplace
     public function redeem(Request $request, $id)
     {
         $user = Auth::user();

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['verifyemailcontroller_2ephp_0',['VerifyEmailController.php',['../_verify_email_controller_8php.html',1,'']]]
+  ['user_2ephp_0',['User.php',['../_user_8php.html',1,'']]],
+  ['usertoken_2ephp_1',['UserToken.php',['../_user_token_8php.html',1,'']]]
 ];

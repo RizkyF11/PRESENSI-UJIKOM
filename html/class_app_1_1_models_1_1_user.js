@@ -4,6 +4,8 @@ var class_app_1_1_models_1_1_user =
     [ "assessmentsAsEvaluator", "class_app_1_1_models_1_1_user.html#aa6cdfebd9ff780abf1b422791d4b47aa", null ],
     [ "casts", "class_app_1_1_models_1_1_user.html#a991278a84e53f7912aff45bcfc4cc912", null ],
     [ "karyawan", "class_app_1_1_models_1_1_user.html#abaa757565959f8c47395e4005e686f61", null ],
+    [ "pointLedgers", "class_app_1_1_models_1_1_user.html#a9068f96cdb76c459b84dfe6723f7c7b8", null ],
+    [ "userTokens", "class_app_1_1_models_1_1_user.html#ac042e46e7d8cb13e4c4d5d7ba2bbce48", null ],
     [ "$fillable", "class_app_1_1_models_1_1_user.html#a6a90e74ccdf5efd70d51d10c906f8e32", null ],
     [ "$hidden", "class_app_1_1_models_1_1_user.html#a4a374564d2858d8ae869a8fb890aad56", null ]
 ];

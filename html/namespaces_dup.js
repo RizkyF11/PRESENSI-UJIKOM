@@ -11,6 +11,7 @@ var namespaces_dup =
       ] ],
       [ "Models", "namespace_app_1_1_models.html", "namespace_app_1_1_models" ],
       [ "Providers", "namespace_app_1_1_providers.html", "namespace_app_1_1_providers" ],
+      [ "Services", "namespace_app_1_1_services.html", "namespace_app_1_1_services" ],
       [ "View", null, [
         [ "Components", "namespace_app_1_1_view_1_1_components.html", "namespace_app_1_1_view_1_1_components" ]
       ] ]

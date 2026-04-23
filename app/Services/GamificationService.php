@@ -421,6 +421,23 @@ class GamificationService
     }
 
 
+ /*
+|--------------------------------------------------------------------------
+| ALPHA PENALTY ENGINE
+|--------------------------------------------------------------------------
+| Mesin evaluasi penalty untuk kondisi Alpha (tidak hadir).
+|
+| Bertugas:
+| - Mengecek apakah absensi berstatus Alpha
+| - Mencegah duplicate penalty pada absensi yang sama
+| - Mengambil rule Alpha berdasarkan role user
+|
+| Flow:
+| - Jika tidak ada rule → gunakan default penalty
+| - Jika ada rule → gunakan nilai dari rule
+|
+| Jika kondisi terpenuhi maka ledger penalty akan dibuat.
+*/
     public function evaluateAlpha(Absensi $absensi): void
     {
         $user = $absensi->karyawan?->user;

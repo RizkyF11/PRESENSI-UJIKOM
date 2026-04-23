@@ -33,7 +33,7 @@ var NAVTREE =
       [ "Data Structure Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Data Fields", "functions.html", [
-        [ "All", "functions.html", null ],
+        [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", null ],
         [ "Variables", "functions_vars.html", null ]
       ] ]
@@ -47,8 +47,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_absensi_8php.html",
-"class_app_1_1_http_1_1_controllers_1_1_assessment_question_controller.html#a20d48ce2bad01fe24e2a90e08fe65ca3",
-"class_app_1_1_models_1_1_lokasi_kantor.html#ae8876a14058f368335baccf35af4a22b"
+"class_app_1_1_http_1_1_controllers_1_1_admin_1_1_point_rule_controller.html#a149eb92716c1084a935e04a8d95f7347",
+"class_app_1_1_models_1_1_assessment_category.html#a6a90e74ccdf5efd70d51d10c906f8e32"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

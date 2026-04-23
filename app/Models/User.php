@@ -89,4 +89,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserToken::class);
     }
+
+    /**
+     * Tiket yang dilaporkan oleh user ini (sebagai karyawan/pelapor)
+     */
+    public function reportedTickets()
+    {
+        return $this->hasMany(Tickets::class, 'reporter_id');
+    }
+
+    /**
+     * Tiket yang ditangani oleh user ini (sebagai admin/operator)
+     * Digunakan untuk menghitung performa di dashboard analitik
+     */
+    public function operatorTickets()
+    {
+        return $this->hasMany(Tickets::class, 'operator_id');
+    }
 }
